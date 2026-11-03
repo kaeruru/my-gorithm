@@ -32,17 +32,7 @@
       <div class="header-inner">
         <div class="brand" id="brandHome" role="button" tabindex="0">
           <span class="brand-logo-mark">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="4" y1="21" x2="4" y2="14"></line>
-              <line x1="4" y1="10" x2="4" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12" y2="3"></line>
-              <line x1="20" y1="21" x2="20" y2="16"></line>
-              <line x1="20" y1="12" x2="20" y2="3"></line>
-              <line x1="1" y1="14" x2="7" y2="14"></line>
-              <line x1="9" y1="8" x2="15" y2="8"></line>
-              <line x1="17" y1="16" x2="23" y2="16"></line>
-            </svg>
+            <img src="/logo.png" alt="맘고리즘" class="brand-logo-img" />
           </span>
           <div class="brand-text">
             <h1 class="brand-title">맘고리즘</h1>
@@ -448,24 +438,45 @@
       </button>
     </nav>
 
+    <!-- 첫 접속 인트로 모션그래픽 비디오 오버레이 -->
+    <div class="intro-splash-overlay" id="introSplashOverlay">
+      <div class="intro-video-container">
+        <video
+          id="introVideo"
+          class="intro-video-element"
+          playsinline
+          muted
+          autoplay
+          preload="auto"
+        >
+          <source src="/videos/intro_algo_light.mp4" type="video/mp4" />
+        </video>
+        <button type="button" class="btn-intro-skip" id="btnIntroSkip" aria-label="인트로 영상 건너뛰기">
+          <span>건너뛰기</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 4 15 12 5 20 5 4"></polygon>
+            <line x1="19" y1="5" x2="19" y2="19"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
     <!-- ============================================================
          인터랙티브 믹서 온보딩 화면 (첫 방문자 전용)
          ============================================================ -->
     <div class="onboarding-overlay hidden" id="onboardingOverlay" role="dialog" aria-modal="true" aria-label="맘고리즘 시작하기">
       <div class="onboarding-modal">
         <div class="onboarding-header">
-          <span class="onboarding-pill">사용자 주도형 추천 피드</span>
           <h2 class="onboarding-title">
-            알고리즘의 노예가 아닌,<br />
-            <strong>주인이 되는 새로운 피드</strong>
+            내 취향대로 맞추는 피드
           </h2>
           <p class="onboarding-desc">
-            플랫폼이 일방적으로 주입하는 도파민 중독 대신, 내가 원하는 분야의 추천 비율을 지금 손으로 직접 튜닝해보세요.
+            관심 있는 분야의 슬라이더를 손끝으로 가볍게 튜닝해보세요.
           </p>
         </div>
 
         <div class="onboarding-preset-group">
-          <span class="onboarding-section-title">빠른 프리셋 선택</span>
+          <span class="onboarding-section-title">빠른 프리셋</span>
           <div class="onboarding-presets-row" id="onboardingPresetRow">
             <!-- JS 렌더링 -->
           </div>
@@ -480,7 +491,7 @@
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
-              <span>햅틱 피드백 적용됨</span>
+              <span>햅틱 피드백</span>
             </span>
           </div>
           <div class="gauge-stacked-bar" id="onboardingStackedBar"></div>

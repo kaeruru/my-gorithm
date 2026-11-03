@@ -159,6 +159,71 @@ function triggerHaptic(type = 'light') {
   playTactileAudioPulse(type);
 }
 
+let introFinished = false;
+
+function playIntroSplash(onComplete) {
+  const overlay = document.getElementById('introSplashOverlay');
+  const video = document.getElementById('introVideo');
+  const btnSkip = document.getElementById('btnIntroSkip');
+
+  if (!overlay || !video) {
+    if (typeof onComplete === 'function') onComplete();
+    return;
+  }
+
+  const isDark = document.body.classList.contains('dark-mode') || window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const videoSrc = isDark ? '/videos/intro_algo_dark.mp4' : '/videos/intro_algo_light.mp4';
+  if (video.src !== window.location.origin + videoSrc) {
+    video.src = videoSrc;
+  }
+
+  const finishIntro = () => {
+    if (introFinished) return;
+    introFinished = true;
+    try {
+      video.pause();
+    } catch (e) {}
+
+    overlay.classList.add('hidden');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      if (typeof onComplete === 'function') {
+        onComplete();
+      }
+    }, 400);
+  };
+
+  btnSkip?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    triggerHaptic('light');
+    finishIntro();
+  });
+
+  video.addEventListener('ended', finishIntro);
+  video.addEventListener('error', () => {
+    finishIntro();
+  });
+
+  video.muted = true;
+  video.defaultMuted = true;
+
+  const playPromise = video.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      overlay.addEventListener('click', () => {
+        video.play().catch(() => finishIntro());
+      }, { once: true });
+    });
+  }
+
+  // 안전장치 타이머: 최대 7.5초 후 자동 종료
+  setTimeout(() => {
+    if (!introFinished) {
+      finishIntro();
+    }
+  }, 7500);
+}
+
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
   loadSavedPreferences();
@@ -167,17 +232,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialSkeletonCount = window.innerWidth >= 768 ? 4 : 3;
   renderAllViews({ withSkeleton: true, delay: 280, skeletonCount: initialSkeletonCount });
 
-  // 첫 방문 시 인터랙티브 믹서 온보딩 화면 자동 노출
-  const hasOnboarded = localStorage.getItem(STORAGE_KEYS.ONBOARDED);
-  if (!hasOnboarded) {
-    openOnboarding();
-  } else {
-    // 온보딩 완료 후 코치마크 미확인 사용자에게 가이드 안내
-    const hasSeenCoachmark = localStorage.getItem(STORAGE_KEYS.COACHMARK_SEEN);
-    if (!hasSeenCoachmark) {
-      setTimeout(() => startCoachmarkTour(), 500);
+  // 첫 접속 인트로 모션그래픽 비디오 재생 후 온보딩 화면 연결
+  playIntroSplash(() => {
+    const hasOnboarded = localStorage.getItem(STORAGE_KEYS.ONBOARDED);
+    if (!hasOnboarded) {
+      openOnboarding();
+    } else {
+      const hasSeenCoachmark = localStorage.getItem(STORAGE_KEYS.COACHMARK_SEEN);
+      if (!hasSeenCoachmark) {
+        setTimeout(() => startCoachmarkTour(), 500);
+      }
     }
-  }
+  });
 });
 
 // 로컬 설정 불러오기 (첫 방문 고정 피드 vs 재접속/새로고침 유동 피드 처리)
@@ -748,15 +814,20 @@ function updateOnboardingGauges(allocation) {
 // 각 채널 카드의 상태 뱃지와 틱 마크 하이라이트 실시간 갱신
 function updateAllChannelPills(container, allocation) {
   if (!container) return;
+  const isOnboarding = container.id === 'onboardingSlidersList';
   container.querySelectorAll('[data-channel]').forEach((card) => {
     const cat = card.dataset.channel;
     const val = state.weights[cat];
     const alloc = allocation.categories[cat];
     const pill = card.querySelector('.channel-status-pill');
     if (pill) {
-      pill.innerHTML = val === 0
-        ? '0% (제외)'
-        : `<b>${val}%</b> <span style="font-size:0.75em; opacity:0.8;">(피드 ${alloc.displayPct}%)</span>`;
+      if (isOnboarding) {
+        pill.innerHTML = val === 0 ? '0% (제외)' : `<b>${alloc.displayPct}%</b> 추천`;
+      } else {
+        pill.innerHTML = val === 0
+          ? '0% (제외)'
+          : `<b>${val}%</b> <span style="font-size:0.75em; opacity:0.8;">(피드 ${alloc.displayPct}%)</span>`;
+      }
     }
     const ticks = card.querySelectorAll('.tick-label');
     ticks.forEach((tick) => {
@@ -1005,13 +1076,13 @@ function renderOnboardingView() {
 
       return `
         <div class="onboarding-channel-card" data-channel="${cat}">
-          <div class="channel-top-line" style="margin-bottom:8px;">
+          <div class="channel-top-line" style="margin-bottom:6px;">
             <div class="channel-title-group">
               <span class="channel-color-bar" style="background-color: ${meta.color}"></span>
-              <span class="channel-name" style="font-size:0.88rem;">${meta.name}</span>
+              <span class="channel-name" style="font-size:0.86rem; font-weight:700;">${meta.name}</span>
             </div>
-            <span class="channel-status-pill" style="border-left: 3px solid ${meta.color}; font-size:0.72rem; padding:2px 7px;">
-              ${currentVal === 0 ? '0% (제외)' : `<b>${currentVal}%</b> <span style="font-size:0.75em; opacity:0.8;">(피드 ${alloc.displayPct}%)</span>`}
+            <span class="channel-status-pill" style="border-left: 3px solid ${meta.color}; font-size:0.74rem; font-weight:700; padding:2px 8px;">
+              ${currentVal === 0 ? '0% (제외)' : `<b>${alloc.displayPct}%</b> 추천`}
             </span>
           </div>
 
@@ -1025,15 +1096,8 @@ function renderOnboardingView() {
               class="channel-range-input onboarding-range-input"
               data-cat="${cat}"
               style="--thumb-color: ${meta.color}; background: linear-gradient(to right, ${meta.color} ${currentVal}%, var(--bg-subtle) ${currentVal}%);"
-              aria-label="${meta.name} 온보딩 관심도 슬라이더 (1% 단위)"
+              aria-label="${meta.name} 온보딩 관심도 슬라이더"
             />
-            <div class="slider-ticks-row">
-              <span class="tick-label ${currentVal === 0 ? 'active' : ''}" data-cat="${cat}" data-val="0">0%(제외)</span>
-              <span class="tick-label ${currentVal === 25 ? 'active' : ''}" data-cat="${cat}" data-val="25">25%</span>
-              <span class="tick-label ${currentVal === 50 ? 'active' : ''}" data-cat="${cat}" data-val="50">50%</span>
-              <span class="tick-label ${currentVal === 75 ? 'active' : ''}" data-cat="${cat}" data-val="75">75%</span>
-              <span class="tick-label ${currentVal === 100 ? 'active' : ''}" data-cat="${cat}" data-val="100">100%</span>
-            </div>
           </div>
         </div>
       `;
