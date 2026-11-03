@@ -422,7 +422,7 @@ function createCardMarkup(item) {
         />
         <div class="card-tag-overlay">
           <span class="card-tag-indicator" style="background-color: ${meta.color}"></span>
-          <span>${meta.name} · ${typeText}</span>
+          <span><strong>${meta.name}</strong> · ${typeText}</span>
         </div>
         ${item.isNew ? '<span class="card-badge-new">NEW</span>' : ''}
         <span class="card-duration-overlay">${item.duration}</span>
@@ -443,7 +443,7 @@ function createCardMarkup(item) {
         <h3 class="card-title-text">${item.title}</h3>
         <p class="card-summary-text">${item.summary}</p>
         <div class="card-meta-bar">
-          <span class="card-meta-source">${item.source} · ${item.date}</span>
+          <span class="card-meta-source"><strong>${item.source}</strong> · ${item.date}</span>
           <span class="card-meta-link">
             <span>바로가기</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -518,7 +518,7 @@ function updateDockGauges(allocation) {
           return `
             <span class="dock-ratio-pill">
               <span class="dock-ratio-dot" style="background-color: ${meta.color}"></span>
-              <span>${meta.name} ${alloc.displayPct}%</span>
+              <span>${meta.name} <strong>${alloc.displayPct}%</strong></span>
             </span>
           `;
         }).join('');
