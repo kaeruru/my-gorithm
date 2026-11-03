@@ -385,7 +385,6 @@ body.dark-mode .app-header {
 .content-feed-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-left: 4px solid var(--card-theme-color, var(--border-color));
   border-radius: 14px;
   overflow: hidden;
   text-decoration: none;
@@ -421,8 +420,7 @@ body.dark-mode .app-header {
 
 .content-feed-card:hover {
   transform: translate3d(0, -2px, 0);
-  border-color: var(--card-border-accent, var(--border-color));
-  border-left-color: var(--card-theme-color, var(--border-color));
+  border-color: var(--border-color);
   box-shadow: var(--shadow-hover);
 }
 
@@ -448,42 +446,34 @@ body.dark-mode .app-header {
   transform: scale3d(1.025, 1.025, 1);
 }
 
-/* 썸네일 위 반투명 태그 배지 (유형 식별성 강화) */
+/* 썸네일 위 반투명 태그 배지 */
 .card-tag-overlay {
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: rgba(15, 23, 42, 0.86);
+  background-color: rgba(15, 23, 42, 0.78);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: #FFFFFF;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 500;
-  padding: 5px 11px;
-  border-radius: 8px;
-  border-left: 3px solid var(--card-theme-color, #4F46E5);
+  padding: 4px 9px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   letter-spacing: -0.01em;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
 }
 
 .card-tag-overlay strong {
   font-weight: 700;
 }
 
-.card-tag-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
 .card-tag-indicator {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .card-duration-overlay {
@@ -492,10 +482,10 @@ body.dark-mode .app-header {
   right: 9px;
   background-color: rgba(0, 0, 0, 0.82);
   color: #FFFFFF;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  padding: 3px 7px;
-  border-radius: 6px;
+  padding: 3px 6px;
+  border-radius: 5px;
   letter-spacing: 0.02em;
 }
 
@@ -503,11 +493,11 @@ body.dark-mode .app-header {
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: none;
-  background-color: rgba(15, 23, 42, 0.68);
+  background-color: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   color: #FFFFFF;
@@ -519,7 +509,7 @@ body.dark-mode .app-header {
 }
 
 .card-bookmark-btn:hover {
-  background-color: rgba(15, 23, 42, 0.88);
+  background-color: rgba(15, 23, 42, 0.85);
 }
 
 .card-bookmark-btn.saved {
@@ -535,51 +525,8 @@ body.dark-mode .app-header {
   flex: 1;
 }
 
-/* 카드 본문 상단 테마/유형 식별 배너 */
-.card-category-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-
-.card-category-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.76rem;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  letter-spacing: -0.01em;
-}
-
-.card-category-chip strong {
-  font-weight: 700;
-}
-
-.card-category-chip-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-category-chip-sep {
-  opacity: 0.65;
-}
-
-.card-category-sub {
-  font-size: 0.72rem;
-  font-weight: 600;
-  opacity: 0.88;
-  letter-spacing: -0.015em;
-}
-
 .card-title-text {
-  font-size: 1.03rem;
+  font-size: 1.02rem;
   font-weight: 700;
   color: var(--text-main);
   line-height: 1.45;
@@ -595,11 +542,11 @@ body.dark-mode .app-header {
 }
 
 .card-summary-text {
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 400;
   color: var(--text-muted);
   line-height: 1.58;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   letter-spacing: -0.01em;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -615,7 +562,7 @@ body.dark-mode .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
   border-top: 1px solid var(--border-subtle);
   padding-top: 10px;
@@ -631,21 +578,17 @@ body.dark-mode .app-header {
 }
 
 .card-meta-link {
-  font-weight: 700;
-  font-size: 0.74rem;
+  font-weight: 600;
   color: var(--text-main);
-  padding: 3px 9px;
-  border-radius: 6px;
-  border: 1px solid transparent;
   display: inline-flex;
   align-items: center;
   gap: 3px;
   letter-spacing: -0.015em;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: color 0.15s ease;
 }
 
 .content-feed-card:hover .card-meta-link {
-  transform: translate3d(1px, 0, 0);
+  color: var(--primary);
 }
 
 /* ==========================================================================

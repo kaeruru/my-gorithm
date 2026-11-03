@@ -557,7 +557,6 @@ function createCardMarkup(item) {
       data-type="${item.type}"
       data-category="${item.category}"
       data-url="${item.url}"
-      style="--card-theme-color: ${meta.color}; --card-tag-bg: ${meta.tagBg}; --card-tag-text: ${meta.tagText}; --card-border-accent: ${meta.border};"
       role="link"
       tabindex="0"
       aria-label="${meta.name} ${typeText}: ${item.title}"
@@ -570,8 +569,8 @@ function createCardMarkup(item) {
           loading="lazy"
           onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80'"
         />
-        <div class="card-tag-overlay" style="border-color: ${meta.color};">
-          <span class="card-tag-icon" style="color: ${meta.color};">${meta.iconSvg || ''}</span>
+        <div class="card-tag-overlay">
+          <span class="card-tag-indicator" style="background-color: ${meta.color}"></span>
           <span><strong>${meta.name}</strong> · ${typeText}</span>
         </div>
         ${item.isNew ? '<span class="card-badge-new">NEW</span>' : ''}
@@ -590,21 +589,12 @@ function createCardMarkup(item) {
       </div>
 
       <div class="card-content-body">
-        <div class="card-category-banner">
-          <span class="card-category-chip" style="background-color: ${meta.tagBg}; color: ${meta.tagText}; border-color: ${meta.border};">
-            <span class="card-category-chip-icon">${meta.iconSvg || ''}</span>
-            <strong>${meta.name}</strong>
-            <span class="card-category-chip-sep">·</span>
-            <span>${typeText}</span>
-          </span>
-          <span class="card-category-sub" style="color: ${meta.tagText};">${meta.shortTag || meta.description}</span>
-        </div>
         <h3 class="card-title-text">${item.title}</h3>
         <p class="card-summary-text">${item.summary}</p>
         <div class="card-meta-bar">
           <span class="card-meta-source"><strong>${item.source}</strong> · ${item.date}</span>
-          <span class="card-meta-link" style="color: ${meta.tagText}; background-color: ${meta.tagBg}; border-color: ${meta.border};">
-            <span>${isVideo ? '영상 보기' : '기사 읽기'}</span>
+          <span class="card-meta-link">
+            <span>${isVideo ? '영상 보기' : '바로가기'}</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M7 17l9.2-9.2M17 17V8H8"/>
             </svg>
