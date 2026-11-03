@@ -154,7 +154,7 @@ function setUiMode(mode, notify = true) {
 
   if (notify) {
     triggerHaptic('medium');
-    showToast(isGlass ? '✨ 혁신적인 애플 글래스 UI가 적용되었습니다.' : '🏛️ 정갈한 클래식 모던 UI로 전환되었습니다.');
+    showToast(isGlass ? '애플 글래스 UI가 적용되었습니다.' : '클래식 모던 UI로 전환되었습니다.');
   }
 }
 
@@ -228,7 +228,7 @@ function shareCurrentRecipe() {
   } else if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(url).then(() => {
       triggerHaptic('success');
-      showToast('🔗 알고리즘 레시피 링크가 복사되었습니다!');
+      showToast('알고리즘 레시피 링크가 복사되었습니다.');
     }).catch(() => {
       prompt('아래 링크를 복사하여 공유하세요:', url);
     });
@@ -1495,7 +1495,7 @@ function openArticleModal(item) {
     if (item.recommendationReason) {
       html += `
         <li class="article-recom-box">
-          <div class="article-recom-badge">💡 맘고리즘 추천 이유</div>
+          <div class="article-recom-badge">맘고리즘 추천 이유</div>
           <div class="article-recom-text">${item.recommendationReason}</div>
         </li>
       `;

@@ -23,8 +23,10 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- 애플 글래스 앰비언트 오로라 조명 캔버스 (Glass 모드 시 배경에 은은히 굴절) -->
+  <!-- 애플 글래스 앰비언트 오로라 & 플루이드 웨이브 캔버스 (Glass 모드 시 배경에 굴절) -->
   <div class="ambient-mesh-canvas" id="ambientMeshCanvas" aria-hidden="true">
+    <div class="ambient-wave wave-1"></div>
+    <div class="ambient-wave wave-2"></div>
     <div class="ambient-blob blob-study"></div>
     <div class="ambient-blob blob-tech"></div>
     <div class="ambient-blob blob-culture"></div>
@@ -58,8 +60,12 @@
         </div>
 
         <div class="header-actions">
-          <button type="button" class="btn-ui-toggle" id="btnUiQuickToggle" title="UI 모드 전환 (클래식 모던 ⟷ 애플 글래스)" aria-label="UI 스타일 전환">
-            <span class="ui-toggle-sparkle">✨</span>
+          <button type="button" class="btn-ui-toggle" id="btnUiQuickToggle" title="UI 모드 전환 (클래식 모던 / 애플 글래스)" aria-label="UI 스타일 전환">
+            <svg class="ui-toggle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
             <span class="ui-toggle-label" id="uiToggleLabel">Glass</span>
           </button>
           <button type="button" class="btn-icon" id="btnQuickTune" title="알고리즘 비율 조절" aria-label="알고리즘 조절">
@@ -229,17 +235,29 @@
           </p>
           <div class="ui-mode-selector-row">
             <button type="button" class="btn-ui-select" data-mode="classic" id="btnSelectClassic">
-              <span class="ui-select-icon">🏛️</span>
+              <span class="ui-select-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="3" y1="9" x2="21" y2="9"></line>
+                  <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+              </span>
               <div class="ui-select-info">
                 <strong>클래식 모던</strong>
                 <span>기존의 차분하고 간결한 솔리드 카드 인터페이스</span>
               </div>
             </button>
             <button type="button" class="btn-ui-select active" data-mode="glass" id="btnSelectGlass">
-              <span class="ui-select-icon">💎</span>
+              <span class="ui-select-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                  <polyline points="2 17 12 22 22 17"></polyline>
+                  <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+              </span>
               <div class="ui-select-info">
-                <strong>애플 글래스 (NEW)</strong>
-                <span>크리스탈 프로스트 글래스 & 앰비언트 오로라</span>
+                <strong>애플 글래스</strong>
+                <span>크리스탈 프로스트 글래스 및 앰비언트 광원</span>
               </div>
             </button>
           </div>
