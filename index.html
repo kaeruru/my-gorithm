@@ -23,6 +23,14 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- 애플 글래스 앰비언트 오로라 조명 캔버스 (Glass 모드 시 배경에 은은히 굴절) -->
+  <div class="ambient-mesh-canvas" id="ambientMeshCanvas" aria-hidden="true">
+    <div class="ambient-blob blob-study"></div>
+    <div class="ambient-blob blob-tech"></div>
+    <div class="ambient-blob blob-culture"></div>
+    <div class="ambient-blob blob-hobby"></div>
+  </div>
+
   <!-- 메인 반응형 웹 컨테이너 -->
   <div class="web-container">
 
@@ -50,6 +58,10 @@
         </div>
 
         <div class="header-actions">
+          <button type="button" class="btn-ui-toggle" id="btnUiQuickToggle" title="UI 모드 전환 (클래식 모던 ⟷ 애플 글래스)" aria-label="UI 스타일 전환">
+            <span class="ui-toggle-sparkle">✨</span>
+            <span class="ui-toggle-label" id="uiToggleLabel">Glass</span>
+          </button>
           <button type="button" class="btn-icon" id="btnQuickTune" title="알고리즘 비율 조절" aria-label="알고리즘 조절">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
@@ -204,6 +216,32 @@
           <h3 class="stats-card-title">현재 가중치 배분표</h3>
           <div class="stats-table-wrap" id="statsTableContainer">
             <!-- JS 렌더링 -->
+          </div>
+        </div>
+
+        <div class="stats-card">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+            <h3 class="stats-card-title" style="margin-bottom:0;">인터페이스 디자인 모드</h3>
+            <span class="ui-mode-pill" id="currentUiModePill">애플 글래스</span>
+          </div>
+          <p class="stats-text">
+            기존의 정갈한 클래식 모던 UI와 반투명 앰비언트 오로라가 적용된 혁신적인 애플 글래스모피즘(Apple Glassmorphism) UI를 직접 전환하며 비교해보실 수 있습니다.
+          </p>
+          <div class="ui-mode-selector-row">
+            <button type="button" class="btn-ui-select" data-mode="classic" id="btnSelectClassic">
+              <span class="ui-select-icon">🏛️</span>
+              <div class="ui-select-info">
+                <strong>클래식 모던</strong>
+                <span>기존의 차분하고 간결한 솔리드 카드 인터페이스</span>
+              </div>
+            </button>
+            <button type="button" class="btn-ui-select active" data-mode="glass" id="btnSelectGlass">
+              <span class="ui-select-icon">💎</span>
+              <div class="ui-select-info">
+                <strong>애플 글래스 (NEW)</strong>
+                <span>크리스탈 프로스트 글래스 & 앰비언트 오로라</span>
+              </div>
+            </button>
           </div>
         </div>
 

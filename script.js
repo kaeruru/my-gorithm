@@ -14,7 +14,8 @@ const STORAGE_KEYS = {
   SAVED_IDS: 'mamgorithm_saved_v2',
   THEME: 'mamgorithm_theme_v2',
   ONBOARDED: 'mamgorithm_onboarded_v2',
-  COACHMARK_SEEN: 'mamgorithm_coachmark_seen'
+  COACHMARK_SEEN: 'mamgorithm_coachmark_seen',
+  UI_MODE: 'mamgorithm_ui_mode_v2'
 };
 
 // 애플리케이션 상태 (0~100% 가중치 스케일)
@@ -31,6 +32,7 @@ const state = {
   shuffleSeed: 0,
   savedIds: new Set(),
   darkMode: false,
+  uiMode: 'glass', // 'glass' (신규 애플 글래스모피즘) | 'classic' (기존 클래식 모던)
   isDockExpanded: false
 };
 
@@ -112,8 +114,47 @@ function loadSavedPreferences() {
       state.darkMode = true;
       document.body.classList.add('dark-mode');
     }
+
+    const savedUiMode = localStorage.getItem(STORAGE_KEYS.UI_MODE);
+    state.uiMode = savedUiMode === 'classic' ? 'classic' : 'glass';
+    setUiMode(state.uiMode, false);
   } catch (err) {
     console.warn('설정 불러오기 실패:', err);
+  }
+}
+
+// UI 디자인 모드 (클래식 모던 vs 애플 글래스모피즘) 전환 제어
+function setUiMode(mode, notify = true) {
+  state.uiMode = mode;
+  const isGlass = mode === 'glass';
+  document.body.classList.toggle('apple-glass', isGlass);
+
+  // 상단 퀵 버튼 라벨 갱신
+  const quickLabel = document.getElementById('uiToggleLabel');
+  if (quickLabel) {
+    quickLabel.textContent = isGlass ? 'Glass' : 'Classic';
+  }
+  const quickBtn = document.getElementById('btnUiQuickToggle');
+  if (quickBtn) {
+    quickBtn.title = isGlass ? '현재: 애플 글래스 모드 (클릭 시 클래식 전환)' : '현재: 클래식 모던 (클릭 시 애플 글래스 전환)';
+    quickBtn.classList.toggle('active', isGlass);
+  }
+
+  // 내 알고리즘 설정 탭 상태 갱신
+  const pill = document.getElementById('currentUiModePill');
+  if (pill) {
+    pill.textContent = isGlass ? '애플 글래스' : '클래식 모던';
+  }
+  document.getElementById('btnSelectClassic')?.classList.toggle('active', !isGlass);
+  document.getElementById('btnSelectGlass')?.classList.toggle('active', isGlass);
+
+  try {
+    localStorage.setItem(STORAGE_KEYS.UI_MODE, mode);
+  } catch (e) {}
+
+  if (notify) {
+    triggerHaptic('medium');
+    showToast(isGlass ? '✨ 혁신적인 애플 글래스 UI가 적용되었습니다.' : '🏛️ 정갈한 클래식 모던 UI로 전환되었습니다.');
   }
 }
 
@@ -1332,6 +1373,24 @@ function bindUIEvents() {
     try {
       localStorage.setItem(STORAGE_KEYS.THEME, state.darkMode ? 'dark' : 'light');
     } catch (err) {}
+  });
+
+  // 16) UI 모드 (클래식 모던 vs 애플 글래스) 전환 이벤트
+  document.getElementById('btnUiQuickToggle')?.addEventListener('click', () => {
+    const nextMode = state.uiMode === 'glass' ? 'classic' : 'glass';
+    setUiMode(nextMode, true);
+  });
+
+  document.getElementById('btnSelectClassic')?.addEventListener('click', () => {
+    if (state.uiMode !== 'classic') {
+      setUiMode('classic', true);
+    }
+  });
+
+  document.getElementById('btnSelectGlass')?.addEventListener('click', () => {
+    if (state.uiMode !== 'glass') {
+      setUiMode('glass', true);
+    }
   });
 }
 
