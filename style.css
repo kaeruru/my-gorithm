@@ -2618,10 +2618,10 @@ body.dark-mode .coachmark-badge {
 
 /* ==========================================================================
    애플 글래스모피즘 (Apple Glassmorphism) & UI 모드 전환 시스템
-   - 레퍼런스(macOS 제어센터, 반투명 플루이드 웨이브, 3D 글래스 립본) 반영
-   - 투명도 최적화: rgba(255, 255, 255, 0.16 ~ 0.22) + blur(32px) saturate(200%)
-   - 스페큘러 림 하이라이트: inset 0 1.5px 1.5px rgba(255, 255, 255, 0.7)
-   - 이모지 완전 배제 (SVG 아이콘 사용)
+   - 레퍼런스 1번: 반투명 프로스트 아크릴 글래스 질감 (높은 가독성, 부드러운 배경 굴절 블러)
+   - 레퍼런스 2번: macOS / iPadOS 제어센터 (부유형 라운디드 카드, 명확한 명암 대비, 필 슬라이더)
+   - 레퍼런스 3번: 3D 글래스 립본 독 (상단 1px 스페큘러 림 반사, 자연스러운 깊이감)
+   - 절대 원칙: 이모지 완전 배제, 눈이 편안한 스튜디오 뉴트럴 톤, 100% 가독성
    ========================================================================== */
 
 /* 1. 상단 헤더 퀵 모드 전환 버튼 */
@@ -2630,7 +2630,7 @@ body.dark-mode .coachmark-badge {
   align-items: center;
   gap: 5px;
   height: 32px;
-  padding: 0 10px;
+  padding: 0 11px;
   border-radius: 9999px;
   border: 1px solid var(--border-color);
   background-color: var(--bg-card);
@@ -2653,10 +2653,10 @@ body.dark-mode .coachmark-badge {
 }
 
 .btn-ui-toggle.active {
-  background: linear-gradient(135deg, #0284C7, #0369A1);
+  background: #0284C7;
   color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+  border-color: #0284C7;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
 }
 
 .ui-toggle-icon {
@@ -2671,15 +2671,15 @@ body.dark-mode .coachmark-badge {
   font-weight: 800;
   padding: 3px 9px;
   border-radius: 9999px;
-  background: rgba(2, 132, 199, 0.12);
+  background: rgba(2, 132, 199, 0.1);
   color: #0284C7;
-  border: 1px solid rgba(2, 132, 199, 0.25);
+  border: 1px solid rgba(2, 132, 199, 0.2);
 }
 
 body.dark-mode .ui-mode-pill {
-  background: rgba(56, 189, 248, 0.2);
+  background: rgba(56, 189, 248, 0.15);
   color: #38BDF8;
-  border-color: rgba(56, 189, 248, 0.4);
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
 .ui-mode-selector-row {
@@ -2701,7 +2701,7 @@ body.dark-mode .ui-mode-pill {
   gap: 10px;
   padding: 12px 14px;
   border-radius: 16px;
-  border: 2px solid var(--border-color);
+  border: 1.5px solid var(--border-color);
   background-color: var(--bg-card);
   cursor: pointer;
   text-align: left;
@@ -2715,14 +2715,14 @@ body.dark-mode .ui-mode-pill {
 
 .btn-ui-select.active {
   border-color: #0284C7;
-  background-color: rgba(2, 132, 199, 0.05);
-  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.15);
+  background-color: rgba(2, 132, 199, 0.06);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.12);
 }
 
 body.dark-mode .btn-ui-select.active {
-  background-color: rgba(2, 132, 199, 0.16);
+  background-color: rgba(2, 132, 199, 0.14);
   border-color: #38BDF8;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
 .ui-select-icon {
@@ -2762,7 +2762,8 @@ body.dark-mode .btn-ui-select.active .ui-select-icon {
   line-height: 1.35;
 }
 
-/* 3. 애플 플루이드 웨이브 & 앰비언트 캔버스 (Ambient Mesh Canvas) */
+/* 3. 은은한 앰비언트 라이팅 캔버스 (Ambient Canvas)
+   - 원색의 강한 네온을 지양하고 자연스러운 스튜디오 조명 연출 */
 .ambient-mesh-canvas {
   display: none;
   position: fixed;
@@ -2776,586 +2777,913 @@ body.apple-glass .ambient-mesh-canvas {
   display: block;
 }
 
-/* 맥OS / iPadOS 레퍼런스 스타일 다이내믹 플루이드 웨이브 */
-.ambient-wave {
-  position: absolute;
-  pointer-events: none;
-  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-  filter: blur(60px);
-  opacity: 0.75;
-  transform: translateZ(0);
-}
-
-.wave-1 {
-  top: -15%;
-  right: -10%;
-  width: 650px;
-  height: 650px;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.65) 0%, rgba(2, 132, 199, 0.45) 50%, rgba(30, 58, 138, 0.25) 100%);
-  animation: floatWave1 22s ease-in-out infinite alternate;
-}
-
-.wave-2 {
-  bottom: -20%;
-  left: -15%;
-  width: 750px;
-  height: 750px;
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.55) 0%, rgba(2, 132, 199, 0.45) 50%, rgba(13, 148, 136, 0.3) 100%);
-  animation: floatWave2 26s ease-in-out infinite alternate;
-}
-
 .ambient-blob {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  opacity: 0.7;
+  filter: blur(100px);
   transform: translateZ(0);
 }
 
-.blob-study {
-  top: 10%;
-  left: -80px;
-  width: 380px;
-  height: 380px;
-  background: radial-gradient(circle, rgba(79, 70, 229, 0.5) 0%, rgba(79, 70, 229, 0) 70%);
-  filter: blur(70px);
-  animation: floatBlob1 18s ease-in-out infinite alternate;
+/* 라이트 모드 은은한 파스텔 앰비언트 */
+body.apple-glass:not(.dark-mode) .blob-study {
+  top: 8%;
+  left: -60px;
+  width: 440px;
+  height: 440px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0) 70%);
+  animation: floatBlob1 22s ease-in-out infinite alternate;
 }
 
-.blob-tech {
-  top: 45%;
-  right: -90px;
+body.apple-glass:not(.dark-mode) .blob-tech {
+  top: 40%;
+  right: -80px;
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(56, 189, 248, 0) 70%);
+  animation: floatBlob2 25s ease-in-out infinite alternate;
+}
+
+body.apple-glass:not(.dark-mode) .blob-culture {
+  bottom: 25%;
+  left: -50px;
   width: 420px;
   height: 420px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.55) 0%, rgba(2, 132, 199, 0) 70%);
-  filter: blur(75px);
-  animation: floatBlob2 20s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.12) 0%, rgba(244, 63, 94, 0) 70%);
+  animation: floatBlob3 28s ease-in-out infinite alternate;
 }
 
-.blob-culture {
-  bottom: 25%;
-  left: -70px;
-  width: 360px;
-  height: 360px;
-  background: radial-gradient(circle, rgba(190, 24, 93, 0.4) 0%, rgba(190, 24, 93, 0) 70%);
-  filter: blur(75px);
-  animation: floatBlob3 24s ease-in-out infinite alternate;
-}
-
-.blob-hobby {
+body.apple-glass:not(.dark-mode) .blob-hobby {
   bottom: 5%;
+  right: -50px;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.14) 0%, rgba(16, 185, 129, 0) 70%);
+  animation: floatBlob4 24s ease-in-out infinite alternate;
+}
+
+/* 다크 모드 은은한 미드나이트 앰비언트 */
+body.apple-glass.dark-mode .blob-study {
+  top: 10%;
+  left: -70px;
+  width: 440px;
+  height: 440px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(99, 102, 241, 0) 70%);
+  animation: floatBlob1 22s ease-in-out infinite alternate;
+}
+
+body.apple-glass.dark-mode .blob-tech {
+  top: 42%;
+  right: -80px;
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.16) 0%, rgba(14, 165, 233, 0) 70%);
+  animation: floatBlob2 25s ease-in-out infinite alternate;
+}
+
+body.apple-glass.dark-mode .blob-culture {
+  bottom: 25%;
+  left: -60px;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(225, 29, 72, 0.14) 0%, rgba(225, 29, 72, 0) 70%);
+  animation: floatBlob3 28s ease-in-out infinite alternate;
+}
+
+body.apple-glass.dark-mode .blob-hobby {
+  bottom: 6%;
   right: -60px;
-  width: 380px;
-  height: 380px;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(5, 150, 105, 0) 70%);
-  filter: blur(70px);
-  animation: floatBlob4 21s ease-in-out infinite alternate;
-}
-
-@keyframes floatWave1 {
-  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-  50% { transform: translate(-80px, 60px) rotate(25deg) scale(1.15); }
-  100% { transform: translate(40px, -40px) rotate(-15deg) scale(0.92); }
-}
-
-@keyframes floatWave2 {
-  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-  50% { transform: translate(70px, -60px) rotate(-20deg) scale(1.1); }
-  100% { transform: translate(-50px, 40px) rotate(15deg) scale(0.95); }
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.14) 0%, rgba(16, 185, 129, 0) 70%);
+  animation: floatBlob4 24s ease-in-out infinite alternate;
 }
 
 @keyframes floatBlob1 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(50px, 70px) scale(1.12); }
-  100% { transform: translate(-30px, 30px) scale(0.95); }
+  50% { transform: translate(40px, 50px) scale(1.08); }
+  100% { transform: translate(-25px, 20px) scale(0.96); }
 }
 
 @keyframes floatBlob2 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-60px, 50px) scale(1.08); }
-  100% { transform: translate(30px, -40px) scale(0.92); }
+  50% { transform: translate(-45px, 40px) scale(1.06); }
+  100% { transform: translate(25px, -30px) scale(0.95); }
 }
 
 @keyframes floatBlob3 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(60px, -40px) scale(1.12); }
-  100% { transform: translate(-20px, 50px) scale(0.96); }
+  50% { transform: translate(45px, -30px) scale(1.08); }
+  100% { transform: translate(-15px, 35px) scale(0.97); }
 }
 
 @keyframes floatBlob4 {
   0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-50px, -60px) scale(1.1); }
-  100% { transform: translate(40px, 30px) scale(0.94); }
+  50% { transform: translate(-35px, -45px) scale(1.07); }
+  100% { transform: translate(30px, 20px) scale(0.95); }
 }
 
 /* ==========================================================================
-   4. 애플 글래스모피즘 (body.apple-glass) - 레퍼런스 이미지 기반 구현
+   4. 애플 글래스모피즘 (body.apple-glass) - 최적화된 배경 & 컨테이너
    ========================================================================== */
+
+/* 라이트 모드: 편안하고 우아한 애플 스튜디오 캔버스 */
 body.apple-glass {
-  /* 레퍼런스 2번 macOS 제어센터 스타일: 풍성한 일렉트릭 블루/시안 그라데이션 월페이퍼 */
-  background: radial-gradient(circle at 85% 15%, #38BDF8 0%, transparent 45%),
-              radial-gradient(circle at 15% 25%, #6366F1 0%, transparent 40%),
-              radial-gradient(circle at 75% 75%, #0284C7 0%, transparent 45%),
-              radial-gradient(circle at 20% 85%, #0EA5E9 0%, transparent 40%),
-              linear-gradient(145deg, #0284C7 0%, #0369A1 28%, #1E3A8A 65%, #0F172A 100%) !important;
+  background: #F1F4F8 !important;
+  color: #0F172A !important;
   background-attachment: fixed !important;
-  color: #FFFFFF !important;
 }
 
+/* 다크 모드: 깊이감 있는 애플 미드나이트 캔버스 */
 body.apple-glass.dark-mode {
-  background: radial-gradient(circle at 85% 15%, #0284C7 0%, transparent 45%),
-              radial-gradient(circle at 15% 25%, #4338CA 0%, transparent 40%),
-              radial-gradient(circle at 70% 75%, #0F172A 0%, transparent 50%),
-              radial-gradient(circle at 20% 85%, #0369A1 0%, transparent 45%),
-              linear-gradient(155deg, #020617 0%, #081226 35%, #0F172A 70%, #020617 100%) !important;
-  background-attachment: fixed !important;
+  background: #0B0F19 !important;
   color: #F8FAFC !important;
+  background-attachment: fixed !important;
 }
 
-/* 메인 반응형 웹 컨테이너: 완전 투명 & 유리 경계선 */
+/* 중앙 반응형 웹 컨테이너: 은은한 깊이감 */
 body.apple-glass .web-container {
   background-color: transparent !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.22) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.22) !important;
-  box-shadow: 0 0 90px rgba(0, 0, 0, 0.35);
+  border-left: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.05);
   position: relative;
   z-index: 1;
 }
 
 body.apple-glass.dark-mode .web-container {
-  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 0 110px rgba(0, 0, 0, 0.65);
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 640px) {
   body.apple-glass .web-container {
     border-left: none !important;
     border-right: none !important;
+    box-shadow: none !important;
   }
 }
 
-/* 상단 글로벌 헤더: 맑은 프로스트 글래스 */
+/* 상단 글로벌 헤더: 맑고 정돈된 프로스트 아크릴 */
 body.apple-glass .app-header {
-  background: rgba(15, 23, 42, 0.25) !important;
-  backdrop-filter: blur(36px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(36px) saturate(200%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18) !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04) !important;
 }
 
 body.apple-glass.dark-mode .app-header {
-  background: rgba(2, 6, 23, 0.45) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55) !important;
+  background: rgba(15, 23, 42, 0.78) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
 body.apple-glass .brand-title {
-  color: #FFFFFF !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  color: #0F172A !important;
+  text-shadow: none !important;
+}
+
+body.apple-glass.dark-mode .brand-title {
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .brand-badge {
-  color: rgba(255, 255, 255, 0.78) !important;
+  color: #64748B !important;
+}
+
+body.apple-glass.dark-mode .brand-badge {
+  color: #94A3B8 !important;
 }
 
 body.apple-glass .brand-logo-mark {
-  background: rgba(255, 255, 255, 0.22) !important;
+  background: #0284C7 !important;
   color: #FFFFFF !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.55) !important;
-  backdrop-filter: blur(16px) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25) !important;
 }
 
 body.apple-glass .btn-icon {
-  background: rgba(255, 255, 255, 0.18) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.38) !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #334155 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
 }
 
 body.apple-glass .btn-icon:hover {
-  background: rgba(255, 255, 255, 0.28) !important;
+  background: #FFFFFF !important;
+  color: #0F172A !important;
 }
 
-/* 상단 프리셋 칩 */
-body.apple-glass .preset-chip-btn {
-  background: rgba(255, 255, 255, 0.16) !important;
-  backdrop-filter: blur(28px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.38) !important;
+body.apple-glass.dark-mode .btn-icon {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #E2E8F0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.apple-glass.dark-mode .btn-icon:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
   color: #FFFFFF !important;
+}
+
+/* 상단 프리셋 칩 (macOS 제어센터 세그먼트 스타일) */
+body.apple-glass .preset-chip-btn {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(18px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  color: #475569 !important;
   border-radius: 9999px !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
 }
 
 body.apple-glass .preset-chip-btn:hover {
-  background: rgba(255, 255, 255, 0.26) !important;
+  background: #FFFFFF !important;
+  color: #0F172A !important;
 }
 
 body.apple-glass .preset-chip-btn.active {
+  background: #0F172A !important;
+  color: #FFFFFF !important;
+  border-color: #0F172A !important;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.18) !important;
+}
+
+body.apple-glass.dark-mode .preset-chip-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #94A3B8 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.apple-glass.dark-mode .preset-chip-btn:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #FFFFFF !important;
+}
+
+body.apple-glass.dark-mode .preset-chip-btn.active {
   background: #FFFFFF !important;
   color: #0F172A !important;
   border-color: #FFFFFF !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 3px 12px rgba(255, 255, 255, 0.2) !important;
 }
 
 /* 서브 툴바 & 세그먼트 컨트롤 필터 */
 body.apple-glass .feed-sub-toolbar {
-  background: rgba(255, 255, 255, 0.14) !important;
-  backdrop-filter: blur(30px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(190%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
   border-radius: 16px !important;
   padding: 6px 10px !important;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.03) !important;
+}
+
+body.apple-glass.dark-mode .feed-sub-toolbar {
+  background: rgba(22, 28, 42, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
 }
 
 body.apple-glass .type-pill {
   border: none !important;
   background: transparent !important;
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: #64748B !important;
+  font-weight: 700 !important;
 }
 
 body.apple-glass .type-pill.active {
-  background: rgba(255, 255, 255, 0.9) !important;
+  background: #FFFFFF !important;
   color: #0F172A !important;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
   border-radius: 8px !important;
 }
 
-body.apple-glass .btn-subtle-shuffle {
+body.apple-glass.dark-mode .type-pill {
+  color: #94A3B8 !important;
+}
+
+body.apple-glass.dark-mode .type-pill.active {
   background: rgba(255, 255, 255, 0.16) !important;
-  backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.32) !important;
   color: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.apple-glass .btn-subtle-shuffle {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #334155 !important;
   border-radius: 10px !important;
 }
 
-/* 5. 피드 콘텐츠 카드: 레퍼런스 1번/2번의 진정한 프로스트 글래스 타일 */
+body.apple-glass.dark-mode .btn-subtle-shuffle {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #E2E8F0 !important;
+}
+
+/* ==========================================================================
+   5. 피드 콘텐츠 카드: 레퍼런스 1번/2번 진정한 프로스트 글래스 타일
+   - 핵심: 반투명 화이트 아크릴 본체 + 스페큘러 탑 림 반사 + 100% 선명한 텍스트 가독성
+   ========================================================================== */
 body.apple-glass .content-feed-card {
-  background: rgba(255, 255, 255, 0.16) !important;
-  backdrop-filter: blur(32px) saturate(210%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(210%) !important;
-  border: 1.2px solid rgba(255, 255, 255, 0.42) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
   border-radius: 24px !important;
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.3),
-              inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.7),
-              inset 0 -1px 1px 0 rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.06),
+              0 2px 8px rgba(15, 23, 42, 0.03),
+              inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
   overflow: hidden;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease !important;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease !important;
 }
 
 body.apple-glass .content-feed-card:hover {
-  transform: translateY(-4px) scale(1.01) !important;
-  background: rgba(255, 255, 255, 0.22) !important;
-  box-shadow: 0 26px 60px -10px rgba(0, 0, 0, 0.42),
-              inset 0 2px 2px 0 rgba(255, 255, 255, 0.85) !important;
+  transform: translateY(-3px) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: 0 16px 40px -4px rgba(15, 23, 42, 0.1),
+              0 4px 12px rgba(15, 23, 42, 0.04),
+              inset 0 1px 1px rgba(255, 255, 255, 1) !important;
+}
+
+body.apple-glass.dark-mode .content-feed-card {
+  background: rgba(22, 28, 42, 0.68) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.35),
+              inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+body.apple-glass.dark-mode .content-feed-card:hover {
+  transform: translateY(-3px) !important;
+  background: rgba(26, 34, 52, 0.78) !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45),
+              inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
 }
 
 body.apple-glass .card-media-wrap {
   border-radius: 18px !important;
-  margin: 10px 10px 0 10px !important;
+  margin: 12px 12px 0 12px !important;
   overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
 }
 
+/* 텍스트 가독성 최우선 확보 (더 이상 날아가지 않는 선명한 대비) */
 body.apple-glass .card-title-text {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
   font-weight: 800 !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: none !important;
+  line-height: 1.4 !important;
+}
+
+body.apple-glass.dark-mode .card-title-text {
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .card-summary-text {
-  color: rgba(255, 255, 255, 0.88) !important;
-  line-height: 1.5;
+  color: #475569 !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+}
+
+body.apple-glass.dark-mode .card-summary-text {
+  color: #CBD5E1 !important;
 }
 
 body.apple-glass .card-meta-source {
-  color: rgba(255, 255, 255, 0.72) !important;
+  color: #64748B !important;
+}
+
+body.apple-glass.dark-mode .card-meta-source {
+  color: #94A3B8 !important;
 }
 
 body.apple-glass .card-meta-link {
-  color: #38BDF8 !important;
+  color: #0284C7 !important;
   font-weight: 700 !important;
 }
 
-body.apple-glass .card-bookmark-btn {
-  background: rgba(0, 0, 0, 0.35) !important;
-  backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.45) !important;
-  color: #FFFFFF !important;
+body.apple-glass.dark-mode .card-meta-link {
+  color: #38BDF8 !important;
 }
 
-/* 6. 하단 미니 독 & 믹서 시트: 레퍼런스 2번 macOS 제어센터 + 3번 글래스 립본 */
+body.apple-glass .card-bookmark-btn {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  color: #1E293B !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.apple-glass.dark-mode .card-bookmark-btn {
+  background: rgba(15, 23, 42, 0.75) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #F8FAFC !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ==========================================================================
+   6. 하단 미니 독 & 믹서 시트: 레퍼런스 2번 macOS 제어센터 + 3번 글래스 립본
+   ========================================================================== */
 body.apple-glass .dock-panel {
-  background: rgba(15, 23, 42, 0.35) !important;
-  backdrop-filter: blur(36px) saturate(220%) !important;
-  -webkit-backdrop-filter: blur(36px) saturate(220%) !important;
-  border-top: 1.5px solid rgba(255, 255, 255, 0.45) !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.22) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.22) !important;
-  box-shadow: 0 -12px 42px rgba(0, 0, 0, 0.3),
-              inset 0 1.5px 1.5px rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.9) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 -4px 24px rgba(15, 23, 42, 0.05),
+              inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+body.apple-glass.dark-mode .dock-panel {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 -6px 30px rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
 }
 
 body.apple-glass .dock-ratio-pill {
-  color: #FFFFFF !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  color: #334155 !important;
+  text-shadow: none !important;
+}
+
+body.apple-glass.dark-mode .dock-ratio-pill {
+  color: #E2E8F0 !important;
 }
 
 body.apple-glass .dock-tune-badge {
-  background: rgba(255, 255, 255, 0.25) !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
-  color: #FFFFFF !important;
-  backdrop-filter: blur(14px) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  background: rgba(2, 132, 199, 0.1) !important;
+  border: 1px solid rgba(2, 132, 199, 0.22) !important;
+  color: #0284C7 !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: 0 1px 4px rgba(2, 132, 199, 0.12) !important;
 }
 
-/* 확장 믹서 시트 (macOS 제어센터 플로팅 시트) */
+body.apple-glass.dark-mode .dock-tune-badge {
+  background: rgba(56, 189, 248, 0.15) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  color: #38BDF8 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 확장 믹서 시트 (macOS 제어센터 플로팅 윈도우 스타일) */
 body.apple-glass .dock-mixer-container.expanded .dock-panel {
-  background: rgba(8, 18, 42, 0.62) !important;
-  backdrop-filter: blur(52px) saturate(230%) !important;
-  -webkit-backdrop-filter: blur(52px) saturate(230%) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.38) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(36px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
   border-bottom: none !important;
   border-radius: 28px 28px 0 0 !important;
-  box-shadow: 0 -30px 80px rgba(0, 0, 0, 0.65),
-              inset 0 2px 2px rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 -16px 48px rgba(15, 23, 42, 0.12),
+              inset 0 1px 1px rgba(255, 255, 255, 1) !important;
+}
+
+body.apple-glass.dark-mode .dock-mixer-container.expanded .dock-panel {
+  background: rgba(15, 23, 42, 0.88) !important;
+  backdrop-filter: blur(36px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-bottom: none !important;
+  border-radius: 28px 28px 0 0 !important;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.6),
+              inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
 }
 
 body.apple-glass .dock-expanded-title {
-  color: #FFFFFF !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  color: #0F172A !important;
+  text-shadow: none !important;
+}
+
+body.apple-glass.dark-mode .dock-expanded-title {
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .dock-expanded-desc {
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: #64748B !important;
+}
+
+body.apple-glass.dark-mode .dock-expanded-desc {
+  color: #94A3B8 !important;
 }
 
 body.apple-glass .btn-subtle-icon {
-  background: rgba(255, 255, 255, 0.16) !important;
-  border: 1px solid rgba(255, 255, 255, 0.32) !important;
-  color: #FFFFFF !important;
-  backdrop-filter: blur(16px) !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #334155 !important;
+  backdrop-filter: blur(14px) !important;
 }
 
-body.apple-glass .btn-subtle-icon:hover {
-  background: rgba(255, 255, 255, 0.26) !important;
+body.apple-glass.dark-mode .btn-subtle-icon {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #E2E8F0 !important;
 }
 
 body.apple-glass .dock-gauge-card {
-  background: rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  background: rgba(241, 245, 249, 0.7) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
   border-radius: 16px !important;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+}
+
+body.apple-glass.dark-mode .dock-gauge-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 body.apple-glass .gauge-legend-pill {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
 }
 
-/* 믹서 채널 카드: 제어센터 내의 투명 모듈 */
+body.apple-glass.dark-mode .gauge-legend-pill {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #E2E8F0 !important;
+}
+
+/* 믹서 채널 카드: 제어센터 내의 반투명 모듈 */
 body.apple-glass .mixer-channel-card {
-  background: rgba(255, 255, 255, 0.13) !important;
-  backdrop-filter: blur(28px) !important;
-  -webkit-backdrop-filter: blur(28px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  background: rgba(248, 250, 252, 0.7) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
   border-radius: 20px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2),
-              inset 0 1px 1px rgba(255, 255, 255, 0.55) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03),
+              inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+}
+
+body.apple-glass.dark-mode .mixer-channel-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25),
+              inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
 }
 
 body.apple-glass .channel-name {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
   font-weight: 800 !important;
 }
 
+body.apple-glass.dark-mode .channel-name {
+  color: #F8FAFC !important;
+}
+
 body.apple-glass .channel-desc {
-  color: rgba(255, 255, 255, 0.72) !important;
+  color: #64748B !important;
+}
+
+body.apple-glass.dark-mode .channel-desc {
+  color: #94A3B8 !important;
 }
 
 body.apple-glass .channel-status-pill {
-  background: rgba(255, 255, 255, 0.18) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
-  color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0284C7 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.apple-glass.dark-mode .channel-status-pill {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #38BDF8 !important;
 }
 
 /* 슬라이더: 레퍼런스 2번 제어센터 Display/Sound 슬라이더 감성 */
 body.apple-glass .channel-range-input {
-  height: 10px !important;
+  height: 8px !important;
   border-radius: 9999px !important;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
-  background-color: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  background-color: rgba(0, 0, 0, 0.07) !important;
+}
+
+body.apple-glass.dark-mode .channel-range-input {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
 }
 
 body.apple-glass .channel-range-input::-webkit-slider-thumb {
-  width: 24px !important;
-  height: 24px !important;
+  width: 22px !important;
+  height: 22px !important;
   border-radius: 50% !important;
   background: #FFFFFF !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06) !important;
   cursor: grab !important;
 }
 
 body.apple-glass .tick-label {
-  color: rgba(255, 255, 255, 0.65) !important;
+  color: #64748B !important;
+}
+
+body.apple-glass.dark-mode .tick-label {
+  color: #94A3B8 !important;
 }
 
 body.apple-glass .tick-label.active {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
   font-weight: 800 !important;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+  text-shadow: none !important;
+}
+
+body.apple-glass.dark-mode .tick-label.active {
+  color: #FFFFFF !important;
 }
 
 body.apple-glass .btn-primary-apply {
-  background: linear-gradient(135deg, #0284C7, #0369A1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  background: #0284C7 !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
   color: #FFFFFF !important;
-  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45) !important;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35) !important;
 }
 
-/* 7. 하단 네비게이션 탭 바 */
+/* ==========================================================================
+   7. 하단 네비게이션 탭 바 (macOS 3D 글래스 쉘프 레퍼런스 3번)
+   ========================================================================== */
 body.apple-glass .bottom-tab-bar {
-  background: rgba(15, 23, 42, 0.32) !important;
-  backdrop-filter: blur(36px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(36px) saturate(200%) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.28) !important;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.25) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.9) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.7) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.04) !important;
+}
+
+body.apple-glass.dark-mode .bottom-tab-bar {
+  background: rgba(15, 23, 42, 0.82) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 -6px 30px rgba(0, 0, 0, 0.45) !important;
 }
 
 body.apple-glass .tab-btn {
-  color: rgba(255, 255, 255, 0.65) !important;
+  color: #64748B !important;
 }
 
 body.apple-glass .tab-btn.active {
-  color: #FFFFFF !important;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+  color: #0284C7 !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
 }
 
-/* 8. 내 알고리즘 탭 통계 카드 */
+body.apple-glass.dark-mode .tab-btn {
+  color: #94A3B8 !important;
+}
+
+body.apple-glass.dark-mode .tab-btn.active {
+  color: #38BDF8 !important;
+}
+
+/* ==========================================================================
+   8. 내 알고리즘 탭 통계 카드
+   ========================================================================== */
 body.apple-glass .stats-card {
-  background: rgba(255, 255, 255, 0.16) !important;
-  backdrop-filter: blur(32px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
-  border: 1.2px solid rgba(255, 255, 255, 0.38) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
   border-radius: 22px !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24),
-              inset 0 1.5px 1.5px rgba(255, 255, 255, 0.65) !important;
-  color: #FFFFFF !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05),
+              inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #0F172A !important;
+}
+
+body.apple-glass.dark-mode .stats-card {
+  background: rgba(22, 28, 42, 0.68) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35),
+              inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .stats-card-title {
-  color: #FFFFFF !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  color: #0F172A !important;
+  text-shadow: none !important;
+}
+
+body.apple-glass.dark-mode .stats-card-title {
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .stats-text {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: #475569 !important;
+}
+
+body.apple-glass.dark-mode .stats-text {
+  color: #CBD5E1 !important;
 }
 
 body.apple-glass .formula-box {
-  background: rgba(0, 0, 0, 0.3) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  background: rgba(241, 245, 249, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #0284C7 !important;
+}
+
+body.apple-glass.dark-mode .formula-box {
+  background: rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   color: #38BDF8 !important;
 }
 
 body.apple-glass .stats-table th {
-  color: rgba(255, 255, 255, 0.75) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #64748B !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
-body.apple-glass .stats-table td {
-  color: #FFFFFF !important;
+body.apple-glass.dark-mode .stats-table th {
+  color: #94A3B8 !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
 }
 
-body.apple-glass .btn-subtle-action {
-  background: rgba(255, 255, 255, 0.16) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
-  color: #FFFFFF !important;
-  backdrop-filter: blur(16px) !important;
+body.apple-glass .stats-table td {
+  color: #0F172A !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
-/* 9. 모달, 바텀시트, 알림 컴포넌트 */
+body.apple-glass.dark-mode .stats-table td {
+  color: #F8FAFC !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body.apple-glass .btn-subtle-action {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #334155 !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+body.apple-glass.dark-mode .btn-subtle-action {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #E2E8F0 !important;
+}
+
+/* ==========================================================================
+   9. 모달, 바텀시트, 알림 컴포넌트
+   ========================================================================== */
 body.apple-glass .confirm-modal-card {
-  background: rgba(15, 23, 42, 0.75) !important;
-  backdrop-filter: blur(48px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(48px) saturate(200%) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(36px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
   border-radius: 24px !important;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.75) !important;
-  color: #FFFFFF !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18), inset 0 1px 1px rgba(255, 255, 255, 1) !important;
+  color: #0F172A !important;
+}
+
+body.apple-glass.dark-mode .confirm-modal-card {
+  background: rgba(15, 23, 42, 0.9) !important;
+  backdrop-filter: blur(36px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .confirm-modal-title {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+body.apple-glass.dark-mode .confirm-modal-title {
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .confirm-modal-desc {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: #475569 !important;
+}
+
+body.apple-glass.dark-mode .confirm-modal-desc {
+  color: #CBD5E1 !important;
 }
 
 body.apple-glass .snackbar-container {
-  background: rgba(15, 23, 42, 0.65) !important;
-  backdrop-filter: blur(36px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(36px) saturate(200%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.38) !important;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+  background: rgba(15, 23, 42, 0.88) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3) !important;
+  color: #FFFFFF !important;
 }
 
 body.apple-glass .video-sheet-panel,
 body.apple-glass .article-sheet-panel {
-  background: rgba(15, 23, 42, 0.82) !important;
-  backdrop-filter: blur(52px) saturate(220%) !important;
-  -webkit-backdrop-filter: blur(52px) saturate(220%) !important;
-  border-top: 1.5px solid rgba(255, 255, 255, 0.4) !important;
-  box-shadow: 0 -24px 80px rgba(0, 0, 0, 0.7) !important;
-  color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(40px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(190%) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 -20px 60px rgba(15, 23, 42, 0.15) !important;
+  color: #0F172A !important;
+}
+
+body.apple-glass.dark-mode .video-sheet-panel,
+body.apple-glass.dark-mode .article-sheet-panel {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 -24px 80px rgba(0, 0, 0, 0.65) !important;
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .article-title,
 body.apple-glass .sheet-video-title {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+body.apple-glass.dark-mode .article-title,
+body.apple-glass.dark-mode .sheet-video-title {
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .article-section-heading {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+body.apple-glass.dark-mode .article-section-heading {
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .article-section-body {
-  color: rgba(255, 255, 255, 0.88) !important;
+  color: #334155 !important;
+}
+
+body.apple-glass.dark-mode .article-section-body {
+  color: #CBD5E1 !important;
 }
 
 body.apple-glass .article-summary-card {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  color: #FFFFFF !important;
+  background: rgba(241, 245, 249, 0.75) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  color: #0F172A !important;
+}
+
+body.apple-glass.dark-mode .article-summary-card {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .article-recom-box {
-  background: rgba(255, 255, 255, 0.14) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  color: #FFFFFF !important;
+  background: rgba(2, 132, 199, 0.08) !important;
+  border: 1px solid rgba(2, 132, 199, 0.2) !important;
+  color: #0284C7 !important;
+}
+
+body.apple-glass.dark-mode .article-recom-box {
+  background: rgba(56, 189, 248, 0.12) !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  color: #38BDF8 !important;
 }
 
 body.apple-glass .empty-feed-title {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+body.apple-glass.dark-mode .empty-feed-title {
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .empty-feed-desc {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: #64748B !important;
+}
+
+body.apple-glass.dark-mode .empty-feed-desc {
+  color: #94A3B8 !important;
 }
 
 body.apple-glass .view-title {
-  color: #FFFFFF !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  color: #0F172A !important;
+  text-shadow: none !important;
+}
+
+body.apple-glass.dark-mode .view-title {
+  color: #F8FAFC !important;
 }
 
 body.apple-glass .view-subtitle {
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: #64748B !important;
+}
+
+body.apple-glass.dark-mode .view-subtitle {
+  color: #94A3B8 !important;
 }
