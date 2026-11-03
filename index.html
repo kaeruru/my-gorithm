@@ -57,11 +57,6 @@
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
           </button>
-          <button type="button" class="btn-icon" id="btnThemeToggle" title="테마 전환" aria-label="테마 전환">
-            <svg class="icon-moon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-          </button>
         </div>
       </div>
     </header>
@@ -149,6 +144,21 @@
               </div>
             </div>
           </div>
+          <div class="skeleton-card" aria-hidden="true">
+            <div class="skeleton-media-wrap skeleton-shimmer">
+              <div class="skeleton-badge-overlay"></div>
+            </div>
+            <div class="skeleton-content-body">
+              <div class="skeleton-line skeleton-title-1 skeleton-shimmer"></div>
+              <div class="skeleton-line skeleton-title-2 skeleton-shimmer"></div>
+              <div class="skeleton-line skeleton-desc skeleton-shimmer"></div>
+              <div class="skeleton-meta-row">
+                <div class="skeleton-meta-avatar skeleton-shimmer"></div>
+                <div class="skeleton-line skeleton-meta-text skeleton-shimmer"></div>
+                <div class="skeleton-line skeleton-meta-date skeleton-shimmer"></div>
+              </div>
+            </div>
+          </div>
         </section>
       </section>
 
@@ -211,7 +221,7 @@
         <div class="stats-card">
           <h3 class="stats-card-title">시작 화면 및 안내 다시 보기</h3>
           <p class="stats-text">
-            처음 접속했을 때의 인터랙티브 알고리즘 튜닝과 미니 독 사용 가이드를 다시 열어볼 수 있습니다.
+            처음 접속했을 때의 인터랙티브 알고리즘 튜닝과 미니 독 사용 가이드를 홈 화면으로 자동 이동하여 다시 체험할 수 있습니다.
           </p>
           <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
             <button type="button" class="btn-subtle-action" id="btnReopenOnboarding">
@@ -221,6 +231,63 @@
               <span>미니 독 튜닝 안내(코치마크)</span>
             </button>
           </div>
+        </div>
+
+        <!-- 새 콘텐츠 카드 추가 기능 -->
+        <div class="stats-card">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+            <h3 class="stats-card-title" style="margin-bottom:0;">새 콘텐츠 카드 추가</h3>
+            <span class="custom-card-count-pill" id="customCardCountPill">기본 풀</span>
+          </div>
+          <p class="stats-text">
+            원하는 유튜브 영상이나 아티클 정보를 입력하여 추천 풀에 즉시 새로운 카드를 추가할 수 있습니다.
+          </p>
+          <form class="add-card-form" id="addCardForm">
+            <div class="add-card-row">
+              <div class="add-card-field">
+                <label for="newCardCategory">카테고리 분야</label>
+                <select id="newCardCategory" required>
+                  <option value="study">공부 (학습 · 교양)</option>
+                  <option value="tech">기술 (IT · 트렌드)</option>
+                  <option value="culture">문화 (예술 · 라이프)</option>
+                  <option value="hobby">취미 (액티비티 · 일상)</option>
+                </select>
+              </div>
+              <div class="add-card-field">
+                <label for="newCardType">콘텐츠 유형</label>
+                <select id="newCardType" required>
+                  <option value="video">영상 (YouTube)</option>
+                  <option value="article">기사 (아티클/글)</option>
+                </select>
+              </div>
+            </div>
+            <div class="add-card-field">
+              <label for="newCardTitle">카드 제목</label>
+              <input type="text" id="newCardTitle" placeholder="예: 2026 반드시 알아야 할 디자인 시스템 트렌드" required />
+            </div>
+            <div class="add-card-field">
+              <label for="newCardSummary">요약 설명 (2줄 내외)</label>
+              <input type="text" id="newCardSummary" placeholder="핵심 내용을 간결하게 입력하세요" required />
+            </div>
+            <div class="add-card-row">
+              <div class="add-card-field">
+                <label for="newCardSource">출처 / 채널명</label>
+                <input type="text" id="newCardSource" placeholder="예: YouTube · 디자인 채널" />
+              </div>
+              <div class="add-card-field">
+                <label for="newCardUrl">연결 URL (유튜브 또는 원문 링크)</label>
+                <input type="url" id="newCardUrl" placeholder="https://www.youtube.com/watch?v=..." />
+              </div>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
+              <button type="submit" class="btn-primary-apply" style="flex:1; min-width:160px;">
+                새 카드 피드에 추가하기
+              </button>
+              <button type="button" class="btn-subtle-action hidden" id="btnResetCustomCards">
+                추가한 카드 초기화
+              </button>
+            </div>
+          </form>
         </div>
       </section>
 
@@ -675,6 +742,11 @@
       <div class="tooltip-body" id="tooltipBody">설명 텍스트</div>
     </div>
   </div>
+
+  <!-- iOS Safari 17.4+ 네이티브 Taptic Engine 트리거용 히든 스위치 -->
+  <label for="iosHapticSwitch" id="iosHapticLabel" aria-hidden="true" style="position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; overflow:hidden;">
+    <input type="checkbox" switch id="iosHapticSwitch" tabindex="-1" />
+  </label>
 
   <script type="module" src="/script.js"></script>
 </body>

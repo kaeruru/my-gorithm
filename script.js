@@ -1,7 +1,7 @@
 // ==========================================================================
 // 맘고리즘 (내맘대로 알고리즘) - Modern Product Script with Mini Dock & Recipe Sharing
 // ==========================================================================
-import { CATEGORY_META, LEVEL_LABELS, getLevelDescription, CONTENT_DATA, PRESET_MODES } from './data.js';
+import { CATEGORY_META, LEVEL_LABELS, getLevelDescription, CONTENT_DATA, PRESET_MODES, normalizeContentCard } from './data.js';
 import {
   isFirebaseConfigured,
   currentUser,
@@ -12,12 +12,13 @@ import {
 const STORAGE_KEYS = {
   WEIGHTS: 'mamgorithm_weights_v2',
   SAVED_IDS: 'mamgorithm_saved_v2',
-  THEME: 'mamgorithm_theme_v2',
   ONBOARDED: 'mamgorithm_onboarded_v2',
-  COACHMARK_SEEN: 'mamgorithm_coachmark_seen'
+  COACHMARK_SEEN: 'mamgorithm_coachmark_seen',
+  VISIT_COUNT: 'mamgorithm_visit_count_v1',
+  CUSTOM_CARDS: 'mamgorithm_custom_cards_v1'
 };
 
-// 애플리케이션 상태 (0~100% 가중치 스케일)
+// 애플리케이션 상태 (0~100% 1% 단위 가중치 스케일)
 const state = {
   weights: {
     study: 50,
@@ -30,35 +31,132 @@ const state = {
   feedSize: 12,
   shuffleSeed: 0,
   savedIds: new Set(),
-  darkMode: false,
+  customCards: [],
   isDockExpanded: false
 };
 
+// 현재 활성 콘텐츠 풀 (사용자 추가 카드 + 기본 카드 풀)
+function getActiveContentPool() {
+  return [...state.customCards, ...CONTENT_DATA];
+}
+
 // ==========================================================================
-// 햅틱 진동 피드백 유틸리티 (갤럭시 및 모바일 환경 최적화)
-// 갤럭시 리니어 모터 관성을 고려해 30~45ms로 쫀득한 손맛 보정
+// 크로스 플랫폼 하이브리드 햅틱 엔진 (Android 물리 진동 + iOS 스위치/서브베이스 펄스)
+// QR 웹 접속 환경(안드로이드 폰/태블릿, 아이폰/아이패드 사파리) 전 기기 대응
 // ==========================================================================
+let hapticAudioCtx = null;
+let lastHapticTimestamp = 0;
+
+function ensureHapticAudioContext() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return null;
+    if (!hapticAudioCtx) {
+      hapticAudioCtx = new AudioCtx();
+    }
+    if (hapticAudioCtx.state === 'suspended') {
+      hapticAudioCtx.resume().catch(() => {});
+    }
+    return hapticAudioCtx;
+  } catch (e) {
+    return null;
+  }
+}
+
+// 첫 사용자 터치 시 오디오 컨텍스트 잠금 해제
+if (typeof window !== 'undefined') {
+  const unlockAudio = () => {
+    ensureHapticAudioContext();
+  };
+  window.addEventListener('pointerdown', unlockAudio, { passive: true, once: true });
+  window.addEventListener('touchstart', unlockAudio, { passive: true, once: true });
+}
+
+function playTactileAudioPulse(type = 'light') {
+  try {
+    const ctx = ensureHapticAudioContext();
+    if (!ctx || ctx.state !== 'running') return;
+
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'triangle';
+    if (type === 'light') {
+      osc.frequency.setValueAtTime(85, now);
+      osc.frequency.exponentialRampToValueAtTime(32, now + 0.012);
+      gain.gain.setValueAtTime(0.14, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.012);
+      osc.start(now);
+      osc.stop(now + 0.013);
+    } else if (type === 'medium') {
+      osc.frequency.setValueAtTime(105, now);
+      osc.frequency.exponentialRampToValueAtTime(38, now + 0.018);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.018);
+      osc.start(now);
+      osc.stop(now + 0.019);
+    } else if (type === 'success') {
+      osc.frequency.setValueAtTime(95, now);
+      osc.frequency.exponentialRampToValueAtTime(130, now + 0.025);
+      gain.gain.setValueAtTime(0.22, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.026);
+      osc.start(now);
+      osc.stop(now + 0.027);
+    } else {
+      osc.frequency.setValueAtTime(75, now);
+      osc.frequency.exponentialRampToValueAtTime(28, now + 0.022);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.022);
+      osc.start(now);
+      osc.stop(now + 0.023);
+    }
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+  } catch (e) {}
+}
+
 function triggerHaptic(type = 'light') {
-  if (typeof navigator !== 'undefined' && 'vibrate' in navigator && typeof navigator.vibrate === 'function') {
+  const now = performance.now();
+  // 연속 슬라이더 드래그 시 과도한 진동 큐 적체 방지 (최소 18ms 간격)
+  if (type === 'light' && now - lastHapticTimestamp < 18) {
+    return;
+  }
+  lastHapticTimestamp = now;
+
+  let vibrated = false;
+  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
     try {
       switch (type) {
-        case 'light': // 슬라이더 틱(딸깍), 탭 이동, 필터 변경 (30ms)
-          navigator.vibrate(30);
+        case 'light':
+          vibrated = navigator.vibrate(12);
           break;
-        case 'medium': // 프리셋 선택, 셔플, 믹서 시트 오픈 (40ms)
-          navigator.vibrate(40);
+        case 'medium':
+          vibrated = navigator.vibrate(25);
           break;
-        case 'success': // 온보딩 피드 입장, 북마크 저장, 레시피 복사 완료
-          navigator.vibrate([25, 45, 30]);
+        case 'success':
+          vibrated = navigator.vibrate([18, 35, 24]);
           break;
-        case 'delete': // 북마크 해제, 균형 리셋
-          navigator.vibrate([30, 50, 25]);
+        case 'delete':
+          vibrated = navigator.vibrate([24, 40, 18]);
           break;
         default:
-          navigator.vibrate(30);
+          vibrated = navigator.vibrate(15);
       }
     } catch (e) {}
   }
+
+  // iOS Safari 17.4+ 히든 스위치 탭틱 트리거 (medium/success/delete 액션 시)
+  if (!vibrated && type !== 'light') {
+    try {
+      const iosLabel = document.getElementById('iosHapticLabel');
+      if (iosLabel) iosLabel.click();
+    } catch (e) {}
+  }
+
+  // 모든 기기(특히 iOS/iPadOS)에서 즉각적인 촉각 펄스 감각 보강
+  playTactileAudioPulse(type);
 }
 
 // 초기화
@@ -66,7 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
   loadSavedPreferences();
   checkRecipeFromUrl(); // URL 공유 레시피 파라미터 감지 (?s=50&t=50&c=50&h=50)
   bindUIEvents();
-  renderAllViews({ withSkeleton: true, delay: 350 });
+  const initialSkeletonCount = window.innerWidth >= 768 ? 4 : 3;
+  renderAllViews({ withSkeleton: true, delay: 280, skeletonCount: initialSkeletonCount });
 
   // 첫 방문 시 인터랙티브 믹서 온보딩 화면 자동 노출
   const hasOnboarded = localStorage.getItem(STORAGE_KEYS.ONBOARDED);
@@ -76,19 +175,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // 온보딩 완료 후 코치마크 미확인 사용자에게 가이드 안내
     const hasSeenCoachmark = localStorage.getItem(STORAGE_KEYS.COACHMARK_SEEN);
     if (!hasSeenCoachmark) {
-      setTimeout(() => startCoachmarkTour(), 600);
+      setTimeout(() => startCoachmarkTour(), 500);
     }
   }
 });
 
-// 로컬 설정 불러오기
+// 로컬 설정 불러오기 (첫 방문 고정 피드 vs 재접속/새로고침 유동 피드 처리)
 function loadSavedPreferences() {
   try {
     const savedWeights = localStorage.getItem(STORAGE_KEYS.WEIGHTS);
     if (savedWeights) {
       const parsed = JSON.parse(savedWeights);
       const maxVal = Math.max(...['study', 'tech', 'culture', 'hobby'].map((c) => (typeof parsed[c] === 'number' ? parsed[c] : 0)));
-      const isOldScale = maxVal <= 3; // 이전 0~3 단계 레거시 데이터 감지
+      const isOldScale = maxVal <= 3;
 
       ['study', 'tech', 'culture', 'hobby'].forEach((cat) => {
         if (typeof parsed[cat] === 'number') {
@@ -107,14 +206,28 @@ function loadSavedPreferences() {
       state.savedIds = new Set(JSON.parse(savedBookmarks));
     }
 
-    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
-    if (savedTheme === 'dark') {
-      state.darkMode = true;
-      document.body.classList.add('dark-mode');
+    const savedCustomCards = localStorage.getItem(STORAGE_KEYS.CUSTOM_CARDS);
+    if (savedCustomCards) {
+      const parsedCustom = JSON.parse(savedCustomCards);
+      if (Array.isArray(parsedCustom)) {
+        state.customCards = parsedCustom.map(normalizeContentCard);
+      }
     }
 
-    document.body.classList.remove('apple-glass');
+    // 첫 접속 시에는 대표 카드 기본 고정(seed = 0), 재접속 및 새로고침 시에는 유동적 셔플 시드 부여
+    const visitCount = parseInt(localStorage.getItem(STORAGE_KEYS.VISIT_COUNT) || '0', 10);
+    if (visitCount === 0) {
+      state.shuffleSeed = 0;
+      localStorage.setItem(STORAGE_KEYS.VISIT_COUNT, '1');
+    } else {
+      state.shuffleSeed = ((Date.now() % 9973) + visitCount * 53) || 1;
+      localStorage.setItem(STORAGE_KEYS.VISIT_COUNT, String(visitCount + 1));
+    }
+
+    // 브랜드 플랫 라이트 테마 고정 (잔여 클래스 정리)
+    document.body.classList.remove('dark-mode', 'apple-glass');
     localStorage.removeItem('mamgorithm_ui_mode_v2');
+    localStorage.removeItem('mamgorithm_theme_v2');
   } catch (err) {
     console.warn('설정 불러오기 실패:', err);
   }
@@ -132,6 +245,12 @@ function persistWeights() {
 function persistBookmarks() {
   try {
     localStorage.setItem(STORAGE_KEYS.SAVED_IDS, JSON.stringify([...state.savedIds]));
+  } catch (err) {}
+}
+
+function persistCustomCards() {
+  try {
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_CARDS, JSON.stringify(state.customCards));
   } catch (err) {}
 }
 
@@ -169,7 +288,7 @@ function checkRecipeFromUrl() {
 
       persistWeights();
       triggerHaptic('success');
-      showToast('공유받은 알고리즘 레시피가 적용되었습니다!');
+      showToast('공유받은 알고리즘 레시피가 적용되었습니다.');
     }
   } catch (e) {}
 }
@@ -200,7 +319,7 @@ function shareCurrentRecipe() {
 }
 
 // ==========================================================================
-// 핵심 알고리즘: 비율(%) 및 카테고리별 카드 수 계산 (Largest Remainder)
+// 핵심 알고리즘: 1% 단위 비율(%) 및 카테고리별 카드 수 정밀 계산 (Largest Remainder)
 // ==========================================================================
 function calculateAllocation() {
   const categories = ['study', 'tech', 'culture', 'hobby'];
@@ -215,29 +334,47 @@ function calculateAllocation() {
   }
 
   const targetTotalCards = state.feedSize;
-  let allocatedSum = 0;
-  const remainders = [];
+  let allocatedCardsSum = 0;
+  let allocatedPctSum = 0;
+  const cardRemainders = [];
+  const pctRemainders = [];
 
   categories.forEach((cat) => {
     const w = state.weights[cat];
     const ratio = w / totalWeight;
     const exactPct = ratio * 100;
+    const floorPct = Math.floor(exactPct);
     const exactCards = ratio * targetTotalCards;
     const floorCards = Math.floor(exactCards);
 
-    allocatedSum += floorCards;
-    remainders.push({ cat, rem: exactCards - floorCards, weight: w });
+    allocatedCardsSum += floorCards;
+    allocatedPctSum += floorPct;
+    cardRemainders.push({ cat, rem: exactCards - floorCards, weight: w });
+    pctRemainders.push({ cat, rem: exactPct - floorPct, weight: w });
 
     result[cat] = {
       weight: w,
       exactPct,
-      displayPct: Math.round(exactPct),
+      displayPct: floorPct,
       cardCount: floorCards
     };
   });
 
-  let remainingCards = targetTotalCards - allocatedSum;
-  remainders
+  // 1% 단위 표시 퍼센트 합계가 항상 정확히 100%가 되도록 최대 잔여법 보정
+  let remainingPct = 100 - allocatedPctSum;
+  pctRemainders
+    .filter((r) => r.weight > 0)
+    .sort((a, b) => b.rem - a.rem || b.weight - a.weight)
+    .forEach((item) => {
+      if (remainingPct > 0) {
+        result[item.cat].displayPct += 1;
+        remainingPct -= 1;
+      }
+    });
+
+  // 카드 배정 수 합계가 targetTotalCards(12장)가 되도록 최대 잔여법 보정
+  let remainingCards = targetTotalCards - allocatedCardsSum;
+  cardRemainders
     .filter((r) => r.weight > 0)
     .sort((a, b) => b.rem - a.rem || b.weight - a.weight)
     .forEach((item) => {
@@ -265,22 +402,24 @@ function seededShuffle(arr, seed) {
 function buildFeedList(allocation) {
   if (allocation.totalWeight === 0) return [];
 
-  const filteredPool = CONTENT_DATA.filter((item) => {
+  const activePool = getActiveContentPool();
+  const filteredPool = activePool.filter((item) => {
     if (state.contentType === 'all') return true;
     return item.type === state.contentType;
   });
 
   const buckets = {};
-  ['study', 'tech', 'culture', 'hobby'].forEach((cat) => {
+  ['study', 'tech', 'culture', 'hobby'].forEach((cat, catIdx) => {
     const quota = allocation.categories[cat].cardCount;
     if (quota <= 0) {
       buckets[cat] = [];
       return;
     }
-    const catItems = seededShuffle(
-      filteredPool.filter((item) => item.category === cat),
-      state.shuffleSeed
-    );
+    const rawCatItems = filteredPool.filter((item) => item.category === cat);
+    // 첫 진입(seed === 0)은 기본 순서 고정, 새로고침/재접속(seed > 0)은 카테고리별 고유 시드로 유동적 셔플
+    const catSeed = state.shuffleSeed === 0 ? 0 : state.shuffleSeed + (catIdx + 1) * 131;
+    const catItems = seededShuffle(rawCatItems, catSeed);
+
     const selected = [];
     for (let i = 0; i < quota && catItems.length > 0; i++) {
       selected.push(catItems[i % catItems.length]);
@@ -288,11 +427,18 @@ function buildFeedList(allocation) {
     buckets[cat] = selected;
   });
 
-  const interleaved = [];
-  const sortedCats = ['study', 'tech', 'culture', 'hobby'].sort(
+  // 기본 카테고리 순서: 첫 방문(seed === 0)일 때는 대표 카드가 가장 먼저 보이도록 고정 정렬,
+  // 재방문/새로고침(seed > 0)일 때는 동률 카테고리 순서를 시드에 따라 유동적으로 회전
+  const baseOrder = ['hobby', 'tech', 'study', 'culture'];
+  const rotatedOrder = state.shuffleSeed === 0
+    ? baseOrder
+    : baseOrder.map((_, idx) => baseOrder[(idx + state.shuffleSeed) % baseOrder.length]);
+
+  const sortedCats = [...rotatedOrder].sort(
     (a, b) => state.weights[b] - state.weights[a]
   );
 
+  const interleaved = [];
   let hasMore = true;
   let idx = 0;
   while (hasMore) {
@@ -323,6 +469,7 @@ function renderAllViews(options = {}) {
   renderStatsView(allocation);
   renderSavedView();
   updateSavedBadge();
+  updateCustomCardCountUI();
 }
 
 // 스켈레톤 쉬머 마크업 생성기 (오늘의집/토스 스타일)
@@ -362,8 +509,9 @@ function renderFeedCardsWithSkeleton(allocation, delay = 260, onComplete = null)
     feedTransitionTimer = null;
   }
 
-  // 1. 스켈레톤 즉시 표시 (일렁이는 쉬머 효과)
-  renderSkeletonCards(container, 3);
+  // 1. 스켈레톤 즉시 표시 (태블릿 2열에서는 4개, 모바일에서는 3개)
+  const skeletonCount = window.innerWidth >= 768 ? 4 : 3;
+  renderSkeletonCards(container, skeletonCount);
 
   // 2. 부드러운 딜레이 후 실제 카드 페이드인 렌더링
   feedTransitionTimer = setTimeout(() => {
@@ -397,7 +545,7 @@ function renderPresetChips() {
 }
 
 function createCardMarkup(item) {
-  const meta = CATEGORY_META[item.category];
+  const meta = CATEGORY_META[item.category] || CATEGORY_META.study;
   const isSaved = state.savedIds.has(item.id);
   const isVideo = item.type === 'video';
   const typeText = isVideo ? '영상' : '기사';
@@ -407,7 +555,9 @@ function createCardMarkup(item) {
       class="content-feed-card"
       data-id="${item.id}"
       data-type="${item.type}"
+      data-category="${item.category}"
       data-url="${item.url}"
+      style="--card-theme-color: ${meta.color}; --card-tag-bg: ${meta.tagBg}; --card-tag-text: ${meta.tagText}; --card-border-accent: ${meta.border};"
       role="link"
       tabindex="0"
       aria-label="${meta.name} ${typeText}: ${item.title}"
@@ -420,8 +570,8 @@ function createCardMarkup(item) {
           loading="lazy"
           onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80'"
         />
-        <div class="card-tag-overlay">
-          <span class="card-tag-indicator" style="background-color: ${meta.color}"></span>
+        <div class="card-tag-overlay" style="border-color: ${meta.color};">
+          <span class="card-tag-icon" style="color: ${meta.color};">${meta.iconSvg || ''}</span>
           <span><strong>${meta.name}</strong> · ${typeText}</span>
         </div>
         ${item.isNew ? '<span class="card-badge-new">NEW</span>' : ''}
@@ -440,12 +590,21 @@ function createCardMarkup(item) {
       </div>
 
       <div class="card-content-body">
+        <div class="card-category-banner">
+          <span class="card-category-chip" style="background-color: ${meta.tagBg}; color: ${meta.tagText}; border-color: ${meta.border};">
+            <span class="card-category-chip-icon">${meta.iconSvg || ''}</span>
+            <strong>${meta.name}</strong>
+            <span class="card-category-chip-sep">·</span>
+            <span>${typeText}</span>
+          </span>
+          <span class="card-category-sub" style="color: ${meta.tagText};">${meta.shortTag || meta.description}</span>
+        </div>
         <h3 class="card-title-text">${item.title}</h3>
         <p class="card-summary-text">${item.summary}</p>
         <div class="card-meta-bar">
           <span class="card-meta-source"><strong>${item.source}</strong> · ${item.date}</span>
-          <span class="card-meta-link">
-            <span>바로가기</span>
+          <span class="card-meta-link" style="color: ${meta.tagText}; background-color: ${meta.tagBg}; border-color: ${meta.border};">
+            <span>${isVideo ? '영상 보기' : '기사 읽기'}</span>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M7 17l9.2-9.2M17 17V8H8"/>
             </svg>
@@ -464,7 +623,7 @@ function renderFeedCards(allocation) {
     container.innerHTML = `
       <div class="empty-feed-placeholder">
         <div class="empty-feed-title">관심 분야가 모두 꺼져 있습니다</div>
-        <p class="empty-feed-desc">맘고리즘은 사용자가 원하는 분야만 추천합니다.<br/>하단 미니 독을 터치해 관심 분야를 1단계 이상으로 올려보세요.</p>
+        <p class="empty-feed-desc">맘고리즘은 사용자가 원하는 분야만 추천합니다.<br/>하단 미니 독을 터치해 관심 분야를 1% 이상으로 올려보세요.</p>
         <button type="button" class="btn-primary-reset" id="btnRestoreBalance">균형 모드로 켜기</button>
       </div>
     `;
@@ -628,7 +787,7 @@ function renderDockMixer(allocation) {
   updateDockGauges(allocation);
   updateMixerInlineValidation(allocation);
 
-  // 4. 확장 패널 4개 슬라이더 목록
+  // 4. 확장 패널 4개 슬라이더 목록 (1% 단위 정밀 조절)
   const slidersList = document.getElementById('dockSlidersList');
   if (slidersList) {
     slidersList.innerHTML = categories.map((cat) => {
@@ -656,12 +815,12 @@ function renderDockMixer(allocation) {
               type="range"
               min="0"
               max="100"
-              step="5"
+              step="1"
               value="${currentVal}"
               class="channel-range-input dock-range-input"
               data-cat="${cat}"
               style="--thumb-color: ${meta.color}; background: linear-gradient(to right, ${meta.color} ${currentVal}%, var(--bg-subtle) ${currentVal}%);"
-              aria-label="${meta.name} 관심도 슬라이더"
+              aria-label="${meta.name} 관심도 슬라이더 (1% 단위)"
             />
             <div class="slider-ticks-row">
               <span class="tick-label ${currentVal === 0 ? 'active' : ''}" data-cat="${cat}" data-val="0">0% (제외)</span>
@@ -738,13 +897,26 @@ function renderStatsView(allocation) {
   `;
 }
 
+function updateCustomCardCountUI() {
+  const pill = document.getElementById('customCardCountPill');
+  const btnReset = document.getElementById('btnResetCustomCards');
+  const count = state.customCards.length;
+  if (pill) {
+    pill.textContent = `추가된 카드 ${count}장`;
+  }
+  if (btnReset) {
+    btnReset.classList.toggle('hidden', count === 0);
+  }
+}
+
 // 7. 보관함 뷰
 function renderSavedView() {
   const container = document.getElementById('savedCardsList');
   const btnClear = document.getElementById('btnClearSaved');
   if (!container) return;
 
-  const savedItems = CONTENT_DATA.filter((item) => state.savedIds.has(item.id));
+  const activePool = getActiveContentPool();
+  const savedItems = activePool.filter((item) => state.savedIds.has(item.id));
   if (btnClear) {
     btnClear.classList.toggle('hidden', savedItems.length === 0);
   }
@@ -851,12 +1023,12 @@ function renderOnboardingView() {
               type="range"
               min="0"
               max="100"
-              step="5"
+              step="1"
               value="${currentVal}"
               class="channel-range-input onboarding-range-input"
               data-cat="${cat}"
               style="--thumb-color: ${meta.color}; background: linear-gradient(to right, ${meta.color} ${currentVal}%, var(--bg-subtle) ${currentVal}%);"
-              aria-label="${meta.name} 온보딩 관심도 슬라이더"
+              aria-label="${meta.name} 온보딩 관심도 슬라이더 (1% 단위)"
             />
             <div class="slider-ticks-row">
               <span class="tick-label ${currentVal === 0 ? 'active' : ''}" data-cat="${cat}" data-val="0">0%(제외)</span>
@@ -921,6 +1093,10 @@ function switchTab(targetTabId) {
   }
 }
 
+let dockGaugeRafId = null;
+let dockFeedDebounceTimer = null;
+let onboardingGaugeRafId = null;
+
 function bindUIEvents() {
   // 1) 하단 3개 탭 바 클릭
   document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -984,7 +1160,7 @@ function bindUIEvents() {
   document.getElementById('btnShareRecipeInDock')?.addEventListener('click', shareCurrentRecipe);
   document.getElementById('btnShareRecipeInStats')?.addEventListener('click', shareCurrentRecipe);
 
-  // 5) 미니 독 슬라이더 실시간 조절
+  // 5) 미니 독 슬라이더 실시간 조절 (1% 단위 60~120fps rAF 최적화)
   const dockSlidersList = document.getElementById('dockSlidersList');
   if (dockSlidersList) {
     dockSlidersList.addEventListener('input', (e) => {
@@ -995,19 +1171,40 @@ function bindUIEvents() {
       if (cat && !Number.isNaN(val)) {
         state.weights[cat] = Math.max(0, Math.min(100, val));
         triggerHaptic('light');
-        persistWeights();
 
         const meta = CATEGORY_META[cat];
         input.style.background = `linear-gradient(to right, ${meta.color} ${val}%, var(--bg-subtle) ${val}%)`;
 
-        const allocation = calculateAllocation();
-        updateDockGauges(allocation);
-        updateMixerInlineValidation(allocation);
-        updateAllChannelPills(dockSlidersList, allocation);
-        renderPresetChips();
-        renderFeedCards(allocation);
-        renderStatsView(allocation);
+        if (dockGaugeRafId) cancelAnimationFrame(dockGaugeRafId);
+        dockGaugeRafId = requestAnimationFrame(() => {
+          const allocation = calculateAllocation();
+          updateDockGauges(allocation);
+          updateMixerInlineValidation(allocation);
+          updateAllChannelPills(dockSlidersList, allocation);
+          renderPresetChips();
+          dockGaugeRafId = null;
+        });
+
+        if (dockFeedDebounceTimer) clearTimeout(dockFeedDebounceTimer);
+        dockFeedDebounceTimer = setTimeout(() => {
+          persistWeights();
+          const allocation = calculateAllocation();
+          renderFeedCards(allocation);
+          renderStatsView(allocation);
+          dockFeedDebounceTimer = null;
+        }, 55);
       }
+    });
+
+    dockSlidersList.addEventListener('change', () => {
+      if (dockFeedDebounceTimer) {
+        clearTimeout(dockFeedDebounceTimer);
+        dockFeedDebounceTimer = null;
+      }
+      persistWeights();
+      const allocation = calculateAllocation();
+      renderFeedCards(allocation);
+      renderStatsView(allocation);
     });
 
     dockSlidersList.addEventListener('click', (e) => {
@@ -1024,7 +1221,7 @@ function bindUIEvents() {
     });
   }
 
-  // 6) 온보딩 화면 슬라이더 및 프리셋 이벤트
+  // 6) 온보딩 화면 슬라이더 및 프리셋 이벤트 (1% 단위 rAF 최적화)
   const onboardingSliders = document.getElementById('onboardingSlidersList');
   if (onboardingSliders) {
     onboardingSliders.addEventListener('input', (e) => {
@@ -1039,9 +1236,13 @@ function bindUIEvents() {
         const meta = CATEGORY_META[cat];
         input.style.background = `linear-gradient(to right, ${meta.color} ${val}%, var(--bg-subtle) ${val}%)`;
 
-        const allocation = calculateAllocation();
-        updateOnboardingGauges(allocation);
-        updateAllChannelPills(onboardingSliders, allocation);
+        if (onboardingGaugeRafId) cancelAnimationFrame(onboardingGaugeRafId);
+        onboardingGaugeRafId = requestAnimationFrame(() => {
+          const allocation = calculateAllocation();
+          updateOnboardingGauges(allocation);
+          updateAllChannelPills(onboardingSliders, allocation);
+          onboardingGaugeRafId = null;
+        });
       }
     });
 
@@ -1071,9 +1272,14 @@ function bindUIEvents() {
 
   document.getElementById('btnOnboardingStart')?.addEventListener('click', closeOnboarding);
 
+  // 시작 안내 및 설정 다시보기 -> 자동으로 홈 화면(피드)으로 이동 후 실행
   document.getElementById('btnReopenOnboarding')?.addEventListener('click', () => {
     triggerHaptic('medium');
-    openOnboarding();
+    switchTab('viewFeed');
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    setTimeout(() => {
+      openOnboarding();
+    }, 120);
   });
 
   // 7) 피드 빠른 프리셋 칩 클릭
@@ -1148,7 +1354,8 @@ function bindUIEvents() {
     if (card) {
       const type = card.dataset.type;
       const id = card.dataset.id;
-      const item = CONTENT_DATA.find((c) => c.id === id);
+      const activePool = getActiveContentPool();
+      const item = activePool.find((c) => c.id === id);
 
       if (type === 'video' && item) {
         triggerHaptic('medium');
@@ -1280,7 +1487,7 @@ function bindUIEvents() {
     triggerHaptic('light');
     showTooltip(
       e.currentTarget,
-      '슬라이더를 조절하면 다른 분야와의 상대 비율이 실시간 계산됩니다. 0%로 맞춘 분야는 피드에서 100% 원천 배제됩니다.'
+      '슬라이더를 1% 단위로 조절하면 다른 분야와의 상대 비율이 실시간 계산됩니다. 0%로 맞춘 분야는 피드에서 100% 원천 배제됩니다.'
     );
   });
 
@@ -1294,7 +1501,7 @@ function bindUIEvents() {
     hideTooltip();
   }, { passive: true });
 
-  // 14) 코치마크 투어 제어
+  // 14) 코치마크 투어 제어 (다시보기 클릭 시 홈 화면으로 자동 전환 후 실행)
   document.getElementById('btnCoachmarkSkip')?.addEventListener('click', () => {
     triggerHaptic('light');
     dismissCoachmark();
@@ -1313,7 +1520,86 @@ function bindUIEvents() {
 
   document.getElementById('btnReplayCoachmark')?.addEventListener('click', () => {
     triggerHaptic('medium');
-    startCoachmarkTour();
+    switchTab('viewFeed');
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    setTimeout(() => {
+      startCoachmarkTour();
+    }, 160);
+  });
+
+  // 15) 새 콘텐츠 카드 추가 및 초기화 폼 이벤트
+  const addCardForm = document.getElementById('addCardForm');
+  if (addCardForm) {
+    addCardForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const category = document.getElementById('newCardCategory')?.value || 'study';
+      const type = document.getElementById('newCardType')?.value || 'video';
+      const title = document.getElementById('newCardTitle')?.value?.trim();
+      const summary = document.getElementById('newCardSummary')?.value?.trim();
+      const source = document.getElementById('newCardSource')?.value?.trim() || '맘고리즘 큐레이션';
+      const duration = document.getElementById('newCardDuration')?.value?.trim() || (type === 'video' ? '10:00' : '4분 읽기');
+      const url = document.getElementById('newCardUrl')?.value?.trim() || '';
+      const imageUrl = document.getElementById('newCardImage')?.value?.trim() || '';
+
+      if (!title || !summary) {
+        triggerHaptic('light');
+        showToast('카드 제목과 핵심 요약을 입력해주세요.');
+        return;
+      }
+
+      const newCard = normalizeContentCard({
+        category,
+        type,
+        title,
+        summary,
+        source,
+        duration,
+        url,
+        imageUrl,
+        date: '방금 추가됨',
+        isNew: true
+      });
+
+      state.customCards.unshift(newCard);
+      persistCustomCards();
+
+      if (state.weights[category] === 0) {
+        state.weights[category] = 35;
+        persistWeights();
+      }
+      if (state.contentType !== 'all' && state.contentType !== type) {
+        state.contentType = 'all';
+        document.querySelectorAll('.type-pill').forEach((p) => {
+          p.classList.toggle('active', p.dataset.type === 'all');
+        });
+      }
+      state.shuffleSeed = 0;
+
+      addCardForm.reset();
+      renderAllViews();
+      switchTab('viewFeed');
+      triggerHaptic('success');
+      showToast(`새로운 ${CATEGORY_META[category].name} 카드가 피드에 추가되었습니다.`);
+    });
+  }
+
+  document.getElementById('btnResetCustomCards')?.addEventListener('click', () => {
+    if (state.customCards.length === 0) return;
+    const count = state.customCards.length;
+    showConfirmModal({
+      title: '직접 추가한 카드 초기화',
+      message: `사용자가 직접 추가한 콘텐츠 카드 ${count}장을 모두 삭제하고 기본 데이터셋으로 되돌리시겠습니까?`,
+      confirmText: '초기화',
+      cancelText: '취소',
+      isDanger: true,
+      onConfirm: () => {
+        state.customCards = [];
+        persistCustomCards();
+        renderAllViews();
+        triggerHaptic('delete');
+        showToast('직접 추가한 카드가 모두 초기화되었습니다.');
+      }
+    });
   });
 
   window.addEventListener('keydown', (e) => {
@@ -1325,16 +1611,6 @@ function bindUIEvents() {
       document.getElementById('confirmModalBackdrop')?.classList.add('hidden');
       dismissCoachmark();
     }
-  });
-
-  // 15) 다크모드 토글
-  document.getElementById('btnThemeToggle')?.addEventListener('click', () => {
-    state.darkMode = !state.darkMode;
-    document.body.classList.toggle('dark-mode', state.darkMode);
-    triggerHaptic('light');
-    try {
-      localStorage.setItem(STORAGE_KEYS.THEME, state.darkMode ? 'dark' : 'light');
-    } catch (err) {}
   });
 }
 

@@ -385,6 +385,7 @@ body.dark-mode .app-header {
 .content-feed-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
+  border-left: 4px solid var(--card-theme-color, var(--border-color));
   border-radius: 14px;
   overflow: hidden;
   text-decoration: none;
@@ -392,32 +393,36 @@ body.dark-mode .app-header {
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-card);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
-  animation: feedCardEntrance 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: feedCardEntrance 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .content-feed-card:nth-child(1) { animation-delay: 0.02s; }
-.content-feed-card:nth-child(2) { animation-delay: 0.06s; }
-.content-feed-card:nth-child(3) { animation-delay: 0.10s; }
-.content-feed-card:nth-child(4) { animation-delay: 0.14s; }
-.content-feed-card:nth-child(5) { animation-delay: 0.18s; }
-.content-feed-card:nth-child(6) { animation-delay: 0.22s; }
+.content-feed-card:nth-child(2) { animation-delay: 0.05s; }
+.content-feed-card:nth-child(3) { animation-delay: 0.08s; }
+.content-feed-card:nth-child(4) { animation-delay: 0.11s; }
+.content-feed-card:nth-child(5) { animation-delay: 0.14s; }
+.content-feed-card:nth-child(6) { animation-delay: 0.17s; }
 
 @keyframes feedCardEntrance {
   0% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translate3d(0, 10px, 0);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .content-feed-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--border-color);
+  transform: translate3d(0, -2px, 0);
+  border-color: var(--card-border-accent, var(--border-color));
+  border-left-color: var(--card-theme-color, var(--border-color));
   box-shadow: var(--shadow-hover);
 }
 
@@ -435,39 +440,49 @@ body.dark-mode .app-header {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.3s ease;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .content-feed-card:hover .card-media-img {
-  transform: scale(1.025);
+  transform: scale3d(1.025, 1.025, 1);
 }
 
-/* 썸네일 위 반투명 태그 배지 */
+/* 썸네일 위 반투명 태그 배지 (유형 식별성 강화) */
 .card-tag-overlay {
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: rgba(15, 23, 42, 0.78);
+  background-color: rgba(15, 23, 42, 0.86);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: #FFFFFF;
-  font-size: 0.72rem;
-  font-weight: 400;
-  padding: 4px 9px;
-  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: 8px;
+  border-left: 3px solid var(--card-theme-color, #4F46E5);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   letter-spacing: -0.01em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
 }
 
 .card-tag-overlay strong {
   font-weight: 700;
 }
 
+.card-tag-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .card-tag-indicator {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
 }
 
@@ -477,10 +492,10 @@ body.dark-mode .app-header {
   right: 9px;
   background-color: rgba(0, 0, 0, 0.82);
   color: #FFFFFF;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 3px 6px;
-  border-radius: 5px;
+  padding: 3px 7px;
+  border-radius: 6px;
   letter-spacing: 0.02em;
 }
 
@@ -488,11 +503,11 @@ body.dark-mode .app-header {
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: none;
-  background-color: rgba(15, 23, 42, 0.65);
+  background-color: rgba(15, 23, 42, 0.68);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   color: #FFFFFF;
@@ -504,7 +519,7 @@ body.dark-mode .app-header {
 }
 
 .card-bookmark-btn:hover {
-  background-color: rgba(15, 23, 42, 0.85);
+  background-color: rgba(15, 23, 42, 0.88);
 }
 
 .card-bookmark-btn.saved {
@@ -517,10 +532,54 @@ body.dark-mode .app-header {
   padding: 14px 16px 16px;
   display: flex;
   flex-direction: column;
+  flex: 1;
+}
+
+/* 카드 본문 상단 테마/유형 식별 배너 */
+.card-category-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.card-category-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  letter-spacing: -0.01em;
+}
+
+.card-category-chip strong {
+  font-weight: 700;
+}
+
+.card-category-chip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-category-chip-sep {
+  opacity: 0.65;
+}
+
+.card-category-sub {
+  font-size: 0.72rem;
+  font-weight: 600;
+  opacity: 0.88;
+  letter-spacing: -0.015em;
 }
 
 .card-title-text {
-  font-size: 1.02rem;
+  font-size: 1.03rem;
   font-weight: 700;
   color: var(--text-main);
   line-height: 1.45;
@@ -536,11 +595,11 @@ body.dark-mode .app-header {
 }
 
 .card-summary-text {
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   font-weight: 400;
   color: var(--text-muted);
   line-height: 1.58;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   letter-spacing: -0.01em;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -552,10 +611,11 @@ body.dark-mode .app-header {
 }
 
 .card-meta-bar {
+  margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   border-top: 1px solid var(--border-subtle);
   padding-top: 10px;
@@ -571,12 +631,21 @@ body.dark-mode .app-header {
 }
 
 .card-meta-link {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.74rem;
   color: var(--text-main);
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid transparent;
   display: inline-flex;
   align-items: center;
   gap: 3px;
   letter-spacing: -0.015em;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.content-feed-card:hover .card-meta-link {
+  transform: translate3d(1px, 0, 0);
 }
 
 /* ==========================================================================
@@ -2644,4 +2713,314 @@ body.dark-mode .coachmark-badge {
 @keyframes coachCardSlide {
   0% { opacity: 0; transform: translateY(6px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   8. 새 콘텐츠 카드 추가 폼 & 관리 UI (내 알고리즘 탭)
+   ========================================================================== */
+.custom-card-count-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--study-text);
+  background-color: var(--study-bg);
+  border: 1px solid var(--study-border);
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.add-card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.add-card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.add-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.add-card-field label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.add-card-field input,
+.add-card-field select {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 400;
+  color: var(--text-main);
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.add-card-field input:focus,
+.add-card-field select:focus {
+  background-color: var(--bg-card);
+  border-color: var(--study-color);
+}
+
+.add-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btn-add-card-submit {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  background-color: var(--primary);
+  color: var(--primary-text);
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.btn-add-card-submit:hover {
+  opacity: 0.92;
+}
+
+.btn-add-card-submit:active {
+  transform: scale(0.98);
+}
+
+.btn-reset-custom-cards {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-subtle);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-reset-custom-cards:hover {
+  background-color: #FEE2E2;
+  color: #DC2626;
+  border-color: #FECACA;
+}
+
+.btn-reset-custom-cards.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   9. 60FPS+ 하드웨어 가속(GPU Compositing) 최적화
+   ========================================================================== */
+.dock-panel,
+.video-sheet-modal,
+.article-sheet-modal,
+.onboarding-modal,
+.confirm-modal-card,
+.toast-popup,
+.snackbar-container {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.gauge-segment {
+  will-change: width;
+  transition: width 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.channel-range-input {
+  touch-action: pan-y;
+}
+
+/* ==========================================================================
+   10. 태블릿 (디벗 / 아이패드 / 갤럭시탭) 및 대화면 반응형 레이아웃
+   ========================================================================== */
+@media (min-width: 768px) {
+  .web-container {
+    max-width: 960px;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+  }
+
+  .app-header {
+    padding: 14px 24px;
+  }
+
+  .brand-title {
+    font-size: 1.22rem;
+  }
+
+  .preset-bar-wrapper {
+    padding: 12px 24px;
+  }
+
+  .preset-chip-btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    min-height: 40px;
+  }
+
+  .feed-Subheader {
+    padding: 12px 24px;
+  }
+
+  .type-pill {
+    padding: 7px 16px;
+    font-size: 0.84rem;
+    min-height: 36px;
+  }
+
+  .btn-subtle-shuffle {
+    padding: 7px 14px;
+    font-size: 0.82rem;
+    min-height: 36px;
+  }
+
+  /* 태블릿 2열 카드 그리드 배치 */
+  .feed-cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    padding: 20px 24px 28px;
+    align-items: stretch;
+  }
+
+  .empty-feed-placeholder {
+    grid-column: 1 / -1;
+  }
+
+  .card-title-text {
+    font-size: 1.05rem;
+  }
+
+  .card-summary-text {
+    font-size: 0.86rem;
+  }
+
+  /* 하단 미니 독 & 확장 믹서 시트 태블릿 최적화 */
+  .dock-mixer-container {
+    max-width: 960px;
+  }
+
+  .dock-peek-bar {
+    padding: 10px 24px;
+  }
+
+  .dock-ratio-pill {
+    font-size: 0.8rem;
+  }
+
+  .dock-panel {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 20px 28px 28px;
+    border-radius: 24px 24px 0 0;
+  }
+
+  /* 믹서 슬라이더 2x2 그리드 배치 */
+  .mixer-sliders-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .mixer-channel-card {
+    margin-bottom: 0;
+    padding: 16px;
+  }
+
+  /* 태블릿 터치 친화적 슬라이더 핸들 확장 */
+  .channel-range-input::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  .channel-range-input::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* 온보딩 모달 태블릿 2x2 그리드 확장 */
+  .onboarding-modal {
+    max-width: 760px;
+    padding: 32px 28px 28px;
+    border-radius: 24px;
+  }
+
+  .onboarding-sliders-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .onboarding-channel-card {
+    margin-bottom: 0;
+  }
+
+  /* 내 알고리즘 & 보관함 섹션 태블릿 여백 */
+  .stats-section {
+    padding: 24px;
+  }
+
+  .saved-header-bar {
+    padding: 20px 24px 8px;
+  }
+
+  /* 하단 탭 바 태블릿 너비 동기화 */
+  .bottom-tab-bar {
+    max-width: 960px;
+    height: 64px;
+  }
+
+  /* 인앱 영상/기사 모달 태블릿 확장 */
+  .video-sheet-modal {
+    max-width: 780px;
+    border-radius: 24px;
+  }
+
+  .article-sheet-modal {
+    max-width: 760px;
+    border-radius: 24px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .web-container {
+    max-width: 1080px;
+  }
+
+  .dock-mixer-container,
+  .bottom-tab-bar {
+    max-width: 1080px;
+  }
+
+  .dock-panel {
+    max-width: 960px;
+  }
+
+  .feed-cards-container {
+    gap: 24px;
+    padding: 24px 32px 32px;
+  }
 }

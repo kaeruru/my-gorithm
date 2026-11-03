@@ -6,40 +6,100 @@ export const CATEGORY_META = {
   study: {
     id: 'study',
     name: '공부',
+    shortTag: '학습 · 교양',
     color: '#4F46E5',
     tagBg: '#EEF2FF',
     tagText: '#4338CA',
     border: '#C7D2FE',
-    description: '학습법, 외국어, 자격증, 인문·교양 지식'
+    description: '학습법, 외국어, 자격증, 인문·교양 지식',
+    iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>'
   },
   tech: {
     id: 'tech',
     name: '기술',
+    shortTag: 'IT · 트렌드',
     color: '#0284C7',
     tagBg: '#F0F9FF',
     tagText: '#0369A1',
     border: '#BAE6FD',
-    description: 'AI, 개발, IT 트렌드, 디지털 생산성'
+    description: 'AI, 개발, IT 트렌드, 디지털 생산성',
+    iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>'
   },
   culture: {
     id: 'culture',
     name: '문화',
+    shortTag: '예술 · 라이프',
     color: '#BE185D',
     tagBg: '#FFF1F2',
     tagText: '#9F1239',
     border: '#FECDD3',
-    description: '전시, 영화, 음악, 도서, 예술 트렌드'
+    description: '전시, 영화, 음악, 도서, 예술 트렌드',
+    iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>'
   },
   hobby: {
     id: 'hobby',
     name: '취미',
+    shortTag: '액티비티 · 일상',
     color: '#059669',
     tagBg: '#ECFDF5',
     tagText: '#047857',
     border: '#A7F3D0',
-    description: '운동, 러닝, 홈카페, 가드닝, 쿠킹'
+    description: '운동, 러닝, 홈카페, 가드닝, 쿠킹',
+    iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>'
   }
 };
+
+// 새 카드 추가 시 기본 스키마를 정규화하는 팩토리 헬퍼 함수
+export function normalizeContentCard(raw) {
+  const category = CATEGORY_META[raw.category] ? raw.category : 'study';
+  const type = raw.type === 'video' ? 'video' : 'article';
+  const defaultImages = {
+    study: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&auto=format&fit=crop&q=80',
+    tech: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80',
+    culture: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80',
+    hobby: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&auto=format&fit=crop&q=80'
+  };
+
+  let youtubeId = raw.youtubeId || '';
+  if (type === 'video' && !youtubeId && raw.url) {
+    const match = raw.url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+    if (match) youtubeId = match[1];
+  }
+
+  const imageUrl = raw.imageUrl?.trim()
+    || (youtubeId ? `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg` : defaultImages[category]);
+
+  return {
+    id: raw.id || `${category}-custom-${Date.now()}`,
+    category,
+    type,
+    isNew: raw.isNew !== undefined ? Boolean(raw.isNew) : true,
+    title: (raw.title || '새 추천 콘텐츠').trim(),
+    summary: (raw.summary || '사용자 맞춤형으로 추가된 추천 콘텐츠입니다.').trim(),
+    source: (raw.source || (type === 'video' ? 'YouTube · 추천 채널' : '추천 아티클')).trim(),
+    duration: (raw.duration || (type === 'video' ? '10:00' : '5분 읽기')).trim(),
+    date: (raw.date || '신규 등록').trim(),
+    imageUrl,
+    youtubeId,
+    url: (raw.url || 'https://my-gorithm.web.app').trim(),
+    recommendationReason: raw.recommendationReason || `${CATEGORY_META[category].name} 분야 관심도 설정에 따라 우선 배정된 신규 콘텐츠입니다.`,
+    keyPoints: Array.isArray(raw.keyPoints) && raw.keyPoints.length > 0
+      ? raw.keyPoints
+      : [
+          (raw.summary || '핵심 요약 내용을 확인해보세요.').trim(),
+          `카테고리: ${CATEGORY_META[category].name} (${CATEGORY_META[category].description})`,
+          '원문 방문 버튼을 통해 전체 상세 내용을 확인하실 수 있습니다.'
+        ],
+    sections: Array.isArray(raw.sections) && raw.sections.length > 0
+      ? raw.sections
+      : [
+          {
+            heading: raw.title || '콘텐츠 핵심 내용',
+            body: raw.summary || '사용자 맞춤형으로 추가된 추천 콘텐츠입니다.'
+          }
+        ]
+  };
+}
 
 export const LEVEL_LABELS = {
   0: { label: '제외', desc: '피드에서 숨김' },
