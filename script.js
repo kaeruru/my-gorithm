@@ -972,7 +972,7 @@ function bindUIEvents() {
     switchTab('viewFeed');
   });
 
-  // 3) 상단 빠른 조절 버튼 ➔ 미니 독 확장
+  // 3) 상단 빠른 조절 버튼 -> 미니 독 확장
   document.getElementById('btnQuickTune')?.addEventListener('click', () => {
     openDockMixer();
   });
