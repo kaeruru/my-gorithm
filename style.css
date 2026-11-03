@@ -517,12 +517,13 @@ body.dark-mode .app-header {
   color: #FBBF24;
 }
 
-/* 카드 텍스트 본문 */
+/* 카드 텍스트 본문 (상단 메인 블록) */
 .card-content-body {
-  padding: 14px 16px 16px;
+  padding: 14px 16px 14px;
   display: flex;
   flex-direction: column;
   flex: 1;
+  background-color: var(--bg-card);
 }
 
 .card-title-text {
@@ -546,7 +547,6 @@ body.dark-mode .app-header {
   font-weight: 400;
   color: var(--text-muted);
   line-height: 1.58;
-  margin-bottom: 12px;
   letter-spacing: -0.01em;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -555,8 +555,70 @@ body.dark-mode .app-header {
   overflow: hidden;
   word-break: keep-all;
   overflow-wrap: break-word;
+  margin-bottom: 0;
 }
 
+/* 카드 하단 분리형 테마 꼬리 풋터 (스타일 B: 선명한 톤온톤 투블록 풋터) */
+.card-footer-bar {
+  padding: 10px 16px;
+  background-color: var(--footer-bg, var(--bg-subtle));
+  border-top: 1px solid var(--footer-border, var(--border-subtle));
+  color: var(--footer-text, var(--text-main));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+body.dark-mode .card-footer-bar {
+  background-color: rgba(15, 23, 42, 0.45);
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-footer-source {
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-footer-source strong {
+  font-weight: 700;
+  color: inherit;
+}
+
+.card-footer-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--footer-color, currentColor);
+  flex-shrink: 0;
+}
+
+.card-footer-link {
+  font-weight: 700;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-left: 8px;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.content-feed-card:hover .card-footer-link {
+  transform: translate3d(2px, 0, 0);
+}
+
+/* 기존 레거시 메타바 호환 */
 .card-meta-bar {
   margin-top: auto;
   display: flex;
@@ -566,29 +628,6 @@ body.dark-mode .app-header {
   color: var(--text-muted);
   border-top: 1px solid var(--border-subtle);
   padding-top: 10px;
-}
-
-.card-meta-source {
-  font-weight: 400;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  letter-spacing: -0.01em;
-}
-
-.card-meta-link {
-  font-weight: 600;
-  color: var(--text-main);
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  letter-spacing: -0.015em;
-  transition: color 0.15s ease;
-}
-
-.content-feed-card:hover .card-meta-link {
-  color: var(--primary);
 }
 
 /* ==========================================================================

@@ -591,15 +591,22 @@ function createCardMarkup(item) {
       <div class="card-content-body">
         <h3 class="card-title-text">${item.title}</h3>
         <p class="card-summary-text">${item.summary}</p>
-        <div class="card-meta-bar">
-          <span class="card-meta-source"><strong>${item.source}</strong> · ${item.date}</span>
-          <span class="card-meta-link">
-            <span>${isVideo ? '영상 보기' : '바로가기'}</span>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 17l9.2-9.2M17 17V8H8"/>
-            </svg>
-          </span>
-        </div>
+      </div>
+
+      <div
+        class="card-footer-bar"
+        style="--footer-bg: ${meta.tagBg}; --footer-border: ${meta.border}; --footer-text: ${meta.tagText}; --footer-color: ${meta.color};"
+      >
+        <span class="card-footer-source">
+          <span class="card-footer-dot"></span>
+          <strong>${item.source}</strong> · ${item.date}
+        </span>
+        <span class="card-footer-link">
+          <span>${isVideo ? '영상 보기' : '바로가기'}</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17l9.2-9.2M17 17V8H8"/>
+          </svg>
+        </span>
       </div>
     </article>
   `;
