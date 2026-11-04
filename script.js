@@ -747,13 +747,12 @@ function createCardMarkup(item) {
         </div>
       </div>
 
-      <!-- 2. 하단 완전히 분리된 테마 출처 캡슐 바 (외부 이동 링크 완전 제거) -->
+      <!-- 2. 하단 완전히 분리된 솔리드 테마 출처 캡슐 바 (순백색 폰트 + 테마 솔리드) -->
       <div
         class="card-detached-footer"
-        style="--footer-bg: ${meta.tagBg}; --footer-border: ${meta.border}; --footer-text: ${meta.tagText}; --footer-color: ${meta.color}; --footer-dark-bg: ${meta.darkBg || 'rgba(15, 23, 42, 0.8)'}; --footer-dark-border: ${meta.darkBorder || 'rgba(255, 255, 255, 0.18)'}; --footer-dark-text: ${meta.darkText || '#F8FAFC'};"
+        style="--footer-solid-bg: ${meta.solidBg}; --footer-solid-text: ${meta.solidText}; --footer-solid-border: ${meta.solidBorder}; --footer-dark-bg: ${meta.darkSolidBg}; --footer-dark-border: ${meta.darkSolidBorder}; --footer-glow: ${meta.glowShadow};"
       >
         <div class="card-footer-source">
-          <span class="card-footer-dot"></span>
           <span class="card-footer-source-label">출처</span>
           <strong class="card-footer-source-name">${item.source}</strong>
           <span class="card-footer-sep">·</span>
