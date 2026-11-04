@@ -11,7 +11,7 @@ export const CATEGORY_META = {
     tagBg: '#EEF2FF',
     tagText: '#4338CA',
     border: '#C7D2FE',
-    description: '학습법, 외국어, 자격증, 인문·교양 지식',
+    description: '학습법, 인문·교양 지식',
     iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>'
   },
   tech: {
@@ -22,7 +22,7 @@ export const CATEGORY_META = {
     tagBg: '#F0F9FF',
     tagText: '#0369A1',
     border: '#BAE6FD',
-    description: 'AI, 개발, IT 트렌드, 디지털 생산성',
+    description: 'AI, 개발, IT 트렌드',
     iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>'
   },
   culture: {
@@ -33,7 +33,7 @@ export const CATEGORY_META = {
     tagBg: '#FFF1F2',
     tagText: '#9F1239',
     border: '#FECDD3',
-    description: '전시, 영화, 음악, 도서, 예술 트렌드',
+    description: '문화, 예술 트렌드',
     iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>'
   },
   hobby: {
@@ -44,7 +44,7 @@ export const CATEGORY_META = {
     tagBg: '#ECFDF5',
     tagText: '#047857',
     border: '#A7F3D0',
-    description: '운동, 러닝, 홈카페, 가드닝, 쿠킹',
+    description: '운동, 가드닝, 쿠킹',
     iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>'
   }
 };

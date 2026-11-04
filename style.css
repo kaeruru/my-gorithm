@@ -4,7 +4,7 @@
    ========================================================================== */
 
 :root {
-  --font-family: "SUIT Variable", "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", sans-serif;
+  --font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "SUIT Variable", sans-serif;
   --bg-page: #F8FAFC;
   --bg-card: #FFFFFF;
   --bg-subtle: #F1F5F9;
@@ -32,6 +32,11 @@
   /* 스켈레톤 로딩 쉬머 (오늘의집/토스 스타일) */
   --skeleton-base: #EAEFF5;
   --skeleton-wave: #F8FAFD;
+
+  /* PC 환경 DirectWrite/ClearType 거친 픽셀 완화용 광학 텍스트 셰이더 */
+  --text-shader-base: 0 0 0.35px rgba(15, 23, 42, 0.28), 0 0.15px 0.35px rgba(15, 23, 42, 0.08);
+  --text-shader-heading: 0 0 0.5px rgba(15, 23, 42, 0.22), 0 0.4px 0.9px rgba(15, 23, 42, 0.06);
+  --text-shader-subtle: 0 0 0.25px rgba(100, 116, 139, 0.25);
 }
 
 body.dark-mode {
@@ -55,6 +60,11 @@ body.dark-mode {
 
   --skeleton-base: #182234;
   --skeleton-wave: #243247;
+
+  /* 다크모드 광학 텍스트 셰이더 (부드러운 자체 안티에일리어싱 발광) */
+  --text-shader-base: 0 0 0.45px rgba(248, 250, 252, 0.24), 0 0.15px 0.35px rgba(248, 250, 252, 0.1);
+  --text-shader-heading: 0 0 0.6px rgba(248, 250, 252, 0.28), 0 0.5px 1.2px rgba(248, 250, 252, 0.12);
+  --text-shader-subtle: 0 0 0.35px rgba(148, 163, 184, 0.22);
 }
 
 * {
@@ -64,18 +74,52 @@ body.dark-mode {
   -webkit-tap-highlight-color: transparent;
 }
 
+button, input, textarea, select {
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+
 html, body {
   background-color: var(--bg-page);
   color: var(--text-main);
   font-family: var(--font-family);
-  font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: -0.015em;
+  font-weight: 440;
+  font-variation-settings: 'wght' 440;
+  line-height: 1.58;
+  letter-spacing: -0.022em;
   word-break: keep-all;
   overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "cv05", "cv08", "cv10", "ss01", "ss02", "calt" 1;
+  text-shadow: var(--text-shader-base);
+}
+
+/* 제목 및 주요 타이포그래피 광학 셰이더 강화 */
+h1, h2, h3, h4, h5, h6,
+.brand-title,
+.card-title-text,
+.dock-title,
+.article-headline,
+.article-full-title,
+.stat-num,
+.start-gate-title,
+.onboarding-title,
+.dock-sheet-title {
+  text-shadow: var(--text-shader-heading);
+  letter-spacing: -0.028em;
+}
+
+/* 보조 텍스트 셰이더 완화 */
+.card-desc-text,
+.card-meta-channel,
+.card-meta-date,
+.start-gate-desc,
+.onboarding-desc,
+.summary-points-list li,
+.text-muted {
+  text-shadow: var(--text-shader-subtle);
 }
 
 /* ==========================================================================
