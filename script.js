@@ -629,20 +629,18 @@ function renderAllViews(options = {}) {
 function createSkeletonCardMarkup() {
   return `
     <div class="skeleton-card" aria-hidden="true">
-      <div class="skeleton-media-wrap skeleton-shimmer">
-        <div class="skeleton-badge-overlay"></div>
-        <div class="skeleton-duration-overlay"></div>
-      </div>
-      <div class="skeleton-content-body">
-        <div class="skeleton-line skeleton-title-1 skeleton-shimmer"></div>
-        <div class="skeleton-line skeleton-title-2 skeleton-shimmer"></div>
-        <div class="skeleton-line skeleton-desc skeleton-shimmer"></div>
-        <div class="skeleton-meta-row">
-          <div class="skeleton-meta-avatar skeleton-shimmer"></div>
-          <div class="skeleton-line skeleton-meta-text skeleton-shimmer"></div>
-          <div class="skeleton-line skeleton-meta-date skeleton-shimmer"></div>
+      <div class="skeleton-main-box">
+        <div class="skeleton-media-wrap skeleton-shimmer">
+          <div class="skeleton-badge-overlay"></div>
+          <div class="skeleton-duration-overlay"></div>
+        </div>
+        <div class="skeleton-content-body">
+          <div class="skeleton-line skeleton-title-1 skeleton-shimmer"></div>
+          <div class="skeleton-line skeleton-title-2 skeleton-shimmer"></div>
+          <div class="skeleton-line skeleton-desc skeleton-shimmer"></div>
         </div>
       </div>
+      <div class="skeleton-detached-footer skeleton-shimmer"></div>
     </div>
   `;
 }
@@ -714,52 +712,53 @@ function createCardMarkup(item) {
       tabindex="0"
       aria-label="${meta.name} ${typeText}: ${item.title}"
     >
-      <div class="card-media-wrap">
-        <img
-          src="${item.imageUrl}"
-          alt="${item.title}"
-          class="card-media-img"
-          loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80'"
-        />
-        <div class="card-tag-overlay">
-          <span class="card-tag-indicator" style="background-color: ${meta.color}"></span>
-          <span><strong>${meta.name}</strong> · ${typeText}</span>
+      <!-- 1. 상단 메인 콘텐츠 카드 (썸네일 + 제목 + 요약) -->
+      <div class="card-main-box">
+        <div class="card-media-wrap">
+          <img
+            src="${item.imageUrl}"
+            alt="${item.title}"
+            class="card-media-img"
+            loading="lazy"
+            onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80'"
+          />
+          <div class="card-tag-overlay">
+            <span class="card-tag-indicator" style="background-color: ${meta.color}"></span>
+            <span><strong>${meta.name}</strong> · ${typeText}</span>
+          </div>
+          ${item.isNew ? '<span class="card-badge-new">NEW</span>' : ''}
+          <span class="card-duration-overlay">${item.duration}</span>
+          <button
+            type="button"
+            class="card-bookmark-btn ${isSaved ? 'saved' : ''}"
+            data-bookmark-id="${item.id}"
+            title="${isSaved ? '보관함에서 제거' : '보관함에 저장'}"
+            aria-label="북마크"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </button>
         </div>
-        ${item.isNew ? '<span class="card-badge-new">NEW</span>' : ''}
-        <span class="card-duration-overlay">${item.duration}</span>
-        <button
-          type="button"
-          class="card-bookmark-btn ${isSaved ? 'saved' : ''}"
-          data-bookmark-id="${item.id}"
-          title="${isSaved ? '보관함에서 제거' : '보관함에 저장'}"
-          aria-label="북마크"
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-          </svg>
-        </button>
+
+        <div class="card-content-body">
+          <h3 class="card-title-text">${item.title}</h3>
+          <p class="card-summary-text">${item.summary}</p>
+        </div>
       </div>
 
-      <div class="card-content-body">
-        <h3 class="card-title-text">${item.title}</h3>
-        <p class="card-summary-text">${item.summary}</p>
-      </div>
-
+      <!-- 2. 하단 완전히 분리된 테마 출처 캡슐 바 (외부 이동 링크 완전 제거) -->
       <div
-        class="card-footer-bar"
-        style="--footer-bg: ${meta.tagBg}; --footer-border: ${meta.border}; --footer-text: ${meta.tagText}; --footer-color: ${meta.color};"
+        class="card-detached-footer"
+        style="--footer-bg: ${meta.tagBg}; --footer-border: ${meta.border}; --footer-text: ${meta.tagText}; --footer-color: ${meta.color}; --footer-dark-bg: ${meta.darkBg || 'rgba(15, 23, 42, 0.8)'}; --footer-dark-border: ${meta.darkBorder || 'rgba(255, 255, 255, 0.18)'}; --footer-dark-text: ${meta.darkText || '#F8FAFC'};"
       >
-        <span class="card-footer-source">
+        <div class="card-footer-source">
           <span class="card-footer-dot"></span>
-          <strong>${item.source}</strong> · ${item.date}
-        </span>
-        <span class="card-footer-link">
-          <span>${isVideo ? '영상 보기' : '바로가기'}</span>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M7 17l9.2-9.2M17 17V8H8"/>
-          </svg>
-        </span>
+          <span class="card-footer-source-label">출처</span>
+          <strong class="card-footer-source-name">${item.source}</strong>
+          <span class="card-footer-sep">·</span>
+          <span class="card-footer-date">${item.date}</span>
+        </div>
       </div>
     </article>
   `;

@@ -435,23 +435,22 @@ body.dark-mode .brand-logo-mark {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
 }
 
 .content-feed-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  overflow: hidden;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   text-decoration: none;
   color: inherit;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-card);
+  gap: 8px; /* 상단 본체 카드와 하단 출처 바 사이의 명확한 물리적 분리 */
   transform: translate3d(0, 0, 0);
   will-change: transform, opacity;
   backface-visibility: hidden;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   animation: feedCardEntrance 0.34s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
@@ -475,7 +474,23 @@ body.dark-mode .brand-logo-mark {
 }
 
 .content-feed-card:hover {
-  transform: translate3d(0, -2px, 0);
+  transform: translate3d(0, -3px, 0);
+}
+
+/* 상단 메인 콘텐츠 블록 (썸네일 + 제목 + 2줄 요약) */
+.card-main-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.content-feed-card:hover .card-main-box {
   border-color: var(--border-color);
   box-shadow: var(--shadow-hover);
 }
@@ -614,64 +629,80 @@ body.dark-mode .brand-logo-mark {
   margin-bottom: 0;
 }
 
-/* 카드 하단 분리형 테마 꼬리 풋터 (스타일 B: 선명한 톤온톤 투블록 풋터) */
-.card-footer-bar {
+/* 하단 완전히 떨어진 분리형 테마 출처 캡슐 바 (외부 이동 링크 완전 제거) */
+.card-detached-footer {
   padding: 10px 16px;
   background-color: var(--footer-bg, var(--bg-subtle));
-  border-top: 1px solid var(--footer-border, var(--border-subtle));
+  border: 1.5px solid var(--footer-border, var(--border-subtle));
+  border-radius: 12px;
   color: var(--footer-text, var(--text-main));
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 0.76rem;
+  justify-content: flex-start;
+  font-size: 0.78rem;
   line-height: 1.4;
   letter-spacing: -0.015em;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-body.dark-mode .card-footer-bar {
-  background-color: rgba(15, 23, 42, 0.45);
-  border-top-color: rgba(255, 255, 255, 0.08);
+.content-feed-card:hover .card-detached-footer {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
+body.dark-mode .card-detached-footer {
+  background-color: var(--footer-dark-bg, rgba(15, 23, 42, 0.85));
+  border-color: var(--footer-dark-border, rgba(255, 255, 255, 0.18));
+  color: var(--footer-dark-text, #F8FAFC);
+}
+
+/* 출처 정보 내부 레이아웃 */
 .card-footer-source {
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   color: inherit;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.card-footer-source strong {
-  font-weight: 700;
-  color: inherit;
-}
-
 .card-footer-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background-color: var(--footer-color, currentColor);
   flex-shrink: 0;
+  box-shadow: 0 0 6px var(--footer-color);
 }
 
-.card-footer-link {
-  font-weight: 700;
+.card-footer-source-label {
+  font-size: 0.68rem;
+  font-weight: 750;
+  opacity: 0.88;
+  background-color: rgba(0, 0, 0, 0.06);
+  padding: 1.5px 6px;
+  border-radius: 4px;
+  letter-spacing: -0.01em;
+}
+
+body.dark-mode .card-footer-source-label {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.card-footer-source-name {
+  font-weight: 750;
   color: inherit;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  padding-left: 8px;
-  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.content-feed-card:hover .card-footer-link {
-  transform: translate3d(2px, 0, 0);
+.card-footer-sep {
+  opacity: 0.5;
+}
+
+.card-footer-date {
+  font-weight: 500;
+  opacity: 0.85;
 }
 
 /* 기존 레거시 메타바 호환 */
@@ -713,15 +744,30 @@ body.dark-mode .card-footer-bar {
 }
 
 .skeleton-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  overflow: hidden;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-card);
+  gap: 8px;
   pointer-events: none;
   user-select: none;
+}
+
+.skeleton-main-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-detached-footer {
+  height: 38px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-subtle);
 }
 
 /* 카드별 부드러운 파도 시차 */
