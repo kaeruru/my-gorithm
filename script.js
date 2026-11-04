@@ -162,122 +162,136 @@ function triggerHaptic(type = 'light') {
 let introFinished = false;
 let introSafetyTimer = null;
 
-// 사용자 기기/브라우저의 개인 테마(다크 모드 여부) 판별
-function detectUserTheme() {
-  try {
-    if (document.documentElement.dataset.systemTheme === 'dark') return 'dark';
-    if (document.body.classList.contains('dark-mode')) return 'dark';
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
-  } catch (e) {}
-  return 'light';
-}
-
-function playIntroSplash(onComplete) {
+function setupIntroExperience(onComplete) {
   const overlay = document.getElementById('introSplashOverlay');
+  const startGate = document.getElementById('introStartGate');
+  const videoContainer = document.getElementById('introVideoContainer');
   const video = document.getElementById('introVideo');
+  const btnStart = document.getElementById('btnStartExperience');
   const btnSkip = document.getElementById('btnIntroSkip');
+  const btnMute = document.getElementById('btnIntroMute');
+  const textMute = document.getElementById('textIntroMute');
 
-  if (!overlay || !video) {
+  if (!overlay || !video || !btnStart) {
     if (typeof onComplete === 'function') onComplete();
     return;
   }
 
-  // 상태 리셋 (다시보기 지원)
-  introFinished = false;
-  if (introSafetyTimer) {
-    clearTimeout(introSafetyTimer);
-    introSafetyTimer = null;
-  }
-
-  // 사용자 기기 개인 테마에 맞춘 영상 및 배경색 동적 매칭
-  const userTheme = detectUserTheme();
-  const isDark = userTheme === 'dark';
-
-  overlay.classList.toggle('theme-dark', isDark);
-  overlay.classList.toggle('theme-light', !isDark);
+  // 첫 접속: 무조건 라이트 테마 게이트 대기
+  overlay.classList.add('theme-light');
+  overlay.classList.remove('theme-dark', 'hidden');
   overlay.style.display = 'flex';
-  overlay.classList.remove('hidden');
+  if (startGate) {
+    startGate.classList.remove('hidden', 'fade-out');
+  }
+  if (videoContainer) {
+    videoContainer.classList.add('hidden');
+  }
 
-  const targetVideo = isDark ? '/videos/intro_algo_dark.mp4' : '/videos/intro_algo_light.mp4';
+  const startPlayback = (targetTheme = 'light') => {
+    introFinished = false;
+    if (introSafetyTimer) clearTimeout(introSafetyTimer);
 
-  // 비디오 소스 할당 및 리로드
-  video.src = targetVideo;
-  video.load();
+    const isDark = targetTheme === 'dark';
+    overlay.classList.toggle('theme-dark', isDark);
+    overlay.classList.toggle('theme-light', !isDark);
 
-  video.muted = true;
-  video.defaultMuted = true;
-  video.playsInline = true;
-  video.setAttribute('playsinline', '');
-  video.setAttribute('muted', '');
-  video.currentTime = 0;
+    const targetSrc = isDark ? '/videos/intro_algo_dark.mp4' : '/videos/intro_algo_light.mp4';
+    video.src = targetSrc;
+    video.load();
 
-  const finishIntro = () => {
-    if (introFinished) return;
-    introFinished = true;
+    // 사용자가 직접 버튼을 클릭했으므로 소리(Audio) 100% 켜짐!
+    video.muted = false;
+    video.volume = 1.0;
+    if (textMute) textMute.textContent = '소리 켬';
 
-    if (introSafetyTimer) {
-      clearTimeout(introSafetyTimer);
-      introSafetyTimer = null;
-    }
+    if (startGate) startGate.classList.add('fade-out');
 
-    try {
-      video.pause();
-    } catch (e) {}
-
-    overlay.classList.add('hidden');
     setTimeout(() => {
-      overlay.style.display = 'none';
-      if (typeof onComplete === 'function') {
-        onComplete();
-      }
-    }, 450);
-  };
+      if (startGate) startGate.classList.add('hidden');
+      if (videoContainer) videoContainer.classList.remove('hidden');
 
-  // 1. 영상 재생 완료 시 정상 종료
-  video.onended = finishIntro;
-
-  // 2. 건너뛰기 버튼 클릭 시 즉시 종료
-  if (btnSkip) {
-    btnSkip.onclick = (e) => {
-      e.stopPropagation();
-      triggerHaptic('light');
-      finishIntro();
-    };
-  }
-
-  // 3. 브라우저 자동 재생 시도
-  const attemptPlay = () => {
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // 모바일 절전 모드 등 자동재생 일시 차단 시, 화면 어디든 터치하면 즉시 재생
-        const touchToPlay = () => {
-          video.play().then(() => {
-            overlay.removeEventListener('click', touchToPlay);
-            overlay.removeEventListener('touchend', touchToPlay);
-          }).catch(() => finishIntro());
-        };
-        overlay.addEventListener('click', touchToPlay, { once: true });
-        overlay.addEventListener('touchend', touchToPlay, { once: true });
+      video.play().catch(() => {
+        // 혹시라도 브라우저가 첫 재생 차단 시 음소거로 재생 지원
+        video.muted = true;
+        if (textMute) textMute.textContent = '소리 끔';
+        video.play().catch(() => finishIntro());
       });
+    }, 220);
+
+    const finishIntro = () => {
+      if (introFinished) return;
+      introFinished = true;
+      if (introSafetyTimer) clearTimeout(introSafetyTimer);
+
+      try {
+        video.pause();
+      } catch (e) {}
+
+      // 영상 테마에 맞추어 웹사이트 테마도 자연스럽게 연동!
+      if (isDark) {
+        document.body.classList.add('dark-mode');
+        try {
+          localStorage.setItem(STORAGE_KEYS.THEME, 'dark');
+        } catch (e) {}
+      } else {
+        document.body.classList.remove('dark-mode');
+        try {
+          localStorage.setItem(STORAGE_KEYS.THEME, 'light');
+        } catch (e) {}
+      }
+
+      overlay.classList.add('hidden');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        if (typeof onComplete === 'function') {
+          onComplete();
+        }
+      }, 450);
+    };
+
+    video.onended = finishIntro;
+
+    if (btnSkip) {
+      btnSkip.onclick = (e) => {
+        e.stopPropagation();
+        triggerHaptic('light');
+        finishIntro();
+      };
     }
+
+    if (btnMute) {
+      btnMute.onclick = (e) => {
+        e.stopPropagation();
+        video.muted = !video.muted;
+        triggerHaptic('light');
+        if (textMute) textMute.textContent = video.muted ? '소리 끔' : '소리 켬';
+      };
+    }
+
+    // 24초 안전 타이머 (네트워크 멈춤 방지)
+    introSafetyTimer = setTimeout(() => {
+      if (!introFinished) finishIntro();
+    }, 24000);
   };
 
-  if (video.readyState >= 2) {
-    attemptPlay();
-  } else {
-    video.oncanplay = () => {
-      attemptPlay();
-      video.oncanplay = null;
-    };
-  }
+  // 쫀득한 시작 버튼 클릭 시 사운드와 함께 재생 시작
+  btnStart.onclick = () => {
+    triggerHaptic('success');
+    btnStart.classList.add('squish-pop');
+    setTimeout(() => {
+      startPlayback('light');
+    }, 180);
+  };
 
-  // 4. 안전장치: 16초 영상 전체가 다 돌고도 넉넉한 24초 후 자동 안전 종료 (네트워크 무한 멈춤 방지)
-  introSafetyTimer = setTimeout(() => {
-    if (!introFinished) {
-      finishIntro();
-    }
-  }, 24000);
+  // 외부(내 알고리즘 탭 등)에서 원하는 테마 인트로를 바로 감상할 수 있도록 함수 등록
+  window.playIntroWithTheme = (theme) => {
+    overlay.style.display = 'flex';
+    overlay.classList.remove('hidden');
+    if (startGate) startGate.classList.add('hidden');
+    if (videoContainer) videoContainer.classList.remove('hidden');
+    startPlayback(theme);
+  };
 }
 
 // 초기화
@@ -288,8 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialSkeletonCount = window.innerWidth >= 768 ? 4 : 3;
   renderAllViews({ withSkeleton: true, delay: 280, skeletonCount: initialSkeletonCount });
 
-  // 첫 접속 인트로 모션그래픽 비디오 재생 후 온보딩 화면 연결
-  playIntroSplash(() => {
+  // 첫 접속 쫀득한 시작 게이트 및 인트로 모션그래픽 비디오 재생 후 온보딩 화면 연결
+  setupIntroExperience(() => {
     const hasOnboarded = localStorage.getItem(STORAGE_KEYS.ONBOARDED);
     if (!hasOnboarded) {
       openOnboarding();
@@ -1389,10 +1403,20 @@ function bindUIEvents() {
 
   document.getElementById('btnOnboardingStart')?.addEventListener('click', closeOnboarding);
 
-  // 인트로 모션그래픽 영상 다시보기
-  document.getElementById('btnReplayIntro')?.addEventListener('click', () => {
+  // 라이트 인트로 다시보기 (소리와 함께 재생 및 라이트 테마 복귀)
+  document.getElementById('btnReplayIntroLight')?.addEventListener('click', () => {
     triggerHaptic('medium');
-    playIntroSplash();
+    if (typeof window.playIntroWithTheme === 'function') {
+      window.playIntroWithTheme('light');
+    }
+  });
+
+  // 다크 인트로 다시보기 (소리와 함께 재생 및 다크 테마 전환)
+  document.getElementById('btnReplayIntroDark')?.addEventListener('click', () => {
+    triggerHaptic('medium');
+    if (typeof window.playIntroWithTheme === 'function') {
+      window.playIntroWithTheme('dark');
+    }
   });
 
   // 시작 안내 및 설정 다시보기 -> 자동으로 홈 화면(피드)으로 이동 후 실행
