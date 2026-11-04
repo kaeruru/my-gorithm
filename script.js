@@ -183,9 +183,11 @@ function setupIntroExperience(onComplete) {
   overlay.style.display = 'flex';
   if (startGate) {
     startGate.classList.remove('hidden', 'fade-out');
+    startGate.style.display = 'flex';
   }
   if (videoContainer) {
     videoContainer.classList.add('hidden');
+    videoContainer.style.display = 'none';
   }
 
   const startPlayback = (targetTheme = 'light') => {
@@ -198,6 +200,9 @@ function setupIntroExperience(onComplete) {
 
     const targetSrc = isDark ? '/videos/intro_algo_dark.mp4' : '/videos/intro_algo_light.mp4';
     video.src = targetSrc;
+    try {
+      video.currentTime = 0;
+    } catch (e) {}
     video.load();
 
     // 사용자가 직접 버튼을 클릭했으므로 소리(Audio) 100% 켜짐!
@@ -208,8 +213,14 @@ function setupIntroExperience(onComplete) {
     if (startGate) startGate.classList.add('fade-out');
 
     setTimeout(() => {
-      if (startGate) startGate.classList.add('hidden');
-      if (videoContainer) videoContainer.classList.remove('hidden');
+      if (startGate) {
+        startGate.classList.add('hidden');
+        startGate.style.display = 'none';
+      }
+      if (videoContainer) {
+        videoContainer.classList.remove('hidden');
+        videoContainer.style.display = 'flex';
+      }
 
       video.play().catch(() => {
         // 혹시라도 브라우저가 첫 재생 차단 시 음소거로 재생 지원
@@ -288,8 +299,14 @@ function setupIntroExperience(onComplete) {
   window.playIntroWithTheme = (theme) => {
     overlay.style.display = 'flex';
     overlay.classList.remove('hidden');
-    if (startGate) startGate.classList.add('hidden');
-    if (videoContainer) videoContainer.classList.remove('hidden');
+    if (startGate) {
+      startGate.classList.add('hidden');
+      startGate.style.display = 'none';
+    }
+    if (videoContainer) {
+      videoContainer.classList.remove('hidden');
+      videoContainer.style.display = 'flex';
+    }
     startPlayback(theme);
   };
 }
