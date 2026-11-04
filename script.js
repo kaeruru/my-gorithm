@@ -162,6 +162,16 @@ function triggerHaptic(type = 'light') {
 let introFinished = false;
 let introSafetyTimer = null;
 
+// 사용자 기기/브라우저의 개인 테마(다크 모드 여부) 판별
+function detectUserTheme() {
+  try {
+    if (document.documentElement.dataset.systemTheme === 'dark') return 'dark';
+    if (document.body.classList.contains('dark-mode')) return 'dark';
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+  } catch (e) {}
+  return 'light';
+}
+
 function playIntroSplash(onComplete) {
   const overlay = document.getElementById('introSplashOverlay');
   const video = document.getElementById('introVideo');
@@ -179,17 +189,20 @@ function playIntroSplash(onComplete) {
     introSafetyTimer = null;
   }
 
+  // 사용자 기기 개인 테마에 맞춘 영상 및 배경색 동적 매칭
+  const userTheme = detectUserTheme();
+  const isDark = userTheme === 'dark';
+
+  overlay.classList.toggle('theme-dark', isDark);
+  overlay.classList.toggle('theme-light', !isDark);
   overlay.style.display = 'flex';
   overlay.classList.remove('hidden');
 
-  const isDark = document.body.classList.contains('dark-mode') || window.matchMedia('(prefers-color-scheme: dark)').matches;
   const targetVideo = isDark ? '/videos/intro_algo_dark.mp4' : '/videos/intro_algo_light.mp4';
 
-  // 불필요한 재로딩 방지: 이미 같은 비디오가 로드되어 있지 않을 때만 설정
-  if (!video.currentSrc || !video.currentSrc.includes(targetVideo.replace('/videos/', ''))) {
-    video.src = targetVideo;
-    video.load();
-  }
+  // 비디오 소스 할당 및 리로드
+  video.src = targetVideo;
+  video.load();
 
   video.muted = true;
   video.defaultMuted = true;

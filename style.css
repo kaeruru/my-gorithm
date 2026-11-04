@@ -2033,7 +2033,7 @@ body.dark-mode .bottom-tab-bar {
 }
 
 /* ==========================================================================
-   인트로 모션그래픽 비디오 스플래시 (첫 접속 시 풀스크린 재생)
+   인트로 모션그래픽 비디오 스플래시 (개인 기기 테마에 맞춰 풀스크린 재생)
    ========================================================================== */
 .intro-splash-overlay {
   position: fixed;
@@ -2045,6 +2045,25 @@ body.dark-mode .bottom-tab-bar {
   justify-content: center;
   transition: opacity 0.4s ease, visibility 0.4s ease;
   overflow: hidden;
+}
+
+/* 기기별 테마 배경 일체화 */
+.intro-splash-overlay.theme-dark {
+  background-color: #0F172A;
+}
+
+.intro-splash-overlay.theme-light {
+  background-color: #FFFFFF;
+}
+
+@media (prefers-color-scheme: dark) {
+  .intro-splash-overlay:not(.theme-light) {
+    background-color: #0F172A;
+  }
+}
+
+html[data-system-theme="dark"] .intro-splash-overlay:not(.theme-light) {
+  background-color: #0F172A;
 }
 
 body.dark-mode .intro-splash-overlay {

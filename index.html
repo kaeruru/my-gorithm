@@ -22,6 +22,16 @@
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/sun-typeface/suit@2/fonts/variable/woff2/SUIT-Variable.css" />
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
   <link rel="stylesheet" href="style.css" />
+
+  <!-- 기기별 개인 테마 즉시 감지 (인트로 영상 및 스플래시 배경 깜빡임 방지) -->
+  <script>
+    (function() {
+      try {
+        var isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.systemTheme = isDark ? 'dark' : 'light';
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <!-- 메인 반응형 웹 컨테이너 -->
@@ -446,7 +456,7 @@
       </button>
     </nav>
 
-    <!-- 첫 접속 인트로 모션그래픽 비디오 오버레이 -->
+    <!-- 첫 접속 인트로 모션그래픽 비디오 오버레이 (개인 기기 테마에 맞춰 자동 재생) -->
     <div class="intro-splash-overlay" id="introSplashOverlay">
       <div class="intro-video-container">
         <video
@@ -456,9 +466,7 @@
           muted
           autoplay
           preload="auto"
-        >
-          <source src="/videos/intro_algo_light.mp4" type="video/mp4" />
-        </video>
+        ></video>
         <button type="button" class="btn-intro-skip" id="btnIntroSkip" aria-label="인트로 영상 건너뛰기">
           <span>건너뛰기</span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
