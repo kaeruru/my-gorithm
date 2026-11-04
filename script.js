@@ -160,6 +160,7 @@ function triggerHaptic(type = 'light') {
 }
 
 let introFinished = false;
+let introSafetyTimer = null;
 
 function playIntroSplash(onComplete) {
   const overlay = document.getElementById('introSplashOverlay');
@@ -171,15 +172,41 @@ function playIntroSplash(onComplete) {
     return;
   }
 
-  const isDark = document.body.classList.contains('dark-mode') || window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const videoSrc = isDark ? '/videos/intro_algo_dark.mp4' : '/videos/intro_algo_light.mp4';
-  if (video.src !== window.location.origin + videoSrc) {
-    video.src = videoSrc;
+  // 상태 리셋 (다시보기 지원)
+  introFinished = false;
+  if (introSafetyTimer) {
+    clearTimeout(introSafetyTimer);
+    introSafetyTimer = null;
   }
+
+  overlay.style.display = 'flex';
+  overlay.classList.remove('hidden');
+
+  const isDark = document.body.classList.contains('dark-mode') || window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const targetVideo = isDark ? '/videos/intro_algo_dark.mp4' : '/videos/intro_algo_light.mp4';
+
+  // 불필요한 재로딩 방지: 이미 같은 비디오가 로드되어 있지 않을 때만 설정
+  if (!video.currentSrc || !video.currentSrc.includes(targetVideo.replace('/videos/', ''))) {
+    video.src = targetVideo;
+    video.load();
+  }
+
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.setAttribute('playsinline', '');
+  video.setAttribute('muted', '');
+  video.currentTime = 0;
 
   const finishIntro = () => {
     if (introFinished) return;
     introFinished = true;
+
+    if (introSafetyTimer) {
+      clearTimeout(introSafetyTimer);
+      introSafetyTimer = null;
+    }
+
     try {
       video.pause();
     } catch (e) {}
@@ -190,38 +217,54 @@ function playIntroSplash(onComplete) {
       if (typeof onComplete === 'function') {
         onComplete();
       }
-    }, 400);
+    }, 450);
   };
 
-  btnSkip?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    triggerHaptic('light');
-    finishIntro();
-  });
+  // 1. 영상 재생 완료 시 정상 종료
+  video.onended = finishIntro;
 
-  video.addEventListener('ended', finishIntro);
-  video.addEventListener('error', () => {
-    finishIntro();
-  });
-
-  video.muted = true;
-  video.defaultMuted = true;
-
-  const playPromise = video.play();
-  if (playPromise !== undefined) {
-    playPromise.catch(() => {
-      overlay.addEventListener('click', () => {
-        video.play().catch(() => finishIntro());
-      }, { once: true });
-    });
+  // 2. 건너뛰기 버튼 클릭 시 즉시 종료
+  if (btnSkip) {
+    btnSkip.onclick = (e) => {
+      e.stopPropagation();
+      triggerHaptic('light');
+      finishIntro();
+    };
   }
 
-  // 안전장치 타이머: 최대 7.5초 후 자동 종료
-  setTimeout(() => {
+  // 3. 브라우저 자동 재생 시도
+  const attemptPlay = () => {
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // 모바일 절전 모드 등 자동재생 일시 차단 시, 화면 어디든 터치하면 즉시 재생
+        const touchToPlay = () => {
+          video.play().then(() => {
+            overlay.removeEventListener('click', touchToPlay);
+            overlay.removeEventListener('touchend', touchToPlay);
+          }).catch(() => finishIntro());
+        };
+        overlay.addEventListener('click', touchToPlay, { once: true });
+        overlay.addEventListener('touchend', touchToPlay, { once: true });
+      });
+    }
+  };
+
+  if (video.readyState >= 2) {
+    attemptPlay();
+  } else {
+    video.oncanplay = () => {
+      attemptPlay();
+      video.oncanplay = null;
+    };
+  }
+
+  // 4. 안전장치: 16초 영상 전체가 다 돌고도 넉넉한 24초 후 자동 안전 종료 (네트워크 무한 멈춤 방지)
+  introSafetyTimer = setTimeout(() => {
     if (!introFinished) {
       finishIntro();
     }
-  }, 7500);
+  }, 24000);
 }
 
 // 초기화
@@ -1332,6 +1375,12 @@ function bindUIEvents() {
   });
 
   document.getElementById('btnOnboardingStart')?.addEventListener('click', closeOnboarding);
+
+  // 인트로 모션그래픽 영상 다시보기
+  document.getElementById('btnReplayIntro')?.addEventListener('click', () => {
+    triggerHaptic('medium');
+    playIntroSplash();
+  });
 
   // 시작 안내 및 설정 다시보기 -> 자동으로 홈 화면(피드)으로 이동 후 실행
   document.getElementById('btnReopenOnboarding')?.addEventListener('click', () => {

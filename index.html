@@ -31,8 +31,13 @@
     <header class="app-header">
       <div class="header-inner">
         <div class="brand" id="brandHome" role="button" tabindex="0">
-          <span class="brand-logo-mark">
-            <img src="/logo.png" alt="맘고리즘" class="brand-logo-img" />
+          <span class="brand-logo-mark" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="3" width="12" height="12" rx="3.5" fill="#6366F1"/>
+              <rect x="19" y="3" width="12" height="12" rx="3.5" fill="#0EA5E9"/>
+              <rect x="3" y="19" width="12" height="12" rx="3.5" fill="#E11D48"/>
+              <rect x="19" y="19" width="12" height="12" rx="3.5" fill="#10B981"/>
+            </svg>
           </span>
           <div class="brand-text">
             <h1 class="brand-title">맘고리즘</h1>
@@ -214,6 +219,9 @@
             처음 접속했을 때의 인터랙티브 알고리즘 튜닝과 미니 독 사용 가이드를 홈 화면으로 자동 이동하여 다시 체험할 수 있습니다.
           </p>
           <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
+            <button type="button" class="btn-subtle-action" id="btnReplayIntro">
+              <span>인트로 영상 다시보기</span>
+            </button>
             <button type="button" class="btn-subtle-action" id="btnReopenOnboarding">
               <span>시작 화면(온보딩) 열기</span>
             </button>
