@@ -174,8 +174,8 @@ function runQuickBrandSplash(onComplete) {
     return;
   }
 
-  // 테마 동기화 확인
-  const isDark = document.documentElement.dataset.systemTheme === 'dark' || document.body.classList.contains('dark-mode');
+  // 기본 라이트 테마 원칙 (사용자가 설정에서 명시적으로 다크 테마를 선택했을 때만 다크 적용)
+  const isDark = localStorage.getItem('mamgorithm_theme_v2') === 'dark';
   splash.classList.toggle('theme-dark', isDark);
   splash.classList.toggle('theme-light', !isDark);
 
@@ -208,7 +208,7 @@ function runQuickBrandSplash(onComplete) {
 }
 
 // ==========================================================================
-// 첫 접속 사용자 전용: 현대적 글래스모피즘 시작 게이트 & 사운드 온 소개 영상 경험
+// 첫 접속 사용자 전용: 초미니멀 시작 게이트 & 사운드 온 소개 영상 경험 (무조건 라이트 테마 기본)
 // ==========================================================================
 function setupFirstVisitIntroExperience(onComplete) {
   const overlay = document.getElementById('introSplashOverlay');
@@ -232,10 +232,9 @@ function setupFirstVisitIntroExperience(onComplete) {
     return;
   }
 
-  // 현재 시스템 테마 감지하여 테마 클래스 반영
-  const isDark = document.documentElement.dataset.systemTheme === 'dark' || document.body.classList.contains('dark-mode');
-  overlay.classList.toggle('theme-dark', isDark);
-  overlay.classList.toggle('theme-light', !isDark);
+  // 첫 접속은 무조건 라이트 테마 기본 (기기 설정 따르지 않음)
+  overlay.classList.remove('theme-dark');
+  overlay.classList.add('theme-light');
   overlay.classList.remove('hidden');
   overlay.style.display = 'flex';
 
@@ -287,7 +286,8 @@ function setupFirstVisitIntroExperience(onComplete) {
           videoContainer.classList.remove('hidden');
           videoContainer.style.display = 'flex';
 
-          const targetSrc = isDark ? '/videos/intro_algo_dark.mp4' : '/videos/intro_algo_light.mp4';
+          // 기본 라이트 테마 원칙: 무조건 라이트 테마 인트로 영상 재생
+          const targetSrc = '/videos/intro_algo_light.mp4';
           video.src = targetSrc;
           try {
             video.currentTime = 0;

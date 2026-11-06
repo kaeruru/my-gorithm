@@ -24,13 +24,12 @@
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/sun-typeface/suit@2/fonts/variable/woff2/SUIT-Variable.css" />
   <link rel="stylesheet" href="style.css" />
 
-  <!-- 기기별 개인 테마 및 첫 접속 여부 즉시 감지 (FOUC 방지) -->
+  <!-- 기본 라이트 테마 원칙 (기기 설정 무시, 사용자가 저장한 다크 테마 설정이 있을 때만 다크) -->
   <script>
     (function() {
       try {
-        var isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         var userTheme = localStorage.getItem('mamgorithm_theme_v2');
-        var activeTheme = userTheme ? userTheme : (isDark ? 'dark' : 'light');
+        var activeTheme = (userTheme === 'dark') ? 'dark' : 'light';
         document.documentElement.dataset.systemTheme = activeTheme;
 
         // 첫 접속 여부: mamgorithm_intro_seen_v1 키가 없으면 첫 접속!

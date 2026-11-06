@@ -2137,8 +2137,8 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
 }
 
 /* ==========================================================================
-   유튜브 스타일 퀵 브랜드 스플래시 인트로 (여유롭고 품격 있는 1.4초 숏폼 모션)
-   매번 사이트 재접속 시 기분 좋은 브랜드 아이덴티티를 온전히 전달
+   유튜브 스타일 퀵 브랜드 스플래시 인트로 (여유롭고 품격 있는 1.5초 숏폼 모션)
+   기본 원칙: 무조건 라이트 테마 기본 (기기 설정 따르지 않음)
    ========================================================================== */
 .quick-brand-splash {
   position: fixed;
@@ -2151,7 +2151,8 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-page, #F8FAFC);
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
   user-select: none;
   -webkit-user-select: none;
   overflow: hidden;
@@ -2159,18 +2160,38 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
   will-change: opacity, transform;
 }
 
-/* 라이트 테마: 화이트 배경 + 소프트 그림자 */
-[data-system-theme="light"] .quick-brand-splash,
-.quick-brand-splash.theme-light,
-body:not(.dark-mode) .quick-brand-splash {
-  background-color: #FFFFFF;
+.splash-brand-title {
+  font-family: var(--font-family);
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #0F172A !important;
+  line-height: 1.1;
+  text-shadow: none !important;
 }
 
-/* 다크 테마: 딥 다크 배경 + 네온 앰비언트 */
-[data-system-theme="dark"] .quick-brand-splash,
-.quick-brand-splash.theme-dark,
-body.dark-mode .quick-brand-splash {
-  background-color: #090D16;
+.splash-brand-sub {
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #64748B !important;
+  text-transform: uppercase;
+}
+
+/* 수동 설정으로 다크 테마를 선택했을 때만 다크 적용 */
+.quick-brand-splash.theme-dark {
+  background-color: #090D16 !important;
+  color: #F8FAFC !important;
+}
+.quick-brand-splash.theme-dark .splash-brand-title {
+  color: #F8FAFC !important;
+  text-shadow: 0 0 24px rgba(255, 255, 255, 0.25) !important;
+}
+.quick-brand-splash.theme-dark .splash-brand-sub {
+  color: #94A3B8 !important;
+}
+.quick-brand-splash.theme-dark .splash-symbol-box {
+  filter: drop-shadow(0 0 28px rgba(99, 102, 241, 0.6)) drop-shadow(0 0 14px rgba(14, 165, 233, 0.45));
 }
 
 .quick-brand-splash.splash-dismissed {
@@ -2196,12 +2217,6 @@ body.dark-mode .quick-brand-splash {
   justify-content: center;
   filter: drop-shadow(0 12px 28px rgba(99, 102, 241, 0.25));
   animation: splashSymbolElastic 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-[data-system-theme="dark"] .splash-symbol-box,
-.quick-brand-splash.theme-dark .splash-symbol-box,
-body.dark-mode .splash-symbol-box {
-  filter: drop-shadow(0 0 28px rgba(99, 102, 241, 0.6)) drop-shadow(0 0 14px rgba(14, 165, 233, 0.45));
 }
 
 .splash-cube {
@@ -2235,36 +2250,6 @@ body.dark-mode .splash-symbol-box {
   opacity: 0;
   transform: translateY(12px);
   animation: splashTextRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
-}
-
-.splash-brand-title {
-  font-family: var(--font-family);
-  font-size: 1.45rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  color: #0F172A;
-  line-height: 1.1;
-}
-
-[data-system-theme="dark"] .splash-brand-title,
-.quick-brand-splash.theme-dark .splash-brand-title,
-body.dark-mode .splash-brand-title {
-  color: #F8FAFC;
-  text-shadow: 0 0 24px rgba(255, 255, 255, 0.25);
-}
-
-.splash-brand-sub {
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: #64748B;
-  text-transform: uppercase;
-}
-
-[data-system-theme="dark"] .splash-brand-sub,
-.quick-brand-splash.theme-dark .splash-brand-sub,
-body.dark-mode .splash-brand-sub {
-  color: #94A3B8;
 }
 
 @keyframes splashCubeSpring {
@@ -2314,7 +2299,7 @@ body.dark-mode .splash-brand-sub {
 }
 
 /* ==========================================================================
-   첫 접속 소개영상 오버레이 (초미니멀 시작 화면 - AI 슬롭 일체 배제)
+   첫 접속 소개영상 오버레이 (초미니멀 시작 화면 - 무조건 라이트 테마 기본)
    ========================================================================== */
 .intro-splash-overlay {
   position: fixed;
@@ -2324,7 +2309,7 @@ body.dark-mode .splash-brand-sub {
   height: 100vh;
   height: 100dvh;
   z-index: 99999;
-  background-color: #FFFFFF;
+  background-color: #FFFFFF !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2332,18 +2317,6 @@ body.dark-mode .splash-brand-sub {
   overflow: hidden;
   margin: 0;
   padding: 0;
-}
-
-[data-system-theme="dark"] .intro-splash-overlay,
-body.dark-mode .intro-splash-overlay,
-.intro-splash-overlay.theme-dark {
-  background-color: #090D16;
-}
-
-[data-system-theme="light"] .intro-splash-overlay,
-body:not(.dark-mode) .intro-splash-overlay,
-.intro-splash-overlay.theme-light {
-  background-color: #FFFFFF;
 }
 
 .intro-splash-overlay.hidden {
@@ -2396,23 +2369,13 @@ body:not(.dark-mode) .intro-splash-overlay,
   filter: drop-shadow(0 6px 16px rgba(99, 102, 241, 0.22));
 }
 
-[data-system-theme="dark"] .start-minimal-logo,
-body.dark-mode .start-minimal-logo {
-  filter: drop-shadow(0 6px 20px rgba(14, 165, 233, 0.35));
-}
-
 .start-minimal-title {
   font-family: var(--font-family);
   font-size: 1.55rem;
   font-weight: 800;
   letter-spacing: -0.04em;
-  color: #0F172A;
+  color: #0F172A !important; /* 딥 차콜-블랙으로 무조건 선명하게 노출 */
   line-height: 1;
-}
-
-[data-system-theme="dark"] .start-minimal-title,
-body.dark-mode .start-minimal-title {
-  color: #F8FAFC;
 }
 
 /* 세련된 원형 사운드 플레이 버튼 */
@@ -2420,8 +2383,8 @@ body.dark-mode .start-minimal-title {
   width: 68px;
   height: 68px;
   border-radius: 50%;
-  background-color: #0F172A;
-  color: #FFFFFF;
+  background-color: #0F172A !important;
+  color: #FFFFFF !important;
   border: none;
   display: flex;
   align-items: center;
@@ -2436,21 +2399,9 @@ body.dark-mode .start-minimal-title {
   margin-left: 3px; /* 시각적 중앙 보정 */
 }
 
-[data-system-theme="dark"] .btn-minimal-play,
-body.dark-mode .btn-minimal-play {
-  background-color: #F8FAFC;
-  color: #0F172A;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
 .btn-minimal-play:hover {
   transform: scale(1.08);
   box-shadow: 0 16px 36px rgba(15, 23, 42, 0.3);
-}
-
-[data-system-theme="dark"] .btn-minimal-play:hover,
-body.dark-mode .btn-minimal-play:hover {
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
 }
 
 .btn-minimal-play:active {
@@ -2462,13 +2413,8 @@ body.dark-mode .btn-minimal-play:hover {
   margin-top: 14px;
   font-size: 0.88rem;
   font-weight: 600;
-  color: #0F172A;
+  color: #0F172A !important;
   letter-spacing: -0.02em;
-}
-
-[data-system-theme="dark"] .start-minimal-label,
-body.dark-mode .start-minimal-label {
-  color: #F8FAFC;
 }
 
 /* 군더더기 없는 건너뛰기 텍스트 */
@@ -2476,7 +2422,7 @@ body.dark-mode .start-minimal-label {
   margin-top: 24px;
   background: transparent;
   border: none;
-  color: #94A3B8;
+  color: #64748B !important;
   font-family: var(--font-family);
   font-size: 0.82rem;
   font-weight: 500;
@@ -2488,18 +2434,27 @@ body.dark-mode .start-minimal-label {
 }
 
 .btn-minimal-skip:hover {
-  color: #64748B;
-  background-color: rgba(15, 23, 42, 0.04);
+  color: #0F172A !important;
+  background-color: rgba(15, 23, 42, 0.05);
 }
 
-[data-system-theme="dark"] .btn-minimal-skip:hover,
-body.dark-mode .btn-minimal-skip:hover {
-  color: #E2E8F0;
-  background-color: rgba(255, 255, 255, 0.06);
+/* 수동 다시보기 모달에서 다크 테마를 요청했을 때만(theme-dark) 적용 */
+.intro-splash-overlay.theme-dark {
+  background-color: #090D16 !important;
 }
-
-.btn-minimal-skip:active {
-  transform: scale(0.96);
+.intro-splash-overlay.theme-dark .start-minimal-title {
+  color: #F8FAFC !important;
+}
+.intro-splash-overlay.theme-dark .btn-minimal-play {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+.intro-splash-overlay.theme-dark .start-minimal-label {
+  color: #F8FAFC !important;
+}
+.intro-splash-overlay.theme-dark .btn-minimal-skip {
+  color: #94A3B8 !important;
 }
 
 /* 2. 풀스크린 인트로 비디오 영역 (모바일/태블릿 정중앙 완벽 고정) */
