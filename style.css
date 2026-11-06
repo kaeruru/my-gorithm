@@ -2116,7 +2116,21 @@ body.dark-mode .bottom-tab-bar {
 }
 
 /* ==========================================================================
-   유튜브 스타일 초단기 퀵 브랜드 스플래시 인트로 (0.76초 숏폼 애니메이션)
+   첫 방문 vs 재방문 인트로 노출 강제 규칙 (FOUC 방지)
+   ========================================================================== */
+/* 1) 첫 접속 시: 유튜브 퀵 애니메이션 차단 (소개 영상 및 시작 게이트만 노출) */
+html.is-first-visit #quickBrandSplash {
+  display: none !important;
+}
+
+/* 2) 그 후 재접속 시: 소개 영상 오버레이 차단 (수동 다시보기 force-show 제외) */
+html.is-returning-user #introSplashOverlay:not(.force-show) {
+  display: none !important;
+}
+
+/* ==========================================================================
+   유튜브 스타일 초단기 퀵 브랜드 스플래시 인트로 (0.7초 미만 숏폼 애니메이션)
+   매번 사이트 재접속 시 경쾌한 찰나의 브랜드 아이덴티티 전달
    ========================================================================== */
 .quick-brand-splash {
   position: fixed;
@@ -2133,13 +2147,22 @@ body.dark-mode .bottom-tab-bar {
   user-select: none;
   -webkit-user-select: none;
   overflow: hidden;
-  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1), transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: opacity, transform;
 }
 
+/* 라이트 테마: 화이트 배경 + 소프트 그림자 */
+[data-system-theme="light"] .quick-brand-splash,
+.quick-brand-splash.theme-light,
+body:not(.dark-mode) .quick-brand-splash {
+  background-color: #FFFFFF;
+}
+
+/* 다크 테마: 딥 다크 배경 + 네온 앰비언트 */
 [data-system-theme="dark"] .quick-brand-splash,
+.quick-brand-splash.theme-dark,
 body.dark-mode .quick-brand-splash {
-  background-color: #0F172A;
+  background-color: #0B0F19;
 }
 
 .quick-brand-splash.splash-dismissed {
@@ -2163,13 +2186,14 @@ body.dark-mode .quick-brand-splash {
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 8px 24px rgba(99, 102, 241, 0.25));
-  animation: splashSymbolElastic 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  filter: drop-shadow(0 10px 24px rgba(99, 102, 241, 0.22));
+  animation: splashSymbolElastic 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 [data-system-theme="dark"] .splash-symbol-box,
+.quick-brand-splash.theme-dark .splash-symbol-box,
 body.dark-mode .splash-symbol-box {
-  filter: drop-shadow(0 8px 28px rgba(14, 165, 233, 0.35));
+  filter: drop-shadow(0 0 24px rgba(99, 102, 241, 0.55)) drop-shadow(0 0 12px rgba(14, 165, 233, 0.4));
 }
 
 .splash-cube {
@@ -2179,19 +2203,19 @@ body.dark-mode .splash-symbol-box {
 }
 
 .cube-study {
-  animation: splashCubeSpring 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) 0.02s forwards;
+  animation: splashCubeSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.02s forwards;
 }
 
 .cube-tech {
-  animation: splashCubeSpring 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) 0.06s forwards;
+  animation: splashCubeSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
 }
 
 .cube-culture {
-  animation: splashCubeSpring 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) 0.10s forwards;
+  animation: splashCubeSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.08s forwards;
 }
 
 .cube-hobby {
-  animation: splashCubeSpring 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) 0.14s forwards;
+  animation: splashCubeSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.11s forwards;
 }
 
 .splash-wordmark {
@@ -2202,10 +2226,11 @@ body.dark-mode .splash-symbol-box {
   gap: 3px;
   opacity: 0;
   transform: translateY(8px);
-  animation: splashTextRise 0.36s cubic-bezier(0.16, 1, 0.3, 1) 0.16s forwards;
+  animation: splashTextRise 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.13s forwards;
 }
 
 .splash-brand-title {
+  font-family: -apple-system, BlinkMacSystemFont, "SUIT Variable", "Pretendard Variable", sans-serif;
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: -0.04em;
@@ -2214,8 +2239,10 @@ body.dark-mode .splash-symbol-box {
 }
 
 [data-system-theme="dark"] .splash-brand-title,
+.quick-brand-splash.theme-dark .splash-brand-title,
 body.dark-mode .splash-brand-title {
   color: #F8FAFC;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
 }
 
 .splash-brand-sub {
@@ -2227,6 +2254,7 @@ body.dark-mode .splash-brand-title {
 }
 
 [data-system-theme="dark"] .splash-brand-sub,
+.quick-brand-splash.theme-dark .splash-brand-sub,
 body.dark-mode .splash-brand-sub {
   color: #94A3B8;
 }
@@ -2270,7 +2298,7 @@ body.dark-mode .splash-brand-sub {
 }
 
 /* ==========================================================================
-   인트로 모션그래픽 비디오 스플래시 (기분 좋은 시작 게이트 + 사운드 재생)
+   첫 접속 소개영상 오버레이 (현대적 글래스모피즘 시작 게이트 + 풀스크린 비디오)
    ========================================================================== */
 .intro-splash-overlay {
   position: fixed;
@@ -2290,16 +2318,20 @@ body.dark-mode .splash-brand-sub {
   transition: opacity 0.4s ease, visibility 0.4s ease;
   overflow: hidden;
   margin: 0;
-  padding: 0;
+  padding: 16px;
 }
 
 /* 기기별 테마 배경 일체화 */
-.intro-splash-overlay.theme-dark {
-  background-color: #0F172A;
+.intro-splash-overlay.theme-dark,
+[data-system-theme="dark"] .intro-splash-overlay,
+body.dark-mode .intro-splash-overlay {
+  background-color: #0B0F19;
 }
 
-.intro-splash-overlay.theme-light {
-  background-color: #FFFFFF;
+.intro-splash-overlay.theme-light,
+[data-system-theme="light"] .intro-splash-overlay,
+body:not(.dark-mode) .intro-splash-overlay {
+  background-color: #F8FAFC;
 }
 
 .intro-splash-overlay.hidden {
@@ -2308,12 +2340,7 @@ body.dark-mode .splash-brand-sub {
   pointer-events: none;
 }
 
-/* 첫 접속 이후 재방문 시 인트로 오버레이 완전 차단 (다시보기 수동 호출 force-show 예외) */
-.intro-already-seen #introSplashOverlay:not(.force-show) {
-  display: none !important;
-}
-
-/* 1. 기분 좋은 시작 대기 게이트 (현대적 플랫 디자인) */
+/* 1. 기분 좋은 시작 대기 게이트 (현대적이고 감각적인 글래스모피즘 카드) */
 .intro-start-gate {
   position: relative;
   display: flex;
@@ -2321,12 +2348,26 @@ body.dark-mode .splash-brand-sub {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 32px 24px;
-  max-width: 380px;
+  padding: 38px 28px 30px;
+  max-width: 370px;
   width: 100%;
-  animation: gateFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 30px 70px -15px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(226, 232, 240, 0.8);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  animation: gateFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 2;
+}
+
+.intro-splash-overlay.theme-dark .intro-start-gate,
+[data-system-theme="dark"] .intro-start-gate,
+body.dark-mode .intro-start-gate {
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .intro-start-gate.hidden {
@@ -2335,100 +2376,194 @@ body.dark-mode .splash-brand-sub {
 
 .intro-start-gate.fade-out {
   opacity: 0;
-  transform: scale(0.96);
+  transform: scale(0.95) translateY(-8px);
   pointer-events: none;
 }
 
 @keyframes gateFadeIn {
-  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.start-gate-mark {
-  width: 58px;
-  height: 58px;
-  border-radius: 12px;
-  background-color: #0F172A;
+/* 상단 웰컴 마이크로 뱃지 */
+.start-gate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  border-radius: 9999px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #4F46E5;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+.intro-splash-overlay.theme-dark .start-gate-badge,
+[data-system-theme="dark"] .start-gate-badge,
+body.dark-mode .start-gate-badge {
+  background: rgba(99, 102, 241, 0.16);
+  border-color: rgba(99, 102, 241, 0.35);
+  color: #A5B4FC;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  animation: badgeDotBreathe 2s infinite ease-in-out;
+}
+
+@keyframes badgeDotBreathe {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* 중앙 엠블럼 & 오로라 글로우 */
+.start-gate-mark-wrap {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.18);
+  margin-bottom: 20px;
 }
 
-.intro-splash-overlay.theme-dark .start-gate-mark {
+.mark-aurora-glow {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(14, 165, 233, 0.25) 50%, transparent 70%);
+  filter: blur(24px);
+  pointer-events: none;
+  animation: auroraBreathe 4s infinite alternate ease-in-out;
+}
+
+@keyframes auroraBreathe {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+.start-gate-mark {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(226, 232, 240, 0.8);
+  transition: transform 0.25s ease;
+}
+
+.intro-splash-overlay.theme-dark .start-gate-mark,
+[data-system-theme="dark"] .start-gate-mark,
+body.dark-mode .start-gate-mark {
   background-color: #1E293B;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .start-gate-title {
-  font-size: 1.45rem;
+  font-family: -apple-system, BlinkMacSystemFont, "SUIT Variable", "Pretendard Variable", sans-serif;
+  font-size: 1.48rem;
   font-weight: 800;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.04em;
   color: #0F172A;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  line-height: 1.25;
 }
 
-.intro-splash-overlay.theme-dark .start-gate-title {
-  color: #F8FAFC;
+.intro-splash-overlay.theme-dark .start-gate-title,
+[data-system-theme="dark"] .start-gate-title,
+body.dark-mode .start-gate-title {
+  color: #FFFFFF;
 }
 
 .start-gate-desc {
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 500;
   color: #64748B;
   margin-bottom: 28px;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
+  line-height: 1.55;
+  word-break: keep-all;
 }
 
-.intro-splash-overlay.theme-dark .start-gate-desc {
+.intro-splash-overlay.theme-dark .start-gate-desc,
+[data-system-theme="dark"] .start-gate-desc,
+body.dark-mode .start-gate-desc {
   color: #94A3B8;
 }
 
-/* 쫀득한 시작 버튼 (Squishy Elastic Button) */
+/* 현대적이고 세련된 사운드 온 알약(Pill) 버튼 */
 .btn-start-experience {
   width: 100%;
-  padding: 16px 22px;
-  background-color: #0F172A;
+  padding: 13px 20px;
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
   color: #FFFFFF;
-  border: none;
-  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.22);
+  box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.3), 0 4px 12px rgba(99, 102, 241, 0.25);
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  gap: 12px;
 }
 
-.intro-splash-overlay.theme-dark .btn-start-experience {
-  background-color: #F8FAFC;
+.intro-splash-overlay.theme-dark .btn-start-experience,
+[data-system-theme="dark"] .btn-start-experience,
+body.dark-mode .btn-start-experience {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%);
   color: #0F172A;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.35);
 }
 
 .btn-start-experience:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.28);
+  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.35), 0 6px 16px rgba(99, 102, 241, 0.35);
 }
 
 .btn-start-experience:active {
-  transform: scale(0.92);
-  transition-duration: 0.1s;
+  transform: scale(0.95);
 }
 
-/* 클릭 시 쫀득하게 수축 후 튀어나오는 팝 애니메이션 */
-.btn-start-experience.squish-pop {
-  animation: squishPopAnimation 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+/* 사운드 웨이브 이퀄라이저 막대 애니메이션 */
+.sound-wave-bars {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
-@keyframes squishPopAnimation {
-  0% { transform: scale(1); }
-  35% { transform: scale(0.90, 0.92); }
-  70% { transform: scale(1.10, 1.06); }
-  100% { transform: scale(1.02); opacity: 0; }
+.sound-wave-bars .bar {
+  width: 3px;
+  border-radius: 2px;
+  background-color: currentColor;
+  opacity: 0.9;
+  animation: soundWaveMove 1.2s ease-in-out infinite alternate;
+}
+
+.sound-wave-bars .bar-1 { height: 7px; animation-delay: 0.1s; }
+.sound-wave-bars .bar-2 { height: 16px; animation-delay: 0.35s; }
+.sound-wave-bars .bar-3 { height: 11px; animation-delay: 0.2s; }
+.sound-wave-bars .bar-4 { height: 18px; animation-delay: 0.45s; }
+
+@keyframes soundWaveMove {
+  0% { transform: scaleY(0.4); opacity: 0.6; }
+  50% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(0.3); opacity: 0.5; }
 }
 
 .btn-start-text-group {
@@ -2436,40 +2571,84 @@ body.dark-mode .splash-brand-sub {
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
+  flex: 1;
 }
 
 .btn-start-main {
-  font-size: 1.02rem;
-  font-weight: 800;
+  font-size: 0.92rem;
+  font-weight: 700;
   letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .btn-start-sub {
-  font-size: 0.74rem;
-  font-weight: 500;
-  opacity: 0.78;
+  font-size: 0.68rem;
+  font-weight: 600;
+  opacity: 0.72;
   margin-top: 2px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.btn-start-icon {
+.btn-start-icon-circle {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.16);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-left: 12px;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.intro-splash-overlay.theme-dark .btn-start-icon {
-  background-color: rgba(15, 23, 42, 0.12);
+.intro-splash-overlay.theme-dark .btn-start-icon-circle,
+[data-system-theme="dark"] .btn-start-icon-circle,
+body.dark-mode .btn-start-icon-circle {
+  background-color: rgba(15, 23, 42, 0.08);
 }
 
-.btn-start-experience:hover .btn-start-icon {
+.btn-start-experience:hover .btn-start-icon-circle {
   transform: translateX(3px);
+}
+
+/* 소개 영상 건너뛰고 바로 시작 텍스트 링크 버튼 */
+.btn-start-skip-text {
+  margin-top: 14px;
+  background: transparent;
+  border: none;
+  color: #64748B;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  transition: color 0.18s ease, background-color 0.18s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.intro-splash-overlay.theme-dark .btn-start-skip-text,
+[data-system-theme="dark"] .btn-start-skip-text,
+body.dark-mode .btn-start-skip-text {
+  color: #94A3B8;
+}
+
+.btn-start-skip-text:hover {
+  color: #0F172A;
+  background-color: rgba(15, 23, 42, 0.05);
+}
+
+.intro-splash-overlay.theme-dark .btn-start-skip-text:hover,
+[data-system-theme="dark"] .btn-start-skip-text:hover,
+body.dark-mode .btn-start-skip-text:hover {
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.btn-start-skip-text:active {
+  transform: scale(0.97);
 }
 
 /* 2. 풀스크린 인트로 비디오 영역 (모바일/태블릿 정중앙 완벽 고정) */

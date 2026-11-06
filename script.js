@@ -164,8 +164,8 @@ let introFinished = false;
 let introSafetyTimer = null;
 
 // ==========================================================================
-// 유튜브 스타일 초단기 퀵 브랜드 스플래시 인트로 (0.75초 미만 경쾌한 모션그래픽)
-// 매번 사이트 접속 및 새로고침 시 찰나의 순간 브랜드 아이덴티티를 전달
+// 유튜브 스타일 초단기 퀵 브랜드 스플래시 인트로 (0.7초 미만 경쾌한 모션그래픽)
+// 매번 사이트 재접속 시 찰나의 순간 브랜드 아이덴티티를 전달 (라이트/다크 테마 완벽 동기화)
 // ==========================================================================
 function runQuickBrandSplash(onComplete) {
   const splash = document.getElementById('quickBrandSplash');
@@ -173,6 +173,11 @@ function runQuickBrandSplash(onComplete) {
     if (typeof onComplete === 'function') onComplete();
     return;
   }
+
+  // 테마 동기화 확인
+  const isDark = document.documentElement.dataset.systemTheme === 'dark' || document.body.classList.contains('dark-mode');
+  splash.classList.toggle('theme-dark', isDark);
+  splash.classList.toggle('theme-light', !isDark);
 
   let dismissed = false;
   const dismiss = () => {
@@ -182,18 +187,18 @@ function runQuickBrandSplash(onComplete) {
     setTimeout(() => {
       splash.style.display = 'none';
       if (typeof onComplete === 'function') onComplete();
-    }, 200);
+    }, 180);
   };
 
-  // 100ms 경쾌한 촉각/청각 피드백 펄스
+  // 90ms 경쾌한 촉각/청각 피드백 펄스
   setTimeout(() => {
     try {
       playTactileAudioPulse('light');
     } catch (e) {}
-  }, 100);
+  }, 90);
 
-  // 0.65초(650ms) 후 자연스러운 페이드아웃 슬라이드 (총 약 0.85초 이내 완료)
-  const timer = setTimeout(dismiss, 650);
+  // 0.55초(550ms) 후 자연스러운 페이드아웃 슬라이드 (총 약 0.73초 이내 완료)
+  const timer = setTimeout(dismiss, 550);
 
   // 화면 터치/클릭 시 즉시 스킵
   splash.addEventListener('click', () => {
@@ -203,7 +208,145 @@ function runQuickBrandSplash(onComplete) {
 }
 
 // ==========================================================================
-// 인트로 동영상 다시보기 모달 제어 (설정 탭에서 사용자가 수동 클릭 시 재생)
+// 첫 접속 사용자 전용: 현대적 글래스모피즘 시작 게이트 & 사운드 온 소개 영상 경험
+// ==========================================================================
+function setupFirstVisitIntroExperience(onComplete) {
+  const overlay = document.getElementById('introSplashOverlay');
+  const startGate = document.getElementById('introStartGate');
+  const videoContainer = document.getElementById('introVideoContainer');
+  const video = document.getElementById('introVideo');
+  const btnStartExp = document.getElementById('btnStartExperience');
+  const btnStartSkip = document.getElementById('btnStartSkipToFeed');
+  const btnSkip = document.getElementById('btnIntroSkip');
+  const btnMute = document.getElementById('btnIntroMute');
+  const textMute = document.getElementById('textIntroMute');
+  const quickSplash = document.getElementById('quickBrandSplash');
+
+  // 첫 접속 시에는 퀵 브랜드 스플래시 완전 숨김
+  if (quickSplash) {
+    quickSplash.style.display = 'none';
+  }
+
+  if (!overlay || !startGate) {
+    if (typeof onComplete === 'function') onComplete();
+    return;
+  }
+
+  // 현재 시스템 테마 감지하여 테마 클래스 반영
+  const isDark = document.documentElement.dataset.systemTheme === 'dark' || document.body.classList.contains('dark-mode');
+  overlay.classList.toggle('theme-dark', isDark);
+  overlay.classList.toggle('theme-light', !isDark);
+  overlay.classList.remove('hidden');
+  overlay.style.display = 'flex';
+
+  // 시작 게이트 노출 및 비디오 컨테이너 숨김
+  startGate.classList.remove('hidden', 'fade-out');
+  startGate.style.display = 'flex';
+  if (videoContainer) {
+    videoContainer.classList.add('hidden');
+    videoContainer.style.display = 'none';
+  }
+
+  introFinished = false;
+  if (introSafetyTimer) clearTimeout(introSafetyTimer);
+
+  const finishIntro = () => {
+    if (introFinished) return;
+    introFinished = true;
+    if (introSafetyTimer) clearTimeout(introSafetyTimer);
+
+    // 첫 접속 인트로 시청 완료 기록
+    localStorage.setItem(STORAGE_KEYS.INTRO_SEEN, 'true');
+    document.documentElement.classList.remove('is-first-visit');
+    document.documentElement.classList.add('is-returning-user');
+
+    if (video) {
+      try {
+        video.pause();
+      } catch (e) {}
+    }
+
+    overlay.classList.add('hidden');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      if (typeof onComplete === 'function') onComplete();
+    }, 350);
+  };
+
+  // 1) "사운드와 함께 소개 영상 보기" 버튼 클릭
+  if (btnStartExp) {
+    btnStartExp.onclick = () => {
+      triggerHaptic('medium');
+      startGate.classList.add('fade-out');
+
+      setTimeout(() => {
+        startGate.classList.add('hidden');
+        startGate.style.display = 'none';
+
+        if (videoContainer && video) {
+          videoContainer.classList.remove('hidden');
+          videoContainer.style.display = 'flex';
+
+          const targetSrc = isDark ? '/videos/intro_algo_dark.mp4' : '/videos/intro_algo_light.mp4';
+          video.src = targetSrc;
+          try {
+            video.currentTime = 0;
+          } catch (e) {}
+          video.load();
+
+          video.muted = false;
+          video.volume = 1.0;
+          if (textMute) textMute.textContent = '소리 켬';
+
+          video.play().catch(() => {
+            // 브라우저 정책상 실패 시 음소거 재생 시도
+            video.muted = true;
+            if (textMute) textMute.textContent = '소리 끔';
+            video.play().catch(() => finishIntro());
+          });
+
+          video.onended = finishIntro;
+        } else {
+          finishIntro();
+        }
+      }, 250);
+    };
+  }
+
+  // 2) "소개 영상 건너뛰고 바로 시작하기" 버튼 클릭
+  if (btnStartSkip) {
+    btnStartSkip.onclick = () => {
+      triggerHaptic('light');
+      finishIntro();
+    };
+  }
+
+  // 비디오 컨트롤러 이벤트 (건너뛰기, 음소거 토글)
+  if (btnSkip) {
+    btnSkip.onclick = (e) => {
+      e.stopPropagation();
+      triggerHaptic('light');
+      finishIntro();
+    };
+  }
+
+  if (btnMute && video) {
+    btnMute.onclick = (e) => {
+      e.stopPropagation();
+      video.muted = !video.muted;
+      triggerHaptic('light');
+      if (textMute) textMute.textContent = video.muted ? '소리 끔' : '소리 켬';
+    };
+  }
+
+  // 28초 안전 타이머 (비디오 로딩 지연 대응)
+  introSafetyTimer = setTimeout(() => {
+    if (!introFinished) finishIntro();
+  }, 28000);
+}
+
+// ==========================================================================
+// 인트로 동영상 다시보기 모달 제어 (설정 탭 등에서 사용자가 수동 클릭 시 재생)
 // ==========================================================================
 function setupIntroVideoModal() {
   const overlay = document.getElementById('introSplashOverlay');
@@ -247,10 +390,10 @@ function setupIntroVideoModal() {
     video.play().catch(() => {
       video.muted = true;
       if (textMute) textMute.textContent = '소리 끔';
-      video.play().catch(() => finishIntro());
+      video.play().catch(() => finishIntroModal());
     });
 
-    const finishIntro = () => {
+    const finishIntroModal = () => {
       if (introFinished) return;
       introFinished = true;
       if (introSafetyTimer) clearTimeout(introSafetyTimer);
@@ -266,13 +409,13 @@ function setupIntroVideoModal() {
       }, 350);
     };
 
-    video.onended = finishIntro;
+    video.onended = finishIntroModal;
 
     if (btnSkip) {
       btnSkip.onclick = (e) => {
         e.stopPropagation();
         triggerHaptic('light');
-        finishIntro();
+        finishIntroModal();
       };
     }
 
@@ -286,11 +429,11 @@ function setupIntroVideoModal() {
     }
 
     introSafetyTimer = setTimeout(() => {
-      if (!introFinished) finishIntro();
+      if (!introFinished) finishIntroModal();
     }, 24000);
   };
 
-  // 외부(내 알고리즘 탭 등)에서 원하는 테마 인트로를 바로 감상할 수 있도록 함수 등록
+  // 외부(내 알고리즘 탭 등)에서 원하는 테마 인트로를 바로 감상할 수 있도록 전역 함수 등록
   window.playIntroWithTheme = (theme) => {
     overlay.classList.add('force-show');
     overlay.classList.remove('hidden');
@@ -310,8 +453,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // 수동 다시보기 모달 리스너 준비
   setupIntroVideoModal();
 
-  // 매 접속 시 1초도 안 되는(0.75초) 유튜브 스타일 퀵 브랜드 스플래시 애니메이션 실행 후 메인 피드 로드
-  runQuickBrandSplash(() => {
+  // 인트로 종료 후 온보딩 / 코치마크 진행 핸들러
+  const afterIntroProceed = () => {
     const hasOnboarded = localStorage.getItem(STORAGE_KEYS.ONBOARDED);
     if (!hasOnboarded) {
       openOnboarding();
@@ -321,7 +464,18 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => startCoachmarkTour(), 400);
       }
     }
-  });
+  };
+
+  // 첫 접속 여부 판별
+  const hasSeenIntro = localStorage.getItem(STORAGE_KEYS.INTRO_SEEN) === 'true';
+
+  if (!hasSeenIntro) {
+    // [첫 접속]: 1초 퀵 애니메이션 대신 세련된 소개 영상 게이트 표시!
+    setupFirstVisitIntroExperience(afterIntroProceed);
+  } else {
+    // [그 후 매 접속]: 소개 영상은 절대 나오지 않고, 1초 미만(0.7초)의 퀵 브랜드 스플래시 애니메이션 매번 실행!
+    runQuickBrandSplash(afterIntroProceed);
+  }
 });
 
 // 로컬 설정 불러오기 (첫 방문 고정 피드 vs 재접속/새로고침 유동 피드 처리)
