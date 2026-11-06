@@ -15,7 +15,8 @@ const STORAGE_KEYS = {
   ONBOARDED: 'mamgorithm_onboarded_v2',
   COACHMARK_SEEN: 'mamgorithm_coachmark_seen',
   VISIT_COUNT: 'mamgorithm_visit_count_v1',
-  CUSTOM_CARDS: 'mamgorithm_custom_cards_v1'
+  CUSTOM_CARDS: 'mamgorithm_custom_cards_v1',
+  INTRO_SEEN: 'mamgorithm_intro_seen_v1'
 };
 
 // 애플리케이션 상태 (0~100% 1% 단위 가중치 스케일)
@@ -162,6 +163,25 @@ function triggerHaptic(type = 'light') {
 let introFinished = false;
 let introSafetyTimer = null;
 
+// 사이트 첫 접속 여부 판별 (첫 접속 외에는 시작영상 자동 재생 차단)
+function isFirstVisitIntro() {
+  try {
+    const introSeen = localStorage.getItem(STORAGE_KEYS.INTRO_SEEN);
+    if (introSeen === 'true') return false;
+
+    // 이미 온보딩을 거쳤거나 방문 횟수가 2 이상인 경우에도 이미 접속한 사용자로 판별
+    const hasOnboarded = localStorage.getItem(STORAGE_KEYS.ONBOARDED);
+    const visitCount = parseInt(localStorage.getItem(STORAGE_KEYS.VISIT_COUNT) || '0', 10);
+    if (hasOnboarded || visitCount > 1) {
+      localStorage.setItem(STORAGE_KEYS.INTRO_SEEN, 'true');
+      return false;
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 function setupIntroExperience(onComplete) {
   const overlay = document.getElementById('introSplashOverlay');
   const startGate = document.getElementById('introStartGate');
@@ -177,9 +197,38 @@ function setupIntroExperience(onComplete) {
     return;
   }
 
-  // 첫 접속: 무조건 라이트 테마 게이트 대기
+  // 외부(내 알고리즘 탭 등)에서 원하는 테마 인트로를 바로 감상할 수 있도록 함수 등록
+  window.playIntroWithTheme = (theme) => {
+    overlay.classList.add('force-show');
+    overlay.style.display = 'flex';
+    overlay.classList.remove('hidden');
+    if (startGate) {
+      startGate.classList.add('hidden');
+      startGate.style.display = 'none';
+    }
+    if (videoContainer) {
+      videoContainer.classList.remove('hidden');
+      videoContainer.style.display = 'flex';
+    }
+    startPlayback(theme);
+  };
+
+  const isFirst = isFirstVisitIntro();
+  if (!isFirst) {
+    // 첫 접속이 아닌 경우 시작영상을 절대 재생하지 않고 즉시 숨김
+    overlay.classList.add('hidden');
+    overlay.classList.remove('force-show');
+    overlay.style.display = 'none';
+    document.documentElement.classList.add('intro-already-seen');
+    if (typeof onComplete === 'function') {
+      onComplete();
+    }
+    return;
+  }
+
+  // 첫 접속일 때만: 라이트 테마 게이트 대기
   overlay.classList.add('theme-light');
-  overlay.classList.remove('theme-dark', 'hidden');
+  overlay.classList.remove('theme-dark', 'hidden', 'force-show');
   overlay.style.display = 'flex';
   if (startGate) {
     startGate.classList.remove('hidden', 'fade-out');
@@ -235,6 +284,12 @@ function setupIntroExperience(onComplete) {
       introFinished = true;
       if (introSafetyTimer) clearTimeout(introSafetyTimer);
 
+      // 첫 접속 인트로 시청 완료 기록
+      try {
+        localStorage.setItem(STORAGE_KEYS.INTRO_SEEN, 'true');
+        document.documentElement.classList.add('intro-already-seen');
+      } catch (e) {}
+
       try {
         video.pause();
       } catch (e) {}
@@ -253,6 +308,7 @@ function setupIntroExperience(onComplete) {
       }
 
       overlay.classList.add('hidden');
+      overlay.classList.remove('force-show');
       setTimeout(() => {
         overlay.style.display = 'none';
         if (typeof onComplete === 'function') {
@@ -293,21 +349,6 @@ function setupIntroExperience(onComplete) {
     setTimeout(() => {
       startPlayback('light');
     }, 180);
-  };
-
-  // 외부(내 알고리즘 탭 등)에서 원하는 테마 인트로를 바로 감상할 수 있도록 함수 등록
-  window.playIntroWithTheme = (theme) => {
-    overlay.style.display = 'flex';
-    overlay.classList.remove('hidden');
-    if (startGate) {
-      startGate.classList.add('hidden');
-      startGate.style.display = 'none';
-    }
-    if (videoContainer) {
-      videoContainer.classList.remove('hidden');
-      videoContainer.style.display = 'flex';
-    }
-    startPlayback(theme);
   };
 }
 

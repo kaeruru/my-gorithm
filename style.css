@@ -2154,6 +2154,11 @@ body.dark-mode .bottom-tab-bar {
   pointer-events: none;
 }
 
+/* 첫 접속 이후 재방문 시 인트로 오버레이 완전 차단 (다시보기 수동 호출 force-show 예외) */
+.intro-already-seen #introSplashOverlay:not(.force-show) {
+  display: none !important;
+}
+
 /* 1. 기분 좋은 시작 대기 게이트 (현대적 플랫 디자인) */
 .intro-start-gate {
   position: relative;

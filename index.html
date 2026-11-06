@@ -24,12 +24,19 @@
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/sun-typeface/suit@2/fonts/variable/woff2/SUIT-Variable.css" />
   <link rel="stylesheet" href="style.css" />
 
-  <!-- 기기별 개인 테마 즉시 감지 (인트로 영상 및 스플래시 배경 깜빡임 방지) -->
+  <!-- 기기별 개인 테마 및 첫 접속 인트로 시청 여부 즉시 감지 (인트로 영상 및 스플래시 배경 깜빡임 방지) -->
   <script>
     (function() {
       try {
         var isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         document.documentElement.dataset.systemTheme = isDark ? 'dark' : 'light';
+
+        var introSeen = localStorage.getItem('mamgorithm_intro_seen_v1') === 'true' ||
+                        Boolean(localStorage.getItem('mamgorithm_onboarded_v2')) ||
+                        (parseInt(localStorage.getItem('mamgorithm_visit_count_v1') || '0', 10) > 1);
+        if (introSeen) {
+          document.documentElement.classList.add('intro-already-seen');
+        }
       } catch (e) {}
     })();
   </script>
