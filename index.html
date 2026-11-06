@@ -42,6 +42,24 @@
   </script>
 </head>
 <body>
+  <!-- 유튜브 앱 스타일 1초 미만(0.76초) 초단기 퀵 브랜드 스플래시 인트로 (매 접속 시 경쾌하게 재생) -->
+  <div class="quick-brand-splash" id="quickBrandSplash" aria-hidden="true">
+    <div class="splash-content">
+      <div class="splash-symbol-box">
+        <svg class="splash-symbol-svg" width="52" height="52" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect class="splash-cube cube-study" x="3" y="3" width="12" height="12" rx="3.5" fill="#6366F1"/>
+          <rect class="splash-cube cube-tech" x="19" y="3" width="12" height="12" rx="3.5" fill="#0EA5E9"/>
+          <rect class="splash-cube cube-culture" x="3" y="19" width="12" height="12" rx="3.5" fill="#E11D48"/>
+          <rect class="splash-cube cube-hobby" x="19" y="19" width="12" height="12" rx="3.5" fill="#10B981"/>
+        </svg>
+      </div>
+      <div class="splash-wordmark">
+        <span class="splash-brand-title">맘고리즘</span>
+        <span class="splash-brand-sub">내맘대로 추천 피드</span>
+      </div>
+    </div>
+  </div>
+
   <!-- 메인 반응형 웹 컨테이너 -->
   <div class="web-container">
 
@@ -744,8 +762,8 @@
     <input type="checkbox" switch id="iosHapticSwitch" tabindex="-1" />
   </label>
 
-  <!-- 첫 접속 인트로 모션그래픽 오버레이 (기분 좋은 시작 게이트 + 모바일/태블릿 풀스크린 비디오) -->
-  <div class="intro-splash-overlay" id="introSplashOverlay">
+  <!-- 인트로 영상 다시보기용 풀스크린 모달 (설정 탭에서 수동 호출 시 재생) -->
+  <div class="intro-splash-overlay hidden" id="introSplashOverlay" style="display: none;">
     <!-- 1) 쫀득한 시작 대기 화면 -->
     <div class="intro-start-gate" id="introStartGate">
       <div class="start-gate-mark" aria-hidden="true">

@@ -163,81 +163,58 @@ function triggerHaptic(type = 'light') {
 let introFinished = false;
 let introSafetyTimer = null;
 
-// 사이트 첫 접속 여부 판별 (첫 접속 외에는 시작영상 자동 재생 차단)
-function isFirstVisitIntro() {
-  try {
-    const introSeen = localStorage.getItem(STORAGE_KEYS.INTRO_SEEN);
-    if (introSeen === 'true') return false;
-
-    // 이미 온보딩을 거쳤거나 방문 횟수가 2 이상인 경우에도 이미 접속한 사용자로 판별
-    const hasOnboarded = localStorage.getItem(STORAGE_KEYS.ONBOARDED);
-    const visitCount = parseInt(localStorage.getItem(STORAGE_KEYS.VISIT_COUNT) || '0', 10);
-    if (hasOnboarded || visitCount > 1) {
-      localStorage.setItem(STORAGE_KEYS.INTRO_SEEN, 'true');
-      return false;
-    }
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-function setupIntroExperience(onComplete) {
-  const overlay = document.getElementById('introSplashOverlay');
-  const startGate = document.getElementById('introStartGate');
-  const videoContainer = document.getElementById('introVideoContainer');
-  const video = document.getElementById('introVideo');
-  const btnStart = document.getElementById('btnStartExperience');
-  const btnSkip = document.getElementById('btnIntroSkip');
-  const btnMute = document.getElementById('btnIntroMute');
-  const textMute = document.getElementById('textIntroMute');
-
-  if (!overlay || !video || !btnStart) {
+// ==========================================================================
+// 유튜브 스타일 초단기 퀵 브랜드 스플래시 인트로 (0.75초 미만 경쾌한 모션그래픽)
+// 매번 사이트 접속 및 새로고침 시 찰나의 순간 브랜드 아이덴티티를 전달
+// ==========================================================================
+function runQuickBrandSplash(onComplete) {
+  const splash = document.getElementById('quickBrandSplash');
+  if (!splash) {
     if (typeof onComplete === 'function') onComplete();
     return;
   }
 
-  // 외부(내 알고리즘 탭 등)에서 원하는 테마 인트로를 바로 감상할 수 있도록 함수 등록
-  window.playIntroWithTheme = (theme) => {
-    overlay.classList.add('force-show');
-    overlay.style.display = 'flex';
-    overlay.classList.remove('hidden');
-    if (startGate) {
-      startGate.classList.add('hidden');
-      startGate.style.display = 'none';
-    }
-    if (videoContainer) {
-      videoContainer.classList.remove('hidden');
-      videoContainer.style.display = 'flex';
-    }
-    startPlayback(theme);
+  let dismissed = false;
+  const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
+    splash.classList.add('splash-dismissed');
+    setTimeout(() => {
+      splash.style.display = 'none';
+      if (typeof onComplete === 'function') onComplete();
+    }, 200);
   };
 
-  const isFirst = isFirstVisitIntro();
-  if (!isFirst) {
-    // 첫 접속이 아닌 경우 시작영상을 절대 재생하지 않고 즉시 숨김
-    overlay.classList.add('hidden');
-    overlay.classList.remove('force-show');
-    overlay.style.display = 'none';
-    document.documentElement.classList.add('intro-already-seen');
-    if (typeof onComplete === 'function') {
-      onComplete();
-    }
-    return;
-  }
+  // 100ms 경쾌한 촉각/청각 피드백 펄스
+  setTimeout(() => {
+    try {
+      playTactileAudioPulse('light');
+    } catch (e) {}
+  }, 100);
 
-  // 첫 접속일 때만: 라이트 테마 게이트 대기
-  overlay.classList.add('theme-light');
-  overlay.classList.remove('theme-dark', 'hidden', 'force-show');
-  overlay.style.display = 'flex';
-  if (startGate) {
-    startGate.classList.remove('hidden', 'fade-out');
-    startGate.style.display = 'flex';
-  }
-  if (videoContainer) {
-    videoContainer.classList.add('hidden');
-    videoContainer.style.display = 'none';
-  }
+  // 0.65초(650ms) 후 자연스러운 페이드아웃 슬라이드 (총 약 0.85초 이내 완료)
+  const timer = setTimeout(dismiss, 650);
+
+  // 화면 터치/클릭 시 즉시 스킵
+  splash.addEventListener('click', () => {
+    clearTimeout(timer);
+    dismiss();
+  }, { once: true });
+}
+
+// ==========================================================================
+// 인트로 동영상 다시보기 모달 제어 (설정 탭에서 사용자가 수동 클릭 시 재생)
+// ==========================================================================
+function setupIntroVideoModal() {
+  const overlay = document.getElementById('introSplashOverlay');
+  const startGate = document.getElementById('introStartGate');
+  const videoContainer = document.getElementById('introVideoContainer');
+  const video = document.getElementById('introVideo');
+  const btnSkip = document.getElementById('btnIntroSkip');
+  const btnMute = document.getElementById('btnIntroMute');
+  const textMute = document.getElementById('textIntroMute');
+
+  if (!overlay || !video) return;
 
   const startPlayback = (targetTheme = 'light') => {
     introFinished = false;
@@ -254,67 +231,39 @@ function setupIntroExperience(onComplete) {
     } catch (e) {}
     video.load();
 
-    // 사용자가 직접 버튼을 클릭했으므로 소리(Audio) 100% 켜짐!
     video.muted = false;
     video.volume = 1.0;
     if (textMute) textMute.textContent = '소리 켬';
 
-    if (startGate) startGate.classList.add('fade-out');
+    if (startGate) {
+      startGate.classList.add('hidden');
+      startGate.style.display = 'none';
+    }
+    if (videoContainer) {
+      videoContainer.classList.remove('hidden');
+      videoContainer.style.display = 'flex';
+    }
 
-    setTimeout(() => {
-      if (startGate) {
-        startGate.classList.add('hidden');
-        startGate.style.display = 'none';
-      }
-      if (videoContainer) {
-        videoContainer.classList.remove('hidden');
-        videoContainer.style.display = 'flex';
-      }
-
-      video.play().catch(() => {
-        // 혹시라도 브라우저가 첫 재생 차단 시 음소거로 재생 지원
-        video.muted = true;
-        if (textMute) textMute.textContent = '소리 끔';
-        video.play().catch(() => finishIntro());
-      });
-    }, 220);
+    video.play().catch(() => {
+      video.muted = true;
+      if (textMute) textMute.textContent = '소리 끔';
+      video.play().catch(() => finishIntro());
+    });
 
     const finishIntro = () => {
       if (introFinished) return;
       introFinished = true;
       if (introSafetyTimer) clearTimeout(introSafetyTimer);
 
-      // 첫 접속 인트로 시청 완료 기록
-      try {
-        localStorage.setItem(STORAGE_KEYS.INTRO_SEEN, 'true');
-        document.documentElement.classList.add('intro-already-seen');
-      } catch (e) {}
-
       try {
         video.pause();
       } catch (e) {}
-
-      // 영상 테마에 맞추어 웹사이트 테마도 자연스럽게 연동!
-      if (isDark) {
-        document.body.classList.add('dark-mode');
-        try {
-          localStorage.setItem(STORAGE_KEYS.THEME, 'dark');
-        } catch (e) {}
-      } else {
-        document.body.classList.remove('dark-mode');
-        try {
-          localStorage.setItem(STORAGE_KEYS.THEME, 'light');
-        } catch (e) {}
-      }
 
       overlay.classList.add('hidden');
       overlay.classList.remove('force-show');
       setTimeout(() => {
         overlay.style.display = 'none';
-        if (typeof onComplete === 'function') {
-          onComplete();
-        }
-      }, 450);
+      }, 350);
     };
 
     video.onended = finishIntro;
@@ -336,19 +285,17 @@ function setupIntroExperience(onComplete) {
       };
     }
 
-    // 24초 안전 타이머 (네트워크 멈춤 방지)
     introSafetyTimer = setTimeout(() => {
       if (!introFinished) finishIntro();
     }, 24000);
   };
 
-  // 쫀득한 시작 버튼 클릭 시 사운드와 함께 재생 시작
-  btnStart.onclick = () => {
-    triggerHaptic('success');
-    btnStart.classList.add('squish-pop');
-    setTimeout(() => {
-      startPlayback('light');
-    }, 180);
+  // 외부(내 알고리즘 탭 등)에서 원하는 테마 인트로를 바로 감상할 수 있도록 함수 등록
+  window.playIntroWithTheme = (theme) => {
+    overlay.classList.add('force-show');
+    overlay.classList.remove('hidden');
+    overlay.style.display = 'flex';
+    startPlayback(theme);
   };
 }
 
@@ -360,15 +307,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialSkeletonCount = window.innerWidth >= 768 ? 4 : 3;
   renderAllViews({ withSkeleton: true, delay: 280, skeletonCount: initialSkeletonCount });
 
-  // 첫 접속 쫀득한 시작 게이트 및 인트로 모션그래픽 비디오 재생 후 온보딩 화면 연결
-  setupIntroExperience(() => {
+  // 수동 다시보기 모달 리스너 준비
+  setupIntroVideoModal();
+
+  // 매 접속 시 1초도 안 되는(0.75초) 유튜브 스타일 퀵 브랜드 스플래시 애니메이션 실행 후 메인 피드 로드
+  runQuickBrandSplash(() => {
     const hasOnboarded = localStorage.getItem(STORAGE_KEYS.ONBOARDED);
     if (!hasOnboarded) {
       openOnboarding();
     } else {
       const hasSeenCoachmark = localStorage.getItem(STORAGE_KEYS.COACHMARK_SEEN);
       if (!hasSeenCoachmark) {
-        setTimeout(() => startCoachmarkTour(), 500);
+        setTimeout(() => startCoachmarkTour(), 400);
       }
     }
   });
