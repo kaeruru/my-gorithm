@@ -164,8 +164,8 @@ let introFinished = false;
 let introSafetyTimer = null;
 
 // ==========================================================================
-// 유튜브 스타일 초단기 퀵 브랜드 스플래시 인트로 (0.7초 미만 경쾌한 모션그래픽)
-// 매번 사이트 재접속 시 찰나의 순간 브랜드 아이덴티티를 전달 (라이트/다크 테마 완벽 동기화)
+// 유튜브 스타일 퀵 브랜드 스플래시 인트로 (여유롭고 품격 있는 1.5초 숏폼 모션)
+// 매번 사이트 재접속 시 기분 좋은 브랜드 아이덴티티를 온전히 전달 (라이트/다크 테마 완벽 동기화)
 // ==========================================================================
 function runQuickBrandSplash(onComplete) {
   const splash = document.getElementById('quickBrandSplash');
@@ -187,20 +187,20 @@ function runQuickBrandSplash(onComplete) {
     setTimeout(() => {
       splash.style.display = 'none';
       if (typeof onComplete === 'function') onComplete();
-    }, 180);
+    }, 280);
   };
 
-  // 90ms 경쾌한 촉각/청각 피드백 펄스
+  // 140ms 경쾌한 촉각/청각 피드백 펄스
   setTimeout(() => {
     try {
       playTactileAudioPulse('light');
     } catch (e) {}
-  }, 90);
+  }, 140);
 
-  // 0.55초(550ms) 후 자연스러운 페이드아웃 슬라이드 (총 약 0.73초 이내 완료)
-  const timer = setTimeout(dismiss, 550);
+  // 1.25초(1250ms) 동안 여유롭고 기분 좋은 브랜드 모션 연출 후 페이드아웃 (총 약 1.5초)
+  const timer = setTimeout(dismiss, 1250);
 
-  // 화면 터치/클릭 시 즉시 스킵
+  // 화면 터치/클릭 시 언제든 즉시 스킵 가능
   splash.addEventListener('click', () => {
     clearTimeout(timer);
     dismiss();

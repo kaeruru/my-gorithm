@@ -2129,8 +2129,8 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
 }
 
 /* ==========================================================================
-   유튜브 스타일 초단기 퀵 브랜드 스플래시 인트로 (0.7초 미만 숏폼 애니메이션)
-   매번 사이트 재접속 시 경쾌한 찰나의 브랜드 아이덴티티 전달
+   유튜브 스타일 퀵 브랜드 스플래시 인트로 (여유롭고 품격 있는 1.4초 숏폼 모션)
+   매번 사이트 재접속 시 기분 좋은 브랜드 아이덴티티를 온전히 전달
    ========================================================================== */
 .quick-brand-splash {
   position: fixed;
@@ -2143,11 +2143,11 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #FFFFFF;
+  background-color: var(--bg-page, #F8FAFC);
   user-select: none;
   -webkit-user-select: none;
   overflow: hidden;
-  transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1), transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: opacity, transform;
 }
 
@@ -2162,12 +2162,12 @@ body:not(.dark-mode) .quick-brand-splash {
 [data-system-theme="dark"] .quick-brand-splash,
 .quick-brand-splash.theme-dark,
 body.dark-mode .quick-brand-splash {
-  background-color: #0B0F19;
+  background-color: #090D16;
 }
 
 .quick-brand-splash.splash-dismissed {
   opacity: 0 !important;
-  transform: scale(1.06) !important;
+  transform: scale(1.08) !important;
   pointer-events: none !important;
   visibility: hidden !important;
 }
@@ -2177,23 +2177,23 @@ body.dark-mode .quick-brand-splash {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .splash-symbol-box {
-  width: 58px;
-  height: 58px;
+  width: 68px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 10px 24px rgba(99, 102, 241, 0.22));
-  animation: splashSymbolElastic 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  filter: drop-shadow(0 12px 28px rgba(99, 102, 241, 0.25));
+  animation: splashSymbolElastic 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 [data-system-theme="dark"] .splash-symbol-box,
 .quick-brand-splash.theme-dark .splash-symbol-box,
 body.dark-mode .splash-symbol-box {
-  filter: drop-shadow(0 0 24px rgba(99, 102, 241, 0.55)) drop-shadow(0 0 12px rgba(14, 165, 233, 0.4));
+  filter: drop-shadow(0 0 28px rgba(99, 102, 241, 0.6)) drop-shadow(0 0 14px rgba(14, 165, 233, 0.45));
 }
 
 .splash-cube {
@@ -2203,19 +2203,19 @@ body.dark-mode .splash-symbol-box {
 }
 
 .cube-study {
-  animation: splashCubeSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.02s forwards;
+  animation: splashCubeSpring 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
 }
 
 .cube-tech {
-  animation: splashCubeSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.05s forwards;
+  animation: splashCubeSpring 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.13s forwards;
 }
 
 .cube-culture {
-  animation: splashCubeSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.08s forwards;
+  animation: splashCubeSpring 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.21s forwards;
 }
 
 .cube-hobby {
-  animation: splashCubeSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.11s forwards;
+  animation: splashCubeSpring 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 0.29s forwards;
 }
 
 .splash-wordmark {
@@ -2223,15 +2223,15 @@ body.dark-mode .splash-symbol-box {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 4px;
   opacity: 0;
-  transform: translateY(8px);
-  animation: splashTextRise 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.13s forwards;
+  transform: translateY(12px);
+  animation: splashTextRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
 }
 
 .splash-brand-title {
-  font-family: -apple-system, BlinkMacSystemFont, "SUIT Variable", "Pretendard Variable", sans-serif;
-  font-size: 1.35rem;
+  font-family: var(--font-family);
+  font-size: 1.45rem;
   font-weight: 800;
   letter-spacing: -0.04em;
   color: #0F172A;
@@ -2242,13 +2242,13 @@ body.dark-mode .splash-symbol-box {
 .quick-brand-splash.theme-dark .splash-brand-title,
 body.dark-mode .splash-brand-title {
   color: #F8FAFC;
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+  text-shadow: 0 0 24px rgba(255, 255, 255, 0.25);
 }
 
 .splash-brand-sub {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   color: #64748B;
   text-transform: uppercase;
 }
@@ -2262,11 +2262,14 @@ body.dark-mode .splash-brand-sub {
 @keyframes splashCubeSpring {
   0% {
     opacity: 0;
-    transform: scale(0.2) translate(-8px, -8px) rotate(-18deg);
+    transform: scale(0.15) translate(-14px, -14px) rotate(-28deg);
   }
-  65% {
+  60% {
     opacity: 1;
-    transform: scale(1.18) translate(0, 0) rotate(3deg);
+    transform: scale(1.18) translate(0, 0) rotate(4deg);
+  }
+  82% {
+    transform: scale(0.96) rotate(-2deg);
   }
   100% {
     opacity: 1;
@@ -2276,10 +2279,13 @@ body.dark-mode .splash-brand-sub {
 
 @keyframes splashSymbolElastic {
   0% {
-    transform: scale(0.65) rotate(-10deg);
+    transform: scale(0.6) rotate(-12deg);
   }
-  55% {
-    transform: scale(1.08) rotate(2deg);
+  60% {
+    transform: scale(1.08) rotate(3deg);
+  }
+  80% {
+    transform: scale(0.98) rotate(-1deg);
   }
   100% {
     transform: scale(1) rotate(0deg);
@@ -2289,43 +2295,41 @@ body.dark-mode .splash-brand-sub {
 @keyframes splashTextRise {
   0% {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(14px);
+    filter: blur(4px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
+    filter: blur(0);
   }
 }
 
 /* ==========================================================================
-   첫 접속 소개영상 오버레이 (현대적 글래스모피즘 시작 게이트 + 풀스크린 비디오)
+   첫 접속 소개영상 오버레이 (사이트 일체형 웰컴 게이트 + 풀스크린 비디오)
    ========================================================================== */
 .intro-splash-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   width: 100vw;
   width: 100dvw;
   height: 100vh;
   height: 100dvh;
   z-index: 99999;
-  background-color: #FFFFFF;
+  background-color: var(--bg-page, #F8FAFC);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
   overflow: hidden;
   margin: 0;
   padding: 16px;
 }
 
-/* 기기별 테마 배경 일체화 */
 .intro-splash-overlay.theme-dark,
 [data-system-theme="dark"] .intro-splash-overlay,
 body.dark-mode .intro-splash-overlay {
-  background-color: #0B0F19;
+  background-color: #090D16;
 }
 
 .intro-splash-overlay.theme-light,
@@ -2340,34 +2344,102 @@ body:not(.dark-mode) .intro-splash-overlay {
   pointer-events: none;
 }
 
-/* 1. 기분 좋은 시작 대기 게이트 (현대적이고 감각적인 글래스모피즘 카드) */
+/* 은은한 4색 앰비언트 메쉬 배경 블러 */
+.intro-ambient-mesh {
+  position: absolute;
+  inset: -60px;
+  overflow: hidden;
+  pointer-events: none;
+  filter: blur(70px);
+  opacity: 0.42;
+  z-index: 0;
+}
+
+.intro-splash-overlay.theme-dark .intro-ambient-mesh,
+body.dark-mode .intro-ambient-mesh {
+  opacity: 0.30;
+}
+
+.mesh-blob {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+.blob-study {
+  width: 280px;
+  height: 280px;
+  background: #6366F1;
+  top: 10%;
+  left: 8%;
+  animation: meshFloat1 9s infinite alternate ease-in-out;
+}
+
+.blob-tech {
+  width: 240px;
+  height: 240px;
+  background: #0EA5E9;
+  top: 15%;
+  right: 10%;
+  animation: meshFloat2 10s infinite alternate ease-in-out;
+}
+
+.blob-culture {
+  width: 260px;
+  height: 260px;
+  background: #E11D48;
+  bottom: 12%;
+  left: 12%;
+  animation: meshFloat2 11s infinite alternate ease-in-out;
+}
+
+.blob-hobby {
+  width: 270px;
+  height: 270px;
+  background: #10B981;
+  bottom: 10%;
+  right: 8%;
+  animation: meshFloat1 8s infinite alternate ease-in-out;
+}
+
+@keyframes meshFloat1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(25px, -30px) scale(1.15); }
+}
+
+@keyframes meshFloat2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-30px, 25px) scale(1.12); }
+}
+
+/* 1. 사이트 룩앤필과 100% 일체화된 프리미엄 웰컴 게이트 카드 */
 .intro-start-gate {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 38px 28px 30px;
-  max-width: 370px;
+  align-items: stretch;
+  text-align: left;
+  padding: 32px 26px 24px;
+  max-width: 410px;
   width: 100%;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 30px 70px -15px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(226, 232, 240, 0.8);
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  animation: gateFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 22px;
+  background-color: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 24px 50px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  animation: gateCardPop 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 2;
+  gap: 20px;
 }
 
 .intro-splash-overlay.theme-dark .intro-start-gate,
 [data-system-theme="dark"] .intro-start-gate,
 body.dark-mode .intro-start-gate {
-  background: rgba(15, 23, 42, 0.82);
+  background-color: rgba(15, 23, 42, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: 0 28px 65px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
 }
 
 .intro-start-gate.hidden {
@@ -2376,279 +2448,354 @@ body.dark-mode .intro-start-gate {
 
 .intro-start-gate.fade-out {
   opacity: 0;
-  transform: scale(0.95) translateY(-8px);
+  transform: scale(0.96) translateY(-8px);
   pointer-events: none;
 }
 
-@keyframes gateFadeIn {
-  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+@keyframes gateCardPop {
+  from { opacity: 0; transform: scale(0.92) translateY(18px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* 상단 웰컴 마이크로 뱃지 */
-.start-gate-badge {
-  display: inline-flex;
+/* 상단 브랜드 헤더 (사이트 app-header 브랜드와 일치) */
+.start-gate-brand {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 13px;
-  border-radius: 9999px;
-  background: rgba(99, 102, 241, 0.08);
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  color: #4F46E5;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 22px;
+  gap: 10px;
+  padding-bottom: 4px;
 }
 
-.intro-splash-overlay.theme-dark .start-gate-badge,
-[data-system-theme="dark"] .start-gate-badge,
-body.dark-mode .start-gate-badge {
+.start-gate-logo-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: var(--bg-subtle, #F1F5F9);
+  border: 1px solid var(--border-color, #E2E8F0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.intro-splash-overlay.theme-dark .start-gate-logo-mark,
+body.dark-mode .start-gate-logo-mark {
+  background-color: rgba(30, 41, 59, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.start-gate-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.start-gate-brand-name {
+  font-family: var(--font-family);
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main, #0F172A);
+  line-height: 1.15;
+}
+
+.start-gate-brand-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748B);
+  letter-spacing: 0.02em;
+}
+
+/* 게이트 본문 텍스트 */
+.start-gate-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.start-gate-title {
+  font-family: var(--font-family);
+  font-size: 1.38rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--text-main, #0F172A);
+  line-height: 1.25;
+}
+
+.start-gate-desc {
+  font-size: 0.86rem;
+  font-weight: 480;
+  color: var(--text-muted, #64748B);
+  line-height: 1.55;
+  word-break: keep-all;
+  margin: 0;
+}
+
+/* 4개 분야 카테고리 칩 바 */
+.start-gate-categories {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.gate-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background-color: var(--bg-subtle, #F1F5F9);
+  border: 1px solid var(--border-color, #E2E8F0);
+  color: var(--text-main, #0F172A);
+}
+
+.gate-cat-pill .pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.gate-cat-pill.cat-study {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.22);
+  color: #4F46E5;
+}
+.gate-cat-pill.cat-study .pill-dot { background-color: #6366F1; }
+
+.gate-cat-pill.cat-tech {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.22);
+  color: #0284C7;
+}
+.gate-cat-pill.cat-tech .pill-dot { background-color: #0EA5E9; }
+
+.gate-cat-pill.cat-culture {
+  background: rgba(225, 29, 72, 0.08);
+  border-color: rgba(225, 29, 72, 0.22);
+  color: #E11D48;
+}
+.gate-cat-pill.cat-culture .pill-dot { background-color: #E11D48; }
+
+.gate-cat-pill.cat-hobby {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.22);
+  color: #059669;
+}
+.gate-cat-pill.cat-hobby .pill-dot { background-color: #10B981; }
+
+.intro-splash-overlay.theme-dark .gate-cat-pill.cat-study,
+body.dark-mode .gate-cat-pill.cat-study {
   background: rgba(99, 102, 241, 0.16);
   border-color: rgba(99, 102, 241, 0.35);
   color: #A5B4FC;
 }
 
-.badge-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: #10B981;
-  box-shadow: 0 0 8px #10B981;
-  animation: badgeDotBreathe 2s infinite ease-in-out;
+.intro-splash-overlay.theme-dark .gate-cat-pill.cat-tech,
+body.dark-mode .gate-cat-pill.cat-tech {
+  background: rgba(14, 165, 233, 0.16);
+  border-color: rgba(14, 165, 233, 0.35);
+  color: #7DD3FC;
 }
 
-@keyframes badgeDotBreathe {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.75); }
+.intro-splash-overlay.theme-dark .gate-cat-pill.cat-culture,
+body.dark-mode .gate-cat-pill.cat-culture {
+  background: rgba(225, 29, 72, 0.16);
+  border-color: rgba(225, 29, 72, 0.35);
+  color: #FDA4AF;
 }
 
-/* 중앙 엠블럼 & 오로라 글로우 */
-.start-gate-mark-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
+.intro-splash-overlay.theme-dark .gate-cat-pill.cat-hobby,
+body.dark-mode .gate-cat-pill.cat-hobby {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #6EE7B7;
 }
 
-.mark-aurora-glow {
-  position: absolute;
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.4) 0%, rgba(14, 165, 233, 0.25) 50%, transparent 70%);
-  filter: blur(24px);
-  pointer-events: none;
-  animation: auroraBreathe 4s infinite alternate ease-in-out;
-}
-
-@keyframes auroraBreathe {
-  0% { transform: scale(0.9); opacity: 0.6; }
-  100% { transform: scale(1.15); opacity: 1; }
-}
-
-.start-gate-mark {
-  position: relative;
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  background-color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(226, 232, 240, 0.8);
-  transition: transform 0.25s ease;
-}
-
-.intro-splash-overlay.theme-dark .start-gate-mark,
-[data-system-theme="dark"] .start-gate-mark,
-body.dark-mode .start-gate-mark {
-  background-color: #1E293B;
-  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.12);
-}
-
-.start-gate-title {
-  font-family: -apple-system, BlinkMacSystemFont, "SUIT Variable", "Pretendard Variable", sans-serif;
-  font-size: 1.48rem;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  color: #0F172A;
-  margin-bottom: 8px;
-  line-height: 1.25;
-}
-
-.intro-splash-overlay.theme-dark .start-gate-title,
-[data-system-theme="dark"] .start-gate-title,
-body.dark-mode .start-gate-title {
-  color: #FFFFFF;
-}
-
-.start-gate-desc {
-  font-size: 0.86rem;
-  font-weight: 500;
-  color: #64748B;
-  margin-bottom: 28px;
-  letter-spacing: -0.02em;
-  line-height: 1.55;
-  word-break: keep-all;
-}
-
-.intro-splash-overlay.theme-dark .start-gate-desc,
-[data-system-theme="dark"] .start-gate-desc,
-body.dark-mode .start-gate-desc {
-  color: #94A3B8;
-}
-
-/* 현대적이고 세련된 사운드 온 알약(Pill) 버튼 */
-.btn-start-experience {
-  width: 100%;
-  padding: 13px 20px;
-  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.3), 0 4px 12px rgba(99, 102, 241, 0.25);
-  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  gap: 12px;
-}
-
-.intro-splash-overlay.theme-dark .btn-start-experience,
-[data-system-theme="dark"] .btn-start-experience,
-body.dark-mode .btn-start-experience {
-  background: linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%);
-  color: #0F172A;
-  border-color: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.35);
-}
-
-.btn-start-experience:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.35), 0 6px 16px rgba(99, 102, 241, 0.35);
-}
-
-.btn-start-experience:active {
-  transform: scale(0.95);
-}
-
-/* 사운드 웨이브 이퀄라이저 막대 애니메이션 */
-.sound-wave-bars {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.sound-wave-bars .bar {
-  width: 3px;
-  border-radius: 2px;
-  background-color: currentColor;
-  opacity: 0.9;
-  animation: soundWaveMove 1.2s ease-in-out infinite alternate;
-}
-
-.sound-wave-bars .bar-1 { height: 7px; animation-delay: 0.1s; }
-.sound-wave-bars .bar-2 { height: 16px; animation-delay: 0.35s; }
-.sound-wave-bars .bar-3 { height: 11px; animation-delay: 0.2s; }
-.sound-wave-bars .bar-4 { height: 18px; animation-delay: 0.45s; }
-
-@keyframes soundWaveMove {
-  0% { transform: scaleY(0.4); opacity: 0.6; }
-  50% { transform: scaleY(1); opacity: 1; }
-  100% { transform: scaleY(0.3); opacity: 0.5; }
-}
-
-.btn-start-text-group {
+/* 게이트 액션 버튼 그룹 */
+.start-gate-actions {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* 메인 CTA: 프리미엄 비디오 플레이어 카드 */
+.btn-start-video-card {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.28), 0 4px 10px rgba(99, 102, 241, 0.2);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
   text-align: left;
+}
+
+.intro-splash-overlay.theme-dark .btn-start-video-card,
+[data-system-theme="dark"] .btn-start-video-card,
+body.dark-mode .btn-start-video-card {
+  background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
+  color: #0F172A;
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 26px -4px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+.btn-start-video-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -4px rgba(15, 23, 42, 0.35), 0 6px 14px rgba(99, 102, 241, 0.3);
+}
+
+.btn-start-video-card:active {
+  transform: scale(0.97);
+}
+
+.btn-video-preview {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.intro-splash-overlay.theme-dark .btn-video-preview,
+body.dark-mode .btn-video-preview {
+  background-color: rgba(15, 23, 42, 0.1);
+}
+
+.btn-start-video-card:hover .btn-video-preview {
+  transform: scale(1.06);
+}
+
+.btn-play-ring {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.intro-splash-overlay.theme-dark .btn-play-ring,
+body.dark-mode .btn-play-ring {
+  background-color: #0F172A;
+  color: #FFFFFF;
+}
+
+.btn-play-ring svg {
+  margin-left: 2px;
+}
+
+.btn-video-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   flex: 1;
 }
 
-.btn-start-main {
-  font-size: 0.92rem;
+.btn-video-headline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headline-title {
+  font-size: 0.94rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
-.btn-start-sub {
-  font-size: 0.68rem;
+.headline-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: rgba(99, 102, 241, 0.28);
+  color: #A5B4FC;
+  letter-spacing: 0.02em;
+}
+
+.intro-splash-overlay.theme-dark .headline-tag,
+body.dark-mode .headline-tag {
+  background-color: rgba(99, 102, 241, 0.15);
+  color: #4F46E5;
+}
+
+.btn-video-sub {
+  font-size: 0.72rem;
+  font-weight: 500;
+  opacity: 0.75;
+  letter-spacing: -0.01em;
+}
+
+/* 세컨더리 CTA: 플랫 스킵 버튼 */
+.btn-start-skip-flat {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 12px;
+  background-color: var(--bg-subtle, #F1F5F9);
+  border: 1px solid var(--border-color, #E2E8F0);
+  color: var(--text-main, #0F172A);
+  font-family: var(--font-family);
+  font-size: 0.84rem;
   font-weight: 600;
-  opacity: 0.72;
-  margin-top: 2px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.btn-start-icon-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.16);
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.intro-splash-overlay.theme-dark .btn-start-icon-circle,
-[data-system-theme="dark"] .btn-start-icon-circle,
-body.dark-mode .btn-start-icon-circle {
-  background-color: rgba(15, 23, 42, 0.08);
-}
-
-.btn-start-experience:hover .btn-start-icon-circle {
-  transform: translateX(3px);
-}
-
-/* 소개 영상 건너뛰고 바로 시작 텍스트 링크 버튼 */
-.btn-start-skip-text {
-  margin-top: 14px;
-  background: transparent;
-  border: none;
-  color: #64748B;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  letter-spacing: -0.01em;
-  transition: color 0.18s ease, background-color 0.18s ease;
+  gap: 6px;
+  transition: all 0.18s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-.intro-splash-overlay.theme-dark .btn-start-skip-text,
-[data-system-theme="dark"] .btn-start-skip-text,
-body.dark-mode .btn-start-skip-text {
-  color: #94A3B8;
+.intro-splash-overlay.theme-dark .btn-start-skip-flat,
+[data-system-theme="dark"] .btn-start-skip-flat,
+body.dark-mode .btn-start-skip-flat {
+  background-color: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-main, #F8FAFC);
 }
 
-.btn-start-skip-text:hover {
-  color: #0F172A;
-  background-color: rgba(15, 23, 42, 0.05);
+.btn-start-skip-flat:hover {
+  background-color: var(--bg-active, #E2E8F0);
 }
 
-.intro-splash-overlay.theme-dark .btn-start-skip-text:hover,
-[data-system-theme="dark"] .btn-start-skip-text:hover,
-body.dark-mode .btn-start-skip-text:hover {
-  color: #FFFFFF;
-  background-color: rgba(255, 255, 255, 0.08);
+.intro-splash-overlay.theme-dark .btn-start-skip-flat:hover,
+body.dark-mode .btn-start-skip-flat:hover {
+  background-color: rgba(51, 65, 85, 0.7);
 }
 
-.btn-start-skip-text:active {
-  transform: scale(0.97);
+.btn-start-skip-flat:hover svg {
+  transform: translateX(3px);
+}
+
+.btn-start-skip-flat svg {
+  transition: transform 0.18s ease;
+}
+
+.btn-start-skip-flat:active {
+  transform: scale(0.98);
 }
 
 /* 2. 풀스크린 인트로 비디오 영역 (모바일/태블릿 정중앙 완벽 고정) */

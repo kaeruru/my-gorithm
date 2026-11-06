@@ -767,51 +767,81 @@
 
   <!-- 첫 접속 소개영상 및 다시보기 풀스크린 모달 -->
   <div class="intro-splash-overlay" id="introSplashOverlay">
-    <!-- 1) 현대적이고 감각적인 글래스모피즘 시작 게이트 카드 -->
-    <div class="intro-start-gate" id="introStartGate">
-      <div class="start-gate-badge">
-        <span class="badge-dot"></span>
-        <span class="badge-text">WELCOME TO MAMGORITHM</span>
-      </div>
+    <!-- 사이트 4색 테마가 은은히 감도는 앰비언트 메쉬 배경 -->
+    <div class="intro-ambient-mesh" aria-hidden="true">
+      <div class="mesh-blob blob-study"></div>
+      <div class="mesh-blob blob-tech"></div>
+      <div class="mesh-blob blob-culture"></div>
+      <div class="mesh-blob blob-hobby"></div>
+    </div>
 
-      <div class="start-gate-mark-wrap" aria-hidden="true">
-        <div class="mark-aurora-glow"></div>
-        <div class="start-gate-mark">
-          <svg width="42" height="42" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 1) 사이트 룩앤필과 100% 일체화된 프리미엄 웰컴 게이트 카드 -->
+    <div class="intro-start-gate" id="introStartGate">
+      <!-- 헤더 브랜드 심볼 (사이트 헤더와 동일한 톤앤매너) -->
+      <div class="start-gate-brand">
+        <span class="start-gate-logo-mark" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="3" y="3" width="12" height="12" rx="3.5" fill="#6366F1"/>
             <rect x="19" y="3" width="12" height="12" rx="3.5" fill="#0EA5E9"/>
             <rect x="3" y="19" width="12" height="12" rx="3.5" fill="#E11D48"/>
             <rect x="19" y="19" width="12" height="12" rx="3.5" fill="#10B981"/>
           </svg>
+        </span>
+        <div class="start-gate-brand-text">
+          <span class="start-gate-brand-name">맘고리즘</span>
+          <span class="start-gate-brand-badge">My-gorithm</span>
         </div>
       </div>
 
-      <h2 class="start-gate-title">알고리즘을 내 맘대로</h2>
-      <p class="start-gate-desc">학습부터 취향까지, 당신의 비율로 완성되는 맞춤형 피드를 시작해보세요.</p>
-      
-      <!-- 세련된 현대적 사운드 온 알약(Pill) 버튼 -->
-      <button type="button" class="btn-start-experience" id="btnStartExperience" aria-label="사운드와 함께 소개 영상 보기">
-        <div class="sound-wave-bars" aria-hidden="true">
-          <span class="bar bar-1"></span>
-          <span class="bar bar-2"></span>
-          <span class="bar bar-3"></span>
-          <span class="bar bar-4"></span>
-        </div>
-        <span class="btn-start-text-group">
-          <span class="btn-start-main">사운드와 함께 소개 영상 보기</span>
-          <span class="btn-start-sub">SOUND ON · 10초 인트로</span>
-        </span>
-        <span class="btn-start-icon-circle" aria-hidden="true">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="6 4 20 12 6 20 6 4"></polygon>
-          </svg>
-        </span>
-      </button>
+      <div class="start-gate-content">
+        <h2 class="start-gate-title">알고리즘을 내 맘대로</h2>
+        <p class="start-gate-desc">4가지 분야의 비율을 내 맘대로 조합하여<br>나만의 맞춤형 추천 피드를 경험해보세요.</p>
 
-      <!-- 바로 시작하고 싶은 사용자를 위한 세련된 스킵 텍스트 버튼 -->
-      <button type="button" class="btn-start-skip-text" id="btnStartSkipToFeed">
-        <span>소개 영상 건너뛰고 바로 시작하기</span>
-      </button>
+        <!-- 사이트의 4가지 가치 카테고리 칩 바 -->
+        <div class="start-gate-categories" aria-hidden="true">
+          <span class="gate-cat-pill cat-study">
+            <span class="pill-dot"></span>학습
+          </span>
+          <span class="gate-cat-pill cat-tech">
+            <span class="pill-dot"></span>IT·테크
+          </span>
+          <span class="gate-cat-pill cat-culture">
+            <span class="pill-dot"></span>문화·예술
+          </span>
+          <span class="gate-cat-pill cat-hobby">
+            <span class="pill-dot"></span>취미·힐링
+          </span>
+        </div>
+      </div>
+
+      <!-- 세련된 비디오 튜토리얼 프리뷰 플레이어 카드 (CTA) -->
+      <div class="start-gate-actions">
+        <button type="button" class="btn-start-video-card" id="btnStartExperience" aria-label="사운드와 함께 소개 영상 보기">
+          <div class="btn-video-preview" aria-hidden="true">
+            <div class="btn-play-ring">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="6 4 20 12 6 20 6 4"></polygon>
+              </svg>
+            </div>
+          </div>
+          <div class="btn-video-info">
+            <div class="btn-video-headline">
+              <span class="headline-title">소개 영상과 함께 시작하기</span>
+              <span class="headline-tag">소리 On</span>
+            </div>
+            <span class="btn-video-sub">10초 인트로로 맘고리즘 100% 활용하기</span>
+          </div>
+        </button>
+
+        <!-- 바로 피드로 가고 싶은 사용자를 위한 세컨더리 버튼 -->
+        <button type="button" class="btn-start-skip-flat" id="btnStartSkipToFeed">
+          <span>영상 건너뛰고 바로 둘러보기</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- 2) 풀스크린 인트로 비디오 컨테이너 -->
