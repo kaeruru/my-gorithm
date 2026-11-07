@@ -942,6 +942,7 @@ function renderFeedCards(allocation) {
 // ==========================================================================
 // 미니 독 상단 게이지 & 누적 바 & 레전드만 가볍게 갱신 (슬라이더 드래그 중 부드러운 60fps 유지)
 function updateDockGauges(allocation) {
+  if (!allocation) allocation = calculateAllocation();
   const categories = ['study', 'tech', 'culture', 'hobby'];
 
   const topGauge = document.getElementById('dockTopGauge');
@@ -1068,6 +1069,7 @@ function updateAllChannelPills(container, allocation) {
 }
 
 function updateMixerInlineValidation(allocation) {
+  if (!allocation) allocation = calculateAllocation();
   const alertEl = document.getElementById('mixerInlineAlert');
   const applyBtn = document.getElementById('btnApplyDockMixer');
   const isZero = allocation.totalWeight === 0;
@@ -1081,6 +1083,7 @@ function updateMixerInlineValidation(allocation) {
 }
 
 function renderDockMixer(allocation) {
+  if (!allocation) allocation = calculateAllocation();
   const categories = ['study', 'tech', 'culture', 'hobby'];
   updateDockGauges(allocation);
   updateMixerInlineValidation(allocation);
@@ -1138,7 +1141,8 @@ function openDockMixer() {
   if (!container || isDockTransitioning) return;
   isDockTransitioning = true;
   state.isDockExpanded = true;
-  renderDockMixer();
+  const allocation = calculateAllocation();
+  renderDockMixer(allocation);
   container.classList.remove('closing');
   container.classList.add('expanded');
   document.getElementById('dockPeekBar')?.setAttribute('aria-expanded', 'true');
@@ -1156,7 +1160,8 @@ function closeDockMixer() {
   state.isDockExpanded = false;
   document.getElementById('dockPeekBar')?.setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
-  updateDockGauges();
+  const allocation = calculateAllocation();
+  updateDockGauges(allocation);
   triggerHaptic('light');
 
   // 1) 믹서 패널이 밑으로 슉 내려가는(slide down) 애니메이션 시작
