@@ -165,7 +165,7 @@ export const CONTENT_DATA = [
     source: '토스 테크 · Toss Tech',
     duration: '7분 읽기',
     date: '오늘',
-    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=800&auto=format&fit=crop&q=80',
     url: 'https://toss.tech/article/toss-shopping-recommendation',
     keyPoints: [
       '수백만 상품 풀에서 목적형/탐색형 사용자를 만족시키는 멀티 스테이지(Retrieval → Ranking → Re-ranking) 아키텍처.',
@@ -615,7 +615,7 @@ export const CONTENT_DATA = [
     source: "한국어 위키백과 · 구글 제미나이",
     duration: '5분 읽기',
     date: '위키백과',
-    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop&q=80',
     url: 'https://ko.wikipedia.org/wiki/%EA%B5%AC%EA%B8%80_%EC%A0%9C%EB%AF%B8%EB%82%98%EC%9D%B4',
     keyPoints: [
       "텍스트, 코드, 이미지, 오디오, 비디오를 네이티브로 동시 처리하는 멀티모달 아키텍처.",
@@ -931,7 +931,7 @@ export const CONTENT_DATA = [
     source: 'EBSi',
     duration: '5분 읽기',
     date: '학습 가이드',
-    imageUrl: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&auto=format&fit=crop&q=80',
     url: 'https://www.ebsi.co.kr/ebs/pot/poth/RetrieveHelpBgnGud.ebs',
     keyPoints: [
       '자신의 현재 학습 수준(기초·기본·발전)을 객관적으로 진단하고 무리하지 않는 현실적인 단계별 강좌를 선택합니다.',
@@ -998,7 +998,7 @@ export const CONTENT_DATA = [
     source: "한국어 위키백과 · 갈릴레오 갈릴레이",
     duration: '6분 읽기',
     date: '위키백과',
-    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=800&auto=format&fit=crop&q=80',
     url: 'https://ko.wikipedia.org/wiki/%EA%B0%88%EB%A6%B4%EB%A0%88%EC%98%A4_%EA%B0%88%EB%A6%B4%EB%A0%88%EC%9D%B4',
     keyPoints: [
       "경험적 사실의 수량적 분석과 보편적 수학 법칙을 결합한 근대 과학 연구 방법의 확립.",
@@ -1301,7 +1301,7 @@ export const CONTENT_DATA = [
     source: '씨네21 (Cine21) · 독립·예술영화 기획',
     duration: '6분 읽기',
     date: '3일 전',
-    imageUrl: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&auto=format&fit=crop&q=80',
     url: 'http://www.cine21.com',
     keyPoints: [
       '천만 관객 상업 영화의 자극적 클리셰를 벗어나 인물의 내면과 사회적 소외를 섬세하게 응시하는 7편의 걸작.',
@@ -1533,7 +1533,7 @@ export const CONTENT_DATA = [
     source: "한국어 위키백과 · 숭늉",
     duration: '4분 읽기',
     date: '위키백과',
-    imageUrl: 'https://images.unsplash.com/photo-1547496502-affa22d38842?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1541832676-9b763b0239ab?w=800&auto=format&fit=crop&q=80',
     url: 'https://ko.wikipedia.org/wiki/%EC%88%AD%EB%8A%89',
     keyPoints: [
       "가마솥 바닥에 눌어붙은 누룽지에 물을 부어 끓여 낸 한국 전통의 구수한 곡차 겸 음료.",
@@ -1698,7 +1698,7 @@ export const CONTENT_DATA = [
     source: "한국어 위키백과 · 로봇의 눈물",
     duration: '5분 읽기',
     date: '위키백과',
-    imageUrl: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&auto=format&fit=crop&q=80',
     url: 'https://ko.wikipedia.org/wiki/%EB%A1%9C%EB%B4%87%EC%9D%98_%EB%88%88%EB%AC%BC',
     keyPoints: [
       "실제 배우의 라이브 액션 촬영과 고난도 3D CGI 기술을 긴밀하게 결합한 시각 효과.",
@@ -1981,7 +1981,7 @@ export const CONTENT_DATA = [
     source: '아리마리 티스토리',
     duration: '5분 읽기',
     date: '홈쿠킹 레시피',
-    imageUrl: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&auto=format&fit=crop&q=80',
     url: 'https://arimarim.tistory.com/1158',
     keyPoints: [
       '잘 익은 신김치의 산미를 된장의 구수한 감칠맛과 마요네즈의 고소함으로 부드럽게 감싸는 황금 비율.',
@@ -2047,7 +2047,7 @@ export const CONTENT_DATA = [
     source: "한국어 위키백과 · 네모바지 스폰지밥 (캐릭터)",
     duration: '5분 읽기',
     date: '위키백과',
-    imageUrl: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=800&auto=format&fit=crop&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?w=800&auto=format&fit=crop&q=80',
     url: 'https://ko.wikipedia.org/wiki/%EB%84%A4%EB%AA%A8%EB%B0%94%EC%A7%80_%EC%8A%A4%ED%8F%B0%EC%A7%80%EB%B0%A5_(%EC%BA%90%EB%A6%AD%ED%84%B0)',
     keyPoints: [
       "집게리아의 열정 넘치는 버거 요리사로 첫 에피소드부터 기상천외한 매력을 발산한 캐릭터.",
