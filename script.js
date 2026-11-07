@@ -187,7 +187,7 @@ function runQuickBrandSplash(onComplete) {
     setTimeout(() => {
       splash.style.display = 'none';
       if (typeof onComplete === 'function') onComplete();
-    }, 280);
+    }, 460);
   };
 
   // 140ms 경쾌한 촉각/청각 피드백 펄스
@@ -197,8 +197,8 @@ function runQuickBrandSplash(onComplete) {
     } catch (e) {}
   }, 140);
 
-  // 1.25초(1250ms) 동안 여유롭고 기분 좋은 브랜드 모션 연출 후 페이드아웃 (총 약 1.5초)
-  const timer = setTimeout(dismiss, 1250);
+  // 약 2.1초 동안 부드럽고 우아한 60fps 브랜드 모션 연출 후 페이드아웃 (터치 시 즉시 스킵 가능)
+  const timer = setTimeout(dismiss, 2100);
 
   // 화면 터치/클릭 시 언제든 즉시 스킵 가능
   splash.addEventListener('click', () => {
