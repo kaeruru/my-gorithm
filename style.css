@@ -94,6 +94,24 @@ html, body {
   text-rendering: optimizeLegibility;
   font-feature-settings: "cv05", "cv08", "cv10", "ss01", "ss02", "calt" 1;
   text-shadow: var(--text-shader-base);
+  /* 모바일 앱 네이티브 느낌: 당겨서 새로고침 튕김 방지 & 핀치 줌 최적화 */
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
+}
+
+/* 터치 제어 및 인터랙션 컴포넌트 텍스트 드래그 방지 */
+button,
+.type-pill,
+.preset-chip,
+.tab-btn,
+.dock-peek-bar,
+.mixer-channel-card,
+.channel-slider-wrap,
+.channel-title-group,
+.gauge-legend-pill {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* 제목 및 주요 타이포그래피 광학 셰이더 강화 */
@@ -3530,4 +3548,311 @@ body.dark-mode .coachmark-badge {
     gap: 24px;
     padding: 24px 32px 32px;
   }
+}
+
+/* ==========================================================================
+   PWA & 모바일 네이티브 앱 전용 스타일 디테일
+   ========================================================================== */
+
+/* 헤더 상단 Safe Area & 앱 설치 버튼 */
+.app-header {
+  padding-top: max(8px, env(safe-area-inset-top));
+}
+
+.btn-install-app {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-study);
+  background: rgba(79, 70, 229, 0.08);
+  border: 1px solid rgba(79, 70, 229, 0.16);
+  border-radius: 9px;
+  transition: all 0.18s ease;
+}
+
+.btn-install-app:hover {
+  background: rgba(79, 70, 229, 0.14);
+}
+
+.btn-install-app.hidden {
+  display: none !important;
+}
+
+/* 피드 상단 슬림 앱 설치 스마트 배너 */
+.app-install-banner {
+  margin: 10px 16px 12px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  animation: bannerSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+body.dark-mode .app-install-banner {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  border-color: rgba(99, 102, 241, 0.28);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.app-install-banner.hidden {
+  display: none !important;
+}
+
+@keyframes bannerSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.install-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.install-banner-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--bg-card);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-subtle);
+}
+
+.install-banner-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.install-banner-main {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.install-banner-sub {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.install-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-install-cta {
+  background: #0F172A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  transition: transform 0.12s ease, opacity 0.15s ease;
+}
+
+body.dark-mode .btn-install-cta {
+  background: #4F46E5;
+  color: #FFFFFF;
+}
+
+.btn-install-cta:active {
+  transform: scale(0.96);
+}
+
+.btn-install-close {
+  background: transparent;
+  border: none;
+  color: var(--text-subtle);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.btn-install-close:hover {
+  background: var(--bg-subtle);
+}
+
+/* iOS Safari 홈 화면 추가 안내 바텀시트 모달 */
+.ios-install-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ios-install-sheet.hidden {
+  display: none !important;
+}
+
+.ios-install-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.ios-install-panel {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  background: var(--bg-card);
+  border-radius: 20px 20px 0 0;
+  padding: 16px 20px calc(24px + env(safe-area-inset-bottom));
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+  animation: slideUpSheet 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpSheet {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.ios-install-drag {
+  width: 36px;
+  height: 4px;
+  background: var(--border-color);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+.ios-install-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.ios-install-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--bg-subtle);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border-subtle);
+}
+
+.ios-install-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.ios-install-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.ios-install-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-subtle);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 18px;
+}
+
+.ios-step-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ios-step-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-text);
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ios-step-text {
+  font-size: 0.85rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.ios-inline-icon {
+  display: inline-block;
+  vertical-align: middle;
+  color: #007AFF;
+}
+
+.btn-ios-done {
+  width: 100%;
+  padding: 13px;
+  background: var(--primary);
+  color: var(--primary-text);
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.btn-ios-done:active {
+  opacity: 0.85;
+}
+
+/* 하단 독 바 및 탭 바 Safe Area Inset 보강 */
+.bottom-tab-bar {
+  padding-bottom: max(6px, env(safe-area-inset-bottom));
+}
+
+.dock-panel {
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
 }

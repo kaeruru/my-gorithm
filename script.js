@@ -2332,3 +2332,163 @@ function dismissCoachmark() {
     localStorage.setItem(STORAGE_KEYS.COACHMARK_SEEN, 'true');
   } catch (e) {}
 }
+
+/* ==========================================================================
+   PWA & 모바일 네이티브 앱 엔진 (A2HS, Service Worker, 햅틱 & 네트워크 감지)
+   ========================================================================== */
+
+let deferredInstallPrompt = null;
+
+// iOS Safari 기기 감지 (PWA 설치 안내 맞춤 분기용)
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+// 1) Service Worker 등록 및 캐시/버전 동기화
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then((registration) => {
+      // 새 버전 배포 감지 시 스낵바 알림
+      registration.addEventListener('updatefound', () => {
+        const installingWorker = registration.installing;
+        if (installingWorker) {
+          installingWorker.addEventListener('statechange', () => {
+            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showSnackbar('새로운 기능과 디자인이 업데이트되었습니다.', '새로고침', () => {
+                window.location.reload();
+              }, 7000);
+            }
+          });
+        }
+      });
+    }).catch((err) => {
+      console.debug('ServiceWorker 등록 예외:', err);
+    });
+  });
+}
+
+// 2) 브라우저 설치 프롬프트 (Android Chrome / Edge / 데스크톱)
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallUI();
+});
+
+// 3) 앱 설치 완료 이벤트
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  hideInstallUI();
+  triggerHaptic('success');
+  showToast('맘고리즘 앱이 성공적으로 설치되었습니다!');
+});
+
+// 설치 UI 노출 관리
+function showInstallUI() {
+  if (isStandalone) return;
+  const isDismissed = sessionStorage.getItem('mamgorithm_install_dismissed') === 'true';
+
+  const btnHeaderInstall = document.getElementById('btnInstallApp');
+  if (btnHeaderInstall) {
+    btnHeaderInstall.classList.remove('hidden');
+  }
+
+  const installBanner = document.getElementById('appInstallBanner');
+  if (installBanner && !isDismissed) {
+    installBanner.classList.remove('hidden');
+  }
+}
+
+function hideInstallUI() {
+  const btnHeaderInstall = document.getElementById('btnInstallApp');
+  if (btnHeaderInstall) btnHeaderInstall.classList.add('hidden');
+
+  const installBanner = document.getElementById('appInstallBanner');
+  if (installBanner) installBanner.classList.add('hidden');
+}
+
+// 앱 설치 실행 트리거 (Android/Chrome or iOS 분기)
+function handleInstallApp() {
+  triggerHaptic('medium');
+
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        hideInstallUI();
+      }
+      deferredInstallPrompt = null;
+    });
+  } else if (isIOS) {
+    showIosInstallModal();
+  } else {
+    // 이미 설치되었거나 기타 브라우저인 경우 가이드 토스트
+    showToast('브라우저 설정 메뉴(⋮)에서 [홈 화면에 추가] 또는 [앱 설치]를 선택하세요.');
+  }
+}
+
+// iOS Safari용 안내 바텀시트
+function showIosInstallModal() {
+  const sheet = document.getElementById('iosInstallSheet');
+  if (!sheet) return;
+  sheet.classList.remove('hidden');
+  triggerHaptic('light');
+}
+
+function hideIosInstallModal() {
+  const sheet = document.getElementById('iosInstallSheet');
+  if (!sheet) return;
+  sheet.classList.add('hidden');
+  triggerHaptic('light');
+}
+
+// PWA UI 이벤트 리스너 초기화
+function initPwaFeatures() {
+  // 이미 홈 화면 PWA로 실행 중일 때 바디에 표시
+  if (isStandalone) {
+    document.body.classList.add('is-pwa-standalone');
+    hideInstallUI();
+  } else if (isIOS) {
+    // iOS Safari는 beforeinstallprompt가 발생하지 않으므로 직접 노출 조건 체크
+    showInstallUI();
+  }
+
+  // 헤더 앱 설치 버튼
+  document.getElementById('btnInstallApp')?.addEventListener('click', () => {
+    handleInstallApp();
+  });
+
+  // 피드 상단 배너 설치 버튼
+  document.getElementById('btnBannerInstall')?.addEventListener('click', () => {
+    handleInstallApp();
+  });
+
+  // 피드 상단 배너 닫기 버튼
+  document.getElementById('btnBannerDismiss')?.addEventListener('click', () => {
+    triggerHaptic('light');
+    const installBanner = document.getElementById('appInstallBanner');
+    if (installBanner) installBanner.classList.add('hidden');
+    sessionStorage.setItem('mamgorithm_install_dismissed', 'true');
+  });
+
+  // iOS 바텀시트 닫기 이벤트
+  document.getElementById('btnIosInstallDone')?.addEventListener('click', () => {
+    hideIosInstallModal();
+  });
+  document.getElementById('iosInstallBackdrop')?.addEventListener('click', () => {
+    hideIosInstallModal();
+  });
+
+  // 네트워크 상태 실시간 모니터링
+  window.addEventListener('online', () => {
+    showToast('네트워크가 정상적으로 다시 연결되었습니다.');
+  });
+  window.addEventListener('offline', () => {
+    showToast('네트워크 연결이 끊겼습니다. 오프라인 모드로 실행됩니다.');
+  });
+}
+
+// DOM 준비 시 PWA 기능 구동
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPwaFeatures);
+} else {
+  initPwaFeatures();
+}

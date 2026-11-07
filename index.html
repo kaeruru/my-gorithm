@@ -2,8 +2,17 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>내맘대로 알고리즘 - 맘고리즘</title>
+
+  <!-- PWA & 모바일 웹 앱 지원 -->
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/logo.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="맘고리즘" />
+  <meta name="theme-color" content="#FFFFFF" />
 
   <!-- 메타 태그 & SNS 링크 공유 미리보기 (Open Graph / Twitter Card) -->
   <meta name="description" content="사용자 주도형 추천 피드" />
@@ -17,7 +26,6 @@
   <meta name="twitter:title" content="내맘대로 알고리즘 - 맘고리즘" />
   <meta name="twitter:description" content="사용자 주도형 추천 피드" />
   <meta name="twitter:image" content="https://sleepy-amaranth-5yfpcyoe.edgeone.dev/맘고리즘.png" />
-  <meta name="theme-color" content="#0F172A" />
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
@@ -84,6 +92,13 @@
         </div>
 
         <div class="header-actions">
+          <button type="button" class="btn-icon btn-install-app hidden" id="btnInstallApp" title="맘고리즘 앱 설치" aria-label="앱 설치">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
           <button type="button" class="btn-icon" id="btnQuickTune" title="알고리즘 비율 조절" aria-label="알고리즘 조절">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
@@ -101,6 +116,33 @@
            [VIEW 1] 추천 피드 화면 (콘텐츠 최우선 노출)
            ============================================================ -->
       <section class="tab-view active" id="viewFeed">
+        <!-- 모바일/웹 앱 설치 유도 스마트 배너 -->
+        <div class="app-install-banner hidden" id="appInstallBanner">
+          <div class="install-banner-left">
+            <div class="install-banner-icon">
+              <svg width="22" height="22" viewBox="0 0 34 34" fill="none">
+                <rect x="3" y="3" width="12" height="12" rx="3.5" fill="#6366F1"/>
+                <rect x="19" y="3" width="12" height="12" rx="3.5" fill="#0EA5E9"/>
+                <rect x="3" y="19" width="12" height="12" rx="3.5" fill="#E11D48"/>
+                <rect x="19" y="19" width="12" height="12" rx="3.5" fill="#10B981"/>
+              </svg>
+            </div>
+            <div class="install-banner-text">
+              <span class="install-banner-main">맘고리즘 앱으로 더 쾌적하게</span>
+              <span class="install-banner-sub">홈 화면에 추가해 1초 만에 실행하세요</span>
+            </div>
+          </div>
+          <div class="install-banner-actions">
+            <button type="button" class="btn-install-cta" id="btnBannerInstall">앱 설치</button>
+            <button type="button" class="btn-install-close" id="btnBannerDismiss" aria-label="닫기">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
         <!-- 상단 빠른 프리셋 가로 스크롤 -->
         <div class="preset-bar-wrap">
           <div class="preset-scroll" id="presetContainer" role="tablist" aria-label="빠른 추천 프리셋">
@@ -756,6 +798,61 @@
     <div class="tooltip-popover hidden" id="tooltipPopover" role="tooltip">
       <div class="tooltip-arrow" id="tooltipArrow"></div>
       <div class="tooltip-body" id="tooltipBody">설명 텍스트</div>
+    </div>
+
+    <!-- iOS 사파리 전용 홈 화면 추가 안내 바텀시트 모달 -->
+    <div class="ios-install-sheet hidden" id="iosInstallSheet" role="dialog" aria-modal="true" aria-label="홈 화면에 앱 추가 안내">
+      <div class="ios-install-backdrop" id="iosInstallBackdrop"></div>
+      <div class="ios-install-panel">
+        <div class="ios-install-drag"></div>
+        <div class="ios-install-header">
+          <div class="ios-install-icon">
+            <svg width="28" height="28" viewBox="0 0 34 34" fill="none">
+              <rect x="3" y="3" width="12" height="12" rx="3.5" fill="#6366F1"/>
+              <rect x="19" y="3" width="12" height="12" rx="3.5" fill="#0EA5E9"/>
+              <rect x="3" y="19" width="12" height="12" rx="3.5" fill="#E11D48"/>
+              <rect x="19" y="19" width="12" height="12" rx="3.5" fill="#10B981"/>
+            </svg>
+          </div>
+          <div class="ios-install-head-text">
+            <h3 class="ios-install-title">홈 화면에 맘고리즘 추가하기</h3>
+            <p class="ios-install-desc">Safari에서 3초 만에 앱처럼 전체 화면으로 등록할 수 있습니다.</p>
+          </div>
+        </div>
+        <div class="ios-install-steps">
+          <div class="ios-step-item">
+            <span class="ios-step-badge">1</span>
+            <div class="ios-step-text">
+              Safari 하단 메뉴의 <strong>공유 버튼</strong>
+              <svg class="ios-inline-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+              </svg>
+              을 탭합니다.
+            </div>
+          </div>
+          <div class="ios-step-item">
+            <span class="ios-step-badge">2</span>
+            <div class="ios-step-text">
+              메뉴를 아래로 내려 <strong>'홈 화면에 추가'</strong>
+              <svg class="ios-inline-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+              를 선택합니다.
+            </div>
+          </div>
+          <div class="ios-step-item">
+            <span class="ios-step-badge">3</span>
+            <div class="ios-step-text">
+              우측 상단의 <strong>'추가'</strong>를 누르면 홈 화면에 앱이 설치됩니다!
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-ios-done" id="btnIosInstallDone">확인했습니다</button>
+      </div>
     </div>
   </div>
 

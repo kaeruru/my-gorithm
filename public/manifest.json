@@ -1,0 +1,43 @@
+{
+  "name": "맘고리즘 - 내맘대로 알고리즘",
+  "short_name": "맘고리즘",
+  "description": "사용자가 직접 조절하는 1% 맞춤 추천 알고리즘 피드",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "lang": "ko-KR",
+  "categories": ["news", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "알고리즘 믹서",
+      "short_name": "믹서",
+      "description": "관심사 비율 직접 조절하기",
+      "url": "/?action=mixer",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "맞춤 피드",
+      "short_name": "피드",
+      "description": "내 알고리즘 피드 탐색",
+      "url": "/?action=feed",
+      "icons": [{ "src": "/logo.png", "sizes": "192x192" }]
+    }
+  ]
+}
