@@ -999,7 +999,9 @@ function updateDockGauges(allocation) {
         <div class="gauge-legend-pill">
           <div class="legend-name-group">
             <span class="legend-dot" style="background-color: ${meta.color}"></span>
-            <span>${meta.name}</span>
+            <span class="legend-theme-name">${meta.name}</span>
+            <span class="legend-theme-sep">|</span>
+            <span class="legend-theme-desc">${meta.description}</span>
           </div>
           <span class="legend-pct-text">${alloc.displayPct}%</span>
         </div>
@@ -1032,7 +1034,9 @@ function updateOnboardingGauges(allocation) {
         <div class="gauge-legend-pill">
           <div class="legend-name-group">
             <span class="legend-dot" style="background-color: ${meta.color}"></span>
-            <span>${meta.name}</span>
+            <span class="legend-theme-name">${meta.name}</span>
+            <span class="legend-theme-sep">|</span>
+            <span class="legend-theme-desc">${meta.description}</span>
           </div>
           <span class="legend-pct-text">${alloc.displayPct}%</span>
         </div>
@@ -1051,13 +1055,9 @@ function updateAllChannelPills(container, allocation) {
     const alloc = allocation.categories[cat];
     const pill = card.querySelector('.channel-status-pill');
     if (pill) {
-      if (isOnboarding) {
-        pill.innerHTML = val === 0 ? '0% (제외)' : `<b>${alloc.displayPct}%</b> 추천`;
-      } else {
-        pill.innerHTML = val === 0
-          ? '0% (제외)'
-          : `<b>${val}%</b> <span style="font-size:0.75em; opacity:0.8;">(피드 ${alloc.displayPct}%)</span>`;
-      }
+      pill.innerHTML = val === 0
+        ? '0% (제외)'
+        : `<b>피드 ${alloc.displayPct}%</b>`;
     }
     const ticks = card.querySelectorAll('.tick-label');
     ticks.forEach((tick) => {
@@ -1098,13 +1098,10 @@ function renderDockMixer(allocation) {
           <div class="channel-top-line">
             <div class="channel-title-group">
               <span class="channel-color-bar" style="background-color: ${meta.color}"></span>
-              <div>
-                <div class="channel-name">${meta.name}</div>
-                <div class="channel-desc">${meta.description}</div>
-              </div>
+              <div class="channel-name">${meta.name}</div>
             </div>
             <span class="channel-status-pill" style="border-left: 3px solid ${meta.color}">
-              ${currentVal === 0 ? '0% (제외)' : `<b>${currentVal}%</b> <span style="font-size:0.75em; opacity:0.8;">(피드 ${alloc.displayPct}%)</span>`}
+              ${currentVal === 0 ? '0% (제외)' : `<b>피드 ${alloc.displayPct}%</b>`}
             </span>
           </div>
 
@@ -1118,14 +1115,14 @@ function renderDockMixer(allocation) {
               class="channel-range-input dock-range-input"
               data-cat="${cat}"
               style="--thumb-color: ${meta.color}; background: linear-gradient(to right, ${meta.color} ${currentVal}%, var(--bg-subtle) ${currentVal}%);"
-              aria-label="${meta.name} 관심도 슬라이더 (1% 단위)"
+              aria-label="${meta.name} 관심도 슬라이더"
             />
             <div class="slider-ticks-row">
-              <span class="tick-label ${currentVal === 0 ? 'active' : ''}" data-cat="${cat}" data-val="0">0% (제외)</span>
-              <span class="tick-label ${currentVal === 25 ? 'active' : ''}" data-cat="${cat}" data-val="25">25%</span>
-              <span class="tick-label ${currentVal === 50 ? 'active' : ''}" data-cat="${cat}" data-val="50">50%</span>
-              <span class="tick-label ${currentVal === 75 ? 'active' : ''}" data-cat="${cat}" data-val="75">75%</span>
-              <span class="tick-label ${currentVal === 100 ? 'active' : ''}" data-cat="${cat}" data-val="100">100%</span>
+              <span class="tick-label ${currentVal === 0 ? 'active' : ''}" data-cat="${cat}" data-val="0">제외</span>
+              <span class="tick-label ${currentVal === 25 ? 'active' : ''}" data-cat="${cat}" data-val="25">낮음</span>
+              <span class="tick-label ${currentVal === 50 ? 'active' : ''}" data-cat="${cat}" data-val="50">보통</span>
+              <span class="tick-label ${currentVal === 75 ? 'active' : ''}" data-cat="${cat}" data-val="75">높음</span>
+              <span class="tick-label ${currentVal === 100 ? 'active' : ''}" data-cat="${cat}" data-val="100">최대</span>
             </div>
           </div>
         </div>
@@ -1290,7 +1287,9 @@ function renderOnboardingView() {
         <div class="gauge-legend-pill">
           <div class="legend-name-group">
             <span class="legend-dot" style="background-color: ${meta.color}"></span>
-            <span>${meta.name}</span>
+            <span class="legend-theme-name">${meta.name}</span>
+            <span class="legend-theme-sep">|</span>
+            <span class="legend-theme-desc">${meta.description}</span>
           </div>
           <span class="legend-pct-text">${alloc.displayPct}%</span>
         </div>
@@ -1312,7 +1311,7 @@ function renderOnboardingView() {
               <span class="channel-name" style="font-size:0.86rem; font-weight:700;">${meta.name}</span>
             </div>
             <span class="channel-status-pill" style="border-left: 3px solid ${meta.color}; font-size:0.74rem; font-weight:700; padding:2px 8px;">
-              ${currentVal === 0 ? '0% (제외)' : `<b>${alloc.displayPct}%</b> 추천`}
+              ${currentVal === 0 ? '0% (제외)' : `<b>피드 ${alloc.displayPct}%</b>`}
             </span>
           </div>
 
