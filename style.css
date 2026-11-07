@@ -1306,66 +1306,30 @@ body.dark-mode .skeleton-duration-overlay {
    하단 미니 독 & 슬라이드업 믹서 시트
    평소 상태: 슬림 바(Peek: 46px) / 확장 상태: 풀 믹서 시트
    ========================================================================== */
-.dock-mixer-container {
+/* ==========================================================================
+   하단 미니 독 (Peek Bar: 상시 고정, 하단 탭 바와 1px 틈새 없이 자석 밀착)
+   ========================================================================== */
+.dock-peek-bar {
   position: sticky;
   /* 하단 탭 바 높이와 1px 겹침 오프셋으로 서브픽셀 틈새(gap) 100% 원천 차단 */
   bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px) - 1px);
   z-index: 45;
-  margin-bottom: 0;
-}
-
-.dock-mixer-container.expanded {
-  z-index: 120;
-}
-
-.dock-backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 110;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.28s ease, visibility 0.28s ease;
-}
-
-.dock-mixer-container.expanded .dock-backdrop {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-/* 닫힐 때 배경 딤 페이드아웃 */
-.dock-mixer-container.expanded.closing .dock-backdrop {
-  opacity: 0 !important;
-}
-
-.dock-panel {
-  position: relative;
+  height: 48px;
   width: 100%;
   background-color: var(--bg-card);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid var(--border-color);
-  /* transform 트랜지션을 제거하여 닫힐 때 좌측에서 날아오는 현상 원천 차단 */
-  transition: box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-body.dark-mode .dock-panel {
-  background-color: var(--bg-card);
-}
-
-/* 1. 평소 보이는 미니 독 바 (Peek Bar: 46px) */
-.dock-peek-bar {
-  height: 46px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
   user-select: none;
-  position: relative;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+body.dark-mode .dock-peek-bar {
+  background-color: var(--bg-card);
 }
 
 .dock-top-gauge {
@@ -1441,33 +1405,87 @@ body.dark-mode .dock-panel {
   letter-spacing: -0.01em;
 }
 
-/* 2. 확장 시트 영역 */
-.dock-expanded-content {
-  display: none;
-  padding: 18px 18px calc(24px + env(safe-area-inset-bottom, 0px));
-  max-height: 85vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+/* ==========================================================================
+   풀 믹서 바텀시트 모달 (열릴 때 아래에서 스르륵 쑥, 닫힐 때 아래로 쏙)
+   ========================================================================== */
+.dock-mixer-container {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0.32s ease;
 }
 
-.dock-mixer-container.expanded .dock-panel {
+.dock-mixer-container.expanded {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.dock-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 121;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dock-mixer-container.expanded .dock-backdrop {
+  opacity: 1;
+}
+
+/* 닫힐 때 배경 딤 페이드아웃 */
+.dock-mixer-container.expanded.closing .dock-backdrop {
+  opacity: 0 !important;
+}
+
+.dock-panel {
   position: fixed;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 100%);
   width: 100%;
   max-width: 620px;
   max-height: 85vh;
-  border-radius: 14px 14px 0 0;
-  z-index: 120;
+  background-color: var(--bg-card);
+  border-radius: 20px 20px 0 0;
+  border-top: 1px solid var(--border-color);
+  z-index: 122;
   box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.35);
-  animation: slideUpMixer 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  will-change: transform, opacity;
 }
 
-/* 닫힐 때: 아래로 슉 내려가면서 닫히는 네이티브 슬라이드 다운 모션 */
+.dock-mixer-container.expanded .dock-panel {
+  animation: slideUpMixer 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 닫힐 때: 화면 밑으로 스르륵 내려가며 닫힘 (원래 미니 바로 자연스럽게 복귀) */
 .dock-mixer-container.expanded.closing .dock-panel {
-  animation: slideDownMixer 0.30s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+  animation: slideDownMixer 0.28s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+.dock-sheet-drag-handle {
+  width: 36px;
+  height: 4px;
+  background-color: var(--border-color);
+  border-radius: 2px;
+  margin: 12px auto 0;
+  cursor: grab;
+  flex-shrink: 0;
+}
+
+.dock-expanded-content {
+  display: block;
+  padding: 12px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+  max-height: calc(85vh - 20px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 @keyframes slideUpMixer {
@@ -2284,10 +2302,10 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
 
 .quick-brand-splash.splash-dismissed {
   opacity: 0 !important;
-  transform: scale(1.06) !important;
+  transform: scale(1.04) !important;
   pointer-events: none !important;
   visibility: hidden !important;
-  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s !important;
+  transition: opacity 0.24s ease, transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.24s !important;
 }
 
 .splash-content {
@@ -2299,13 +2317,13 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
 }
 
 .splash-symbol-box {
-  width: 68px;
-  height: 68px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 12px 28px rgba(99, 102, 241, 0.25));
-  animation: splashSymbolElastic 1.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  filter: drop-shadow(0 8px 24px rgba(99, 102, 241, 0.22));
+  animation: splashSymbolElastic 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .splash-cube {
@@ -2314,20 +2332,21 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
   opacity: 0;
 }
 
+/* 회전 흔들림(rotate) 전면 제거: 4개 큐브가 사방에서 중심으로 정밀 자석 결합 */
 .cube-study {
-  animation: splashCubeSpring 1.05s cubic-bezier(0.25, 1, 0.5, 1) 0.08s forwards;
+  animation: cubeMagneticTL 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.04s forwards;
 }
 
 .cube-tech {
-  animation: splashCubeSpring 1.05s cubic-bezier(0.25, 1, 0.5, 1) 0.22s forwards;
+  animation: cubeMagneticTR 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.08s forwards;
 }
 
 .cube-culture {
-  animation: splashCubeSpring 1.05s cubic-bezier(0.25, 1, 0.5, 1) 0.36s forwards;
+  animation: cubeMagneticBL 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
 }
 
 .cube-hobby {
-  animation: splashCubeSpring 1.05s cubic-bezier(0.25, 1, 0.5, 1) 0.50s forwards;
+  animation: cubeMagneticBR 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.16s forwards;
 }
 
 .splash-wordmark {
@@ -2335,55 +2354,50 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   opacity: 0;
-  transform: translateY(12px);
-  animation: splashTextRise 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards;
+  transform: translateY(8px);
+  animation: splashTextRise 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards;
 }
 
-@keyframes splashCubeSpring {
-  0% {
-    opacity: 0;
-    transform: scale(0.2) translate(-18px, -18px) rotate(-24deg);
-  }
-  65% {
-    opacity: 1;
-    transform: scale(1.12) translate(0, 0) rotate(3deg);
-  }
-  85% {
-    transform: scale(0.97) rotate(-1deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translate(0, 0) rotate(0deg);
-  }
+@keyframes cubeMagneticTL {
+  0% { opacity: 0; transform: translate(-14px, -14px) scale(0.35); }
+  70% { opacity: 1; transform: translate(1px, 1px) scale(1.05); }
+  100% { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+
+@keyframes cubeMagneticTR {
+  0% { opacity: 0; transform: translate(14px, -14px) scale(0.35); }
+  70% { opacity: 1; transform: translate(-1px, 1px) scale(1.05); }
+  100% { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+
+@keyframes cubeMagneticBL {
+  0% { opacity: 0; transform: translate(-14px, 14px) scale(0.35); }
+  70% { opacity: 1; transform: translate(1px, -1px) scale(1.05); }
+  100% { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+
+@keyframes cubeMagneticBR {
+  0% { opacity: 0; transform: translate(14px, 14px) scale(0.35); }
+  70% { opacity: 1; transform: translate(-1px, -1px) scale(1.05); }
+  100% { opacity: 1; transform: translate(0, 0) scale(1); }
 }
 
 @keyframes splashSymbolElastic {
-  0% {
-    transform: scale(0.65) rotate(-10deg);
-  }
-  60% {
-    transform: scale(1.06) rotate(2deg);
-  }
-  82% {
-    transform: scale(0.985) rotate(-0.5deg);
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-  }
+  0% { transform: scale(0.85); opacity: 0.5; }
+  60% { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes splashTextRise {
   0% {
     opacity: 0;
-    transform: translateY(16px);
-    filter: blur(5px);
+    transform: translateY(10px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
 }
 

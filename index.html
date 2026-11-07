@@ -373,38 +373,42 @@
     </main>
 
     <!-- ============================================================
-         하단 상시 고정 미니 독 & 슬라이드업 믹서 시트
-         평소에는 슬림한 미니 바로 현재 비율 표시 -> 터치 시 믹서 패널 확장
+         하단 상시 고정 미니 독 (하단 탭 바와 1px 틈새 없이 완벽 밀착)
+         ============================================================ -->
+    <div class="dock-peek-bar" id="dockPeekBar" role="button" tabindex="0" aria-expanded="false" aria-label="알고리즘 미니 믹서 열기">
+      <!-- 상단 초슬림 4색 비율선 -->
+      <div class="dock-top-gauge" id="dockTopGauge"></div>
+
+      <div class="dock-peek-inner">
+        <div class="dock-peek-left">
+          <span class="dock-drag-indicator">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+          </span>
+          <div class="dock-ratio-pills" id="dockRatioPills">
+            <!-- JS 렌더링: 공부 50% · 기술 25% · 문화 25% -->
+          </div>
+        </div>
+
+        <div class="dock-peek-right">
+          <span class="dock-tune-badge">튜닝</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         풀 믹서 바텀시트 모달 (열릴 때 아래에서 스르륵, 닫힐 때 아래로 쏙)
          ============================================================ -->
     <div class="dock-mixer-container" id="dockMixerContainer">
       <!-- 배경 딤 (확장 시 노출) -->
       <div class="dock-backdrop" id="dockBackdrop"></div>
 
       <div class="dock-panel" id="dockPanel">
-        <!-- 1. 평소 보이는 미니 독 바 (Peek Bar: 약 48px) -->
-        <div class="dock-peek-bar" id="dockPeekBar" role="button" tabindex="0" aria-expanded="false" aria-label="알고리즘 미니 믹서 열기">
-          <!-- 상단 초슬림 4색 비율선 -->
-          <div class="dock-top-gauge" id="dockTopGauge"></div>
+        <!-- 상단 드래그 핸들 (토스/애플 감성) -->
+        <div class="dock-sheet-drag-handle" id="dockDragHandle"></div>
 
-          <div class="dock-peek-inner">
-            <div class="dock-peek-left">
-              <span class="dock-drag-indicator">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="18 15 12 9 6 15"></polyline>
-                </svg>
-              </span>
-              <div class="dock-ratio-pills" id="dockRatioPills">
-                <!-- JS 렌더링: 공부 50% · 기술 25% · 문화 25% -->
-              </div>
-            </div>
-
-            <div class="dock-peek-right">
-              <span class="dock-tune-badge">튜닝</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. 위로 올렸을 때 나타나는 세부 믹서 영역 (Expanded Content) -->
+        <!-- 세부 믹서 영역 (Expanded Content) -->
         <div class="dock-expanded-content" id="dockExpandedContent">
           <div class="dock-expanded-header">
             <div>

@@ -187,18 +187,18 @@ function runQuickBrandSplash(onComplete) {
     setTimeout(() => {
       splash.style.display = 'none';
       if (typeof onComplete === 'function') onComplete();
-    }, 460);
+    }, 240);
   };
 
-  // 140ms 경쾌한 촉각/청각 피드백 펄스
+  // 60ms 경쾌한 촉각/청각 피드백 펄스
   setTimeout(() => {
     try {
       playTactileAudioPulse('light');
     } catch (e) {}
-  }, 140);
+  }, 60);
 
-  // 약 2.1초 동안 부드럽고 우아한 60fps 브랜드 모션 연출 후 페이드아웃 (터치 시 즉시 스킵 가능)
-  const timer = setTimeout(dismiss, 2100);
+  // 약 0.72초 동안 빠르고 우아한 마그네틱 결합 모션 연출 후 즉시 진입 (터치 시 즉시 스킵)
+  const timer = setTimeout(dismiss, 720);
 
   // 화면 터치/클릭 시 언제든 즉시 스킵 가능
   splash.addEventListener('click', () => {
@@ -1138,6 +1138,7 @@ function openDockMixer() {
   if (!container || isDockTransitioning) return;
   isDockTransitioning = true;
   state.isDockExpanded = true;
+  renderDockMixer();
   container.classList.remove('closing');
   container.classList.add('expanded');
   document.getElementById('dockPeekBar')?.setAttribute('aria-expanded', 'true');
@@ -1145,7 +1146,7 @@ function openDockMixer() {
   triggerHaptic('medium');
   setTimeout(() => {
     isDockTransitioning = false;
-  }, 380);
+  }, 360);
 }
 
 function closeDockMixer() {
@@ -1155,18 +1156,18 @@ function closeDockMixer() {
   state.isDockExpanded = false;
   document.getElementById('dockPeekBar')?.setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
+  updateDockGauges();
   triggerHaptic('light');
 
   // 1) 믹서 패널이 밑으로 슉 내려가는(slide down) 애니메이션 시작
   container.classList.add('closing');
 
-  // 2) 완전히 내려간 후 원래 미니 바로 전환 (좌측 이동 버그 원천 박멸)
+  // 2) 280ms 후 믹서 모달 닫힘 완료 (미니 바는 원래 자리에 항상 대기하고 있으므로 전환 갭 0%)
   setTimeout(() => {
     container.classList.remove('expanded');
     container.classList.remove('closing');
     isDockTransitioning = false;
-    updateDockGauges();
-  }, 300);
+  }, 280);
 }
 
 // 6. 내 알고리즘 투명성 뷰
