@@ -37,6 +37,9 @@
   --text-shader-base: 0 0 0.35px rgba(15, 23, 42, 0.28), 0 0.15px 0.35px rgba(15, 23, 42, 0.08);
   --text-shader-heading: 0 0 0.5px rgba(15, 23, 42, 0.22), 0 0.4px 0.9px rgba(15, 23, 42, 0.06);
   --text-shader-subtle: 0 0 0.25px rgba(100, 116, 139, 0.25);
+
+  /* 하단 탭 바 높이 표준화 (창 크기에 상관없이 틈새 제로 보장) */
+  --tab-bar-height: 52px;
 }
 
 body.dark-mode {
@@ -470,30 +473,30 @@ body.dark-mode .brand-logo-mark {
   backface-visibility: hidden;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
-  animation: feedCardEntrance 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: feedCardEntrance 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.content-feed-card:nth-child(1)  { animation-delay: 0.04s; }
-.content-feed-card:nth-child(2)  { animation-delay: 0.08s; }
-.content-feed-card:nth-child(3)  { animation-delay: 0.12s; }
-.content-feed-card:nth-child(4)  { animation-delay: 0.16s; }
-.content-feed-card:nth-child(5)  { animation-delay: 0.20s; }
-.content-feed-card:nth-child(6)  { animation-delay: 0.24s; }
-.content-feed-card:nth-child(7)  { animation-delay: 0.28s; }
-.content-feed-card:nth-child(8)  { animation-delay: 0.32s; }
-.content-feed-card:nth-child(9)  { animation-delay: 0.36s; }
-.content-feed-card:nth-child(10) { animation-delay: 0.40s; }
-.content-feed-card:nth-child(11) { animation-delay: 0.44s; }
-.content-feed-card:nth-child(12) { animation-delay: 0.48s; }
+.content-feed-card:nth-child(1)  { animation-delay: 0.015s; }
+.content-feed-card:nth-child(2)  { animation-delay: 0.030s; }
+.content-feed-card:nth-child(3)  { animation-delay: 0.045s; }
+.content-feed-card:nth-child(4)  { animation-delay: 0.060s; }
+.content-feed-card:nth-child(5)  { animation-delay: 0.075s; }
+.content-feed-card:nth-child(6)  { animation-delay: 0.090s; }
+.content-feed-card:nth-child(7)  { animation-delay: 0.105s; }
+.content-feed-card:nth-child(8)  { animation-delay: 0.120s; }
+.content-feed-card:nth-child(9)  { animation-delay: 0.135s; }
+.content-feed-card:nth-child(10) { animation-delay: 0.150s; }
+.content-feed-card:nth-child(11) { animation-delay: 0.165s; }
+.content-feed-card:nth-child(12) { animation-delay: 0.180s; }
 
 @keyframes feedCardEntrance {
   0% {
     opacity: 0;
-    transform: translate3d(0, 24px, 0) scale(0.985);
+    transform: translate3d(0, 14px, 0);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -1305,8 +1308,10 @@ body.dark-mode .skeleton-duration-overlay {
    ========================================================================== */
 .dock-mixer-container {
   position: sticky;
-  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  /* 하단 탭 바 높이와 1px 겹침 오프셋으로 서브픽셀 틈새(gap) 100% 원천 차단 */
+  bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px) - 1px);
   z-index: 45;
+  margin-bottom: 0;
 }
 
 .dock-mixer-container.expanded {
@@ -1323,7 +1328,7 @@ body.dark-mode .skeleton-duration-overlay {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
 }
 
 .dock-mixer-container.expanded .dock-backdrop {
@@ -1332,18 +1337,24 @@ body.dark-mode .skeleton-duration-overlay {
   pointer-events: auto;
 }
 
+/* 닫힐 때 배경 딤 페이드아웃 */
+.dock-mixer-container.expanded.closing .dock-backdrop {
+  opacity: 0 !important;
+}
+
 .dock-panel {
   position: relative;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.98);
+  background-color: var(--bg-card);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid var(--border-color);
-  transition: transform 0.48s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.3s ease;
+  /* transform 트랜지션을 제거하여 닫힐 때 좌측에서 날아오는 현상 원천 차단 */
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 body.dark-mode .dock-panel {
-  background-color: rgba(15, 23, 42, 0.98);
+  background-color: var(--bg-card);
 }
 
 /* 1. 평소 보이는 미니 독 바 (Peek Bar: 46px) */
@@ -1450,18 +1461,34 @@ body.dark-mode .dock-panel {
   border-radius: 14px 14px 0 0;
   z-index: 120;
   box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.35);
-  animation: slideUpMixer 0.48s cubic-bezier(0.19, 1, 0.22, 1);
+  animation: slideUpMixer 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   overflow: hidden;
+}
+
+/* 닫힐 때: 아래로 슉 내려가면서 닫히는 네이티브 슬라이드 다운 모션 */
+.dock-mixer-container.expanded.closing .dock-panel {
+  animation: slideDownMixer 0.30s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
 
 @keyframes slideUpMixer {
   from {
-    transform: translate(-50%, 56px);
+    transform: translate(-50%, 100%);
     opacity: 0.5;
   }
   to {
     transform: translate(-50%, 0);
     opacity: 1;
+  }
+}
+
+@keyframes slideDownMixer {
+  from {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%, 100%);
+    opacity: 0.2;
   }
 }
 
@@ -1535,18 +1562,22 @@ body.dark-mode .dock-panel {
   position: sticky;
   bottom: 0;
   z-index: 50;
-  background-color: rgba(255, 255, 255, 0.94);
+  height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px));
+  min-height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  background-color: var(--bg-card);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--border-color);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  padding: 8px 0 calc(10px + env(safe-area-inset-bottom, 0px));
+  align-items: center;
+  padding: 2px 0 env(safe-area-inset-bottom, 0px);
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 body.dark-mode .bottom-tab-bar {
-  background-color: rgba(15, 23, 42, 0.94);
+  background-color: var(--bg-card);
 }
 
 .tab-btn {
@@ -3520,9 +3551,12 @@ body.dark-mode .coachmark-badge {
   }
 
   /* 하단 탭 바 태블릿 너비 동기화 */
+  :root {
+    --tab-bar-height: 58px;
+  }
+
   .bottom-tab-bar {
     max-width: 960px;
-    height: 64px;
   }
 
   /* 인앱 영상/기사 모달 태블릿 확장 */
@@ -3853,13 +3887,4 @@ body.dark-mode .btn-install-cta {
 
 .btn-ios-done:active {
   opacity: 0.85;
-}
-
-/* 하단 독 바 및 탭 바 Safe Area Inset 보강 */
-.bottom-tab-bar {
-  padding-bottom: max(6px, env(safe-area-inset-bottom));
-}
-
-.dock-panel {
-  padding-bottom: max(16px, env(safe-area-inset-bottom));
 }

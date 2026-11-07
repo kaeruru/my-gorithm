@@ -1131,24 +1131,42 @@ function renderDockMixer(allocation) {
   }
 }
 
+let isDockTransitioning = false;
+
 function openDockMixer() {
   const container = document.getElementById('dockMixerContainer');
-  if (!container) return;
+  if (!container || isDockTransitioning) return;
+  isDockTransitioning = true;
   state.isDockExpanded = true;
+  container.classList.remove('closing');
   container.classList.add('expanded');
   document.getElementById('dockPeekBar')?.setAttribute('aria-expanded', 'true');
   document.body.style.overflow = 'hidden';
   triggerHaptic('medium');
+  setTimeout(() => {
+    isDockTransitioning = false;
+  }, 380);
 }
 
 function closeDockMixer() {
   const container = document.getElementById('dockMixerContainer');
-  if (!container) return;
+  if (!container || isDockTransitioning || !container.classList.contains('expanded')) return;
+  isDockTransitioning = true;
   state.isDockExpanded = false;
-  container.classList.remove('expanded');
   document.getElementById('dockPeekBar')?.setAttribute('aria-expanded', 'false');
   document.body.style.overflow = '';
   triggerHaptic('light');
+
+  // 1) 믹서 패널이 밑으로 슉 내려가는(slide down) 애니메이션 시작
+  container.classList.add('closing');
+
+  // 2) 완전히 내려간 후 원래 미니 바로 전환 (좌측 이동 버그 원천 박멸)
+  setTimeout(() => {
+    container.classList.remove('expanded');
+    container.classList.remove('closing');
+    isDockTransitioning = false;
+    updateDockGauges();
+  }, 300);
 }
 
 // 6. 내 알고리즘 투명성 뷰
@@ -1611,18 +1629,18 @@ function bindUIEvents() {
       state.contentType = pill.dataset.type;
       triggerHaptic('light');
       const allocation = calculateAllocation();
-      renderFeedCardsWithSkeleton(allocation, 220);
+      renderFeedCardsWithSkeleton(allocation, 120);
     });
   });
 
-  // 9) 새로고침 셔플 버튼
+  // 9) 새로고침 셔플 버튼 (빠릿하고 경쾌한 140ms 반응)
   document.getElementById('btnShuffle')?.addEventListener('click', () => {
     const btn = document.getElementById('btnShuffle');
     if (btn) btn.classList.add('spinning');
     state.shuffleSeed += 1;
     triggerHaptic('medium');
     const allocation = calculateAllocation();
-    renderFeedCardsWithSkeleton(allocation, 320, () => {
+    renderFeedCardsWithSkeleton(allocation, 140, () => {
       if (btn) btn.classList.remove('spinning');
       showToast('새로운 추천 콘텐츠 조합을 불러왔습니다.');
     });
