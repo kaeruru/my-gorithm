@@ -104,14 +104,26 @@ async function generateWithGemini(categoryKey, topic) {
     const ai = new GoogleGenAI({ apiKey });
     const prompt = createPrompt(categoryKey, topic);
 
-    console.log('\x1b[36m⏳ Google Gemini 2.5 모델이 심층 리서치 및 아티클 집필 중...\x1b[0m');
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json'
+    console.log('\x1b[36m⏳ Google Gemini 모델이 심층 리서치 및 아티클 집필 중...\x1b[0m');
+    let response;
+    const candidateModels = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
+    for (const modelName of candidateModels) {
+      try {
+        response = await ai.models.generateContent({
+          model: modelName,
+          contents: prompt,
+          config: {
+            responseMimeType: 'application/json'
+          }
+        });
+        if (response && response.text) break;
+      } catch (e) {
+        // try next candidate model
       }
-    });
+    }
+    if (!response || !response.text) {
+      throw new Error('사용 가능한 Gemini 모델을 찾을 수 없습니다.');
+    }
 
     const raw = response.text.trim();
     const data = JSON.parse(raw);
