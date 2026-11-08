@@ -159,28 +159,57 @@ export const TRANSLATIONS = {
       notice: '※ 외부 사이트의 보안 설정이나 모바일 네트워크 환경에 따라 링크 연결이 지연될 경우, 위 인앱 리더의 핵심 요약과 상세 본문에서 전문을 바로 확인하실 수 있습니다.'
     },
     coachmark: {
-      badge: 'TIP · 1 / 2',
-      title: '하단 미니 독으로 언제든 조절하세요',
-      desc: '피드를 탐색하다가 언제든 하단 바를 살짝 위로 올리면 4개 분야의 추천 비율을 실시간으로 믹싱할 수 있습니다.',
+      badge1: 'TIP · 1 / 2',
+      title1: '하단 미니 독으로 언제든 조절하세요',
+      desc1: '피드를 탐색하다가 언제든 하단 바를 살짝 위로 올리면 4개 분야의 추천 비율을 실시간으로 믹싱할 수 있습니다.',
+      badge2: 'TIP · 2 / 2',
+      title2: '원터치 프리셋 & 셔플',
+      desc2: '상황에 맞는 프리셋 버튼을 눌러 분위기를 바꾸거나, 새로고침(셔플)으로 새로운 조합을 즉시 탐색해보세요.',
       skip: '건너뛰기',
-      next: '다음'
+      next: '다음',
+      start: '시작하기'
     },
     confirm: {
       title: '확인',
       defaultDesc: '정말 진행하시겠습니까?',
       cancel: '취소',
-      ok: '확인'
+      ok: '확인',
+      resetTitle: '알고리즘 균형 재설정',
+      resetDesc: '모든 분야 관심도를 50% 균등 분배로 재설정하시겠습니까?',
+      resetConfirm: '재설정',
+      clearSavedTitle: '보관함 전체 비우기',
+      clearSavedDesc: '보관함에 저장된 콘텐츠 {count}개를 모두 삭제하시겠습니까?',
+      clearSavedConfirm: '전체 삭제',
+      resetCardsTitle: '직접 추가한 카드 초기화',
+      resetCardsDesc: '사용자가 직접 추가한 콘텐츠 카드 {count}장을 모두 삭제하고 기본 데이터셋으로 되돌리시겠습니까?',
+      resetCardsConfirm: '초기화'
+    },
+    iosInstall: {
+      title: '홈 화면에 맘고리즘 추가하기',
+      desc: 'Safari에서 3초 만에 앱처럼 전체 화면으로 등록할 수 있습니다.',
+      step1: 'Safari 하단 메뉴의 <strong>공유 버튼</strong>을 탭합니다.',
+      step2: '메뉴를 아래로 내려 <strong>\'홈 화면에 추가\'</strong>를 선택합니다.',
+      step3: '우측 상단의 <strong>\'추가\'</strong>를 누르면 홈 화면에 앱이 설치됩니다!',
+      done: '확인했습니다'
+    },
+    tooltip: {
+      stats: '맘고리즘은 전체 가중치 합산 대비 각 분야의 비율을 최대 잔여수(Largest Remainder) 방식으로 정밀 계산하여 피드 12장의 구성을 투명하게 맞춥니다.',
+      mixer: '슬라이더를 1% 단위로 조절하면 다른 분야와의 상대 비율이 실시간 계산됩니다. 0%로 맞춘 분야는 피드에서 100% 원천 배제됩니다.'
     },
     toast: {
       langSwitched: '한국어로 설정되었습니다.',
       recipeApplied: '공유받은 알고리즘 레시피가 적용되었습니다.',
       recipeCopied: '알고리즘 레시피 링크가 복사되었습니다.',
       balancedApplied: '균형 모드가 적용되었습니다.',
+      presetApplied: '{preset} 설정이 적용되었습니다.',
+      balancedReset: '모든 분야 관심도를 50% 균등으로 재설정했습니다.',
       saved: '보관함에 저장되었습니다.',
       removed: '보관함에서 제거되었습니다.',
       restored: '보관함에 다시 복원되었습니다.',
       allRestored: '보관함 콘텐츠가 모두 복원되었습니다.',
       cleared: '보관함이 모두 비워졌습니다.',
+      undo: '실행 취소',
+      allClearedCount: '{count}개의 콘텐츠가 모두 삭제되었습니다.',
       zeroWarning: '모든 분야가 0%입니다. 관심도를 1% 이상 올려주세요.',
       shuffled: '새로운 추천 콘텐츠 조합을 불러왔습니다.',
       titleRequired: '카드 제목과 핵심 요약을 입력해주세요.',
@@ -189,7 +218,12 @@ export const TRANSLATIONS = {
       appInstalled: '맘고리즘 앱이 성공적으로 설치되었습니다!',
       iosGuide: 'Safari 공유 메뉴에서 [홈 화면에 추가]를 선택하세요.',
       online: '네트워크가 정상적으로 다시 연결되었습니다.',
-      offline: '네트워크 연결이 끊겼습니다. 오프라인 모드로 실행됩니다.'
+      offline: '네트워크 연결이 끊겼습니다. 오프라인 모드로 실행됩니다.',
+      shareMsg: '내가 직접 튜닝한 맘고리즘 추천 비율 (공부 {study}% · 기술 {tech}% · 문화 {culture}% · 취미 {hobby}%)을 확인해보세요!',
+      sharePrompt: '아래 링크를 복사하여 공유하세요:',
+      onboardingFeedReady: '내 맞춤 추천 피드가 열렸습니다.',
+      appUpdated: '새로운 기능과 디자인이 업데이트되었습니다.',
+      reload: '새로고침'
     }
   },
 
@@ -347,28 +381,57 @@ export const TRANSLATIONS = {
       notice: '※ If external web loading is slow, you can read the complete summary and structured text directly inside this in-app reader.'
     },
     coachmark: {
-      badge: 'TIP · 1 / 2',
-      title: 'Adjust Anytime with the Mini Dock',
-      desc: 'Whenever you want to switch topics, simply slide up the bottom mini dock to reshape your feed in real-time.',
+      badge1: 'TIP · 1 / 2',
+      title1: 'Adjust Anytime with the Mini Dock',
+      desc1: 'Whenever you want to switch topics, simply slide up the bottom mini dock to reshape your feed in real-time.',
+      badge2: 'TIP · 2 / 2',
+      title2: 'One-Touch Presets & Shuffle',
+      desc2: 'Tap preset buttons to instantly adapt your feed mood, or hit shuffle to explore fresh content mixes.',
       skip: 'Skip',
-      next: 'Next'
+      next: 'Next',
+      start: 'Get Started'
     },
     confirm: {
       title: 'Confirm',
       defaultDesc: 'Are you sure you want to proceed?',
       cancel: 'Cancel',
-      ok: 'Confirm'
+      ok: 'Confirm',
+      resetTitle: 'Reset Algorithm Balance',
+      resetDesc: 'Reset all category weights back to 50% equal balance?',
+      resetConfirm: 'Reset',
+      clearSavedTitle: 'Clear Entire Bookmarks',
+      clearSavedDesc: 'Delete all {count} saved items from your bookmarks?',
+      clearSavedConfirm: 'Clear All',
+      resetCardsTitle: 'Reset Custom Cards',
+      resetCardsDesc: 'Delete all {count} custom content cards and revert to default pool?',
+      resetCardsConfirm: 'Reset'
+    },
+    iosInstall: {
+      title: 'Add My-gorithm to Home Screen',
+      desc: 'Launch in full screen like a native app in 3 seconds via Safari.',
+      step1: 'Tap the <strong>Share button</strong> in Safari bottom menu.',
+      step2: 'Scroll down and select <strong>\'Add to Home Screen\'</strong>.',
+      step3: 'Tap <strong>\'Add\'</strong> on top right to install on your home screen!',
+      done: 'Got it'
+    },
+    tooltip: {
+      stats: 'My-gorithm calculates transparent 12-card proportions via the Largest Remainder method relative to total weights sum.',
+      mixer: 'Adjusting sliders at 1% increments recalculates live proportions. Categories set to 0% are 100% excluded.'
     },
     toast: {
       langSwitched: 'Language switched to English.',
       recipeApplied: 'Shared algorithm recipe applied.',
       recipeCopied: 'Algorithm recipe link copied to clipboard.',
       balancedApplied: 'Balanced mode applied.',
+      presetApplied: '{preset} preset applied.',
+      balancedReset: 'Reset all category weights to 50% equal balance.',
       saved: 'Saved to bookmarks.',
       removed: 'Removed from bookmarks.',
       restored: 'Restored to bookmarks.',
       allRestored: 'All bookmarks restored.',
       cleared: 'All bookmarks cleared.',
+      undo: 'Undo',
+      allClearedCount: 'All {count} content items were deleted.',
       zeroWarning: 'All categories are 0%. Please raise at least one.',
       shuffled: 'Loaded a fresh combination of recommendations.',
       titleRequired: 'Please enter card title and summary.',
@@ -377,7 +440,12 @@ export const TRANSLATIONS = {
       appInstalled: 'My-gorithm app installed successfully!',
       iosGuide: 'Select [Add to Home Screen] from the Safari Share menu.',
       online: 'Network connection restored.',
-      offline: 'You are offline. Running in offline cache mode.'
+      offline: 'You are offline. Running in offline cache mode.',
+      shareMsg: 'Check out my custom My-gorithm recommendation mix (Study {study}% · Tech {tech}% · Culture {culture}% · Hobby {hobby}%)!',
+      sharePrompt: 'Copy the link below to share:',
+      onboardingFeedReady: 'Your personalized feed is now live.',
+      appUpdated: 'New features and improvements updated.',
+      reload: 'Reload'
     }
   }
 };

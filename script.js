@@ -2,6 +2,7 @@
 // 맘고리즘 (내맘대로 알고리즘) - Modern Product Script with Mini Dock & Recipe Sharing
 // ==========================================================================
 import { CATEGORY_META, LEVEL_LABELS, getLevelDescription, CONTENT_DATA, PRESET_MODES, normalizeContentCard } from './data.js';
+import { getLocalizedCard } from './articles_en.js';
 import {
   isFirebaseConfigured,
   currentUser,
@@ -311,12 +312,12 @@ function setupFirstVisitIntroExperience(onComplete) {
 
           video.muted = false;
           video.volume = 1.0;
-          if (textMute) textMute.textContent = '소리 켬';
+          if (textMute) textMute.textContent = t('intro.soundOn');
 
           video.play().catch(() => {
             // 브라우저 정책상 실패 시 음소거 재생 시도
             video.muted = true;
-            if (textMute) textMute.textContent = '소리 끔';
+            if (textMute) textMute.textContent = t('intro.soundOff');
             video.play().catch(() => finishIntro());
           });
 
@@ -350,7 +351,7 @@ function setupFirstVisitIntroExperience(onComplete) {
       e.stopPropagation();
       video.muted = !video.muted;
       triggerHaptic('light');
-      if (textMute) textMute.textContent = video.muted ? '소리 끔' : '소리 켬';
+      if (textMute) textMute.textContent = video.muted ? t('intro.soundOff') : t('intro.soundOn');
     };
   }
 
@@ -391,7 +392,7 @@ function setupIntroVideoModal() {
 
     video.muted = false;
     video.volume = 1.0;
-    if (textMute) textMute.textContent = '소리 켬';
+    if (textMute) textMute.textContent = t('intro.soundOn');
 
     if (startGate) {
       startGate.classList.add('hidden');
@@ -404,7 +405,7 @@ function setupIntroVideoModal() {
 
     video.play().catch(() => {
       video.muted = true;
-      if (textMute) textMute.textContent = '소리 끔';
+      if (textMute) textMute.textContent = t('intro.soundOff');
       video.play().catch(() => finishIntroModal());
     });
 
@@ -439,7 +440,7 @@ function setupIntroVideoModal() {
         e.stopPropagation();
         video.muted = !video.muted;
         triggerHaptic('light');
-        if (textMute) textMute.textContent = video.muted ? '소리 끔' : '소리 켬';
+        if (textMute) textMute.textContent = video.muted ? t('intro.soundOff') : t('intro.soundOn');
       };
     }
 
@@ -607,7 +608,7 @@ function checkRecipeFromUrl() {
 
       persistWeights();
       triggerHaptic('success');
-      showToast('공유받은 알고리즘 레시피가 적용되었습니다.');
+      showToast(t('toast.recipeApplied'));
     }
   } catch (e) {}
 }
@@ -615,11 +616,16 @@ function checkRecipeFromUrl() {
 // 현재 알고리즘 레시피 공유하기
 function shareCurrentRecipe() {
   const url = `${window.location.origin}${window.location.pathname}?s=${state.weights.study}&t=${state.weights.tech}&c=${state.weights.culture}&h=${state.weights.hobby}`;
-  const shareText = `내가 직접 튜닝한 맘고리즘 추천 비율 (공부 ${state.weights.study}% · 기술 ${state.weights.tech}% · 문화 ${state.weights.culture}% · 취미 ${state.weights.hobby}%)을 확인해보세요!`;
+  const shareText = t('toast.shareMsg', {
+    study: state.weights.study,
+    tech: state.weights.tech,
+    culture: state.weights.culture,
+    hobby: state.weights.hobby
+  });
 
   if (navigator.share) {
     navigator.share({
-      title: '맘고리즘 - 내 알고리즘 레시피',
+      title: t('stats.shareTitle'),
       text: shareText,
       url
     }).then(() => {
@@ -628,12 +634,12 @@ function shareCurrentRecipe() {
   } else if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(url).then(() => {
       triggerHaptic('success');
-      showToast('알고리즘 레시피 링크가 복사되었습니다.');
+      showToast(t('toast.recipeCopied'));
     }).catch(() => {
-      prompt('아래 링크를 복사하여 공유하세요:', url);
+      prompt(t('toast.sharePrompt'), url);
     });
   } else {
-    prompt('아래 링크를 복사하여 공유하세요:', url);
+    prompt(t('toast.sharePrompt'), url);
   }
 }
 
@@ -861,7 +867,8 @@ function renderPresetChips() {
   }).join('');
 }
 
-function createCardMarkup(item) {
+function createCardMarkup(rawItem) {
+  const item = getLocalizedCard(rawItem, getLanguage());
   const meta = CATEGORY_META[item.category] || CATEGORY_META.study;
   const isSaved = state.savedIds.has(item.id);
   const isVideo = item.type === 'video';
@@ -869,7 +876,7 @@ function createCardMarkup(item) {
   const lang = getLanguage();
   let durationText = item.duration || (isVideo ? '10:00' : (lang === 'en' ? '5 min read' : '5분 읽기'));
   if (lang === 'en' && typeof durationText === 'string') {
-    durationText = durationText.replace('분 읽기', ' min read');
+    durationText = durationText.replace('분 읽기', ' min read').replace('분 분량', ' min');
   }
 
   return `
@@ -1376,7 +1383,7 @@ function renderOnboardingView() {
               class="channel-range-input onboarding-range-input"
               data-cat="${cat}"
               style="--thumb-color: ${meta.color}; background: linear-gradient(to right, ${meta.color} ${currentVal}%, var(--bg-subtle) ${currentVal}%);"
-              aria-label="${meta.name} 온보딩 관심도 슬라이더"
+              aria-label="${meta.name} ${t('onboarding.gaugeTitle')}"
             />
           </div>
         </div>
@@ -1403,7 +1410,7 @@ function closeOnboarding() {
   persistWeights();
   renderAllViews();
   triggerHaptic('success');
-  showToast('내 맞춤 추천 피드가 열렸습니다.');
+  showToast(t('toast.onboardingFeedReady'));
 
   const hasSeenCoachmark = localStorage.getItem(STORAGE_KEYS.COACHMARK_SEEN);
   if (!hasSeenCoachmark) {
@@ -1445,6 +1452,9 @@ function bindUIEvents() {
     triggerHaptic('light');
     translateDOM();
     renderAllViews();
+    if (currentReadingArticle) {
+      openArticleModal(currentReadingArticle);
+    }
     showToast(t('toast.langSwitched'));
     tracker.syncToFirestore();
   });
@@ -1480,29 +1490,29 @@ function bindUIEvents() {
     const alloc = calculateAllocation();
     if (alloc.totalWeight === 0) {
       triggerHaptic('light');
-      showToast('모든 분야가 0%입니다. 관심도를 1% 이상 올려주세요.');
+      showToast(t('dock.allZeroAlert'));
       return;
     }
     closeDockMixer();
     switchTab('viewFeed');
     triggerHaptic('success');
-    showToast('새로운 추천 비율이 피드에 적용되었습니다.');
+    showToast(t('toast.recipeApplied'));
   });
 
   // 미니 독 내부 균형 리셋 버튼 (확인 모달 다이얼로그)
   document.getElementById('btnResetMixerInDock')?.addEventListener('click', () => {
     showConfirmModal({
-      title: '알고리즘 균형 재설정',
-      message: '모든 분야 관심도를 50% 균등 분배로 재설정하시겠습니까?',
-      confirmText: '재설정',
-      cancelText: '취소',
+      title: t('confirm.resetTitle'),
+      message: t('confirm.resetDesc'),
+      confirmText: t('confirm.resetConfirm'),
+      cancelText: t('confirm.cancel'),
       isDanger: false,
       onConfirm: () => {
         state.weights = { study: 50, tech: 50, culture: 50, hobby: 50 };
         persistWeights();
         renderAllViews();
         triggerHaptic('delete');
-        showToast('모든 분야 관심도를 50% 균등으로 재설정했습니다.');
+        showToast(t('toast.balancedReset'));
       }
     });
   });
@@ -1659,7 +1669,7 @@ function bindUIEvents() {
       persistWeights();
       renderAllViews({ withSkeleton: true, delay: 240 });
       triggerHaptic('medium');
-      showToast(`${preset.name} 설정이 적용되었습니다.`);
+      showToast(t('toast.presetApplied', { preset: preset.name }));
     }
   });
 
@@ -1685,7 +1695,7 @@ function bindUIEvents() {
     const allocation = calculateAllocation();
     renderFeedCardsWithSkeleton(allocation, 140, () => {
       if (btn) btn.classList.remove('spinning');
-      showToast('새로운 추천 콘텐츠 조합을 불러왔습니다.');
+      showToast(t('toast.shuffled'));
     });
   });
 
@@ -1700,19 +1710,19 @@ function bindUIEvents() {
         persistBookmarks();
         renderAllViews();
         triggerHaptic('delete');
-        showSnackbar('보관함에서 제거되었습니다.', '실행 취소', () => {
+        showSnackbar(t('toast.removed'), t('toast.undo'), () => {
           state.savedIds.add(id);
           persistBookmarks();
           renderAllViews();
           triggerHaptic('success');
-          showToast('보관함에 다시 복원되었습니다.');
+          showToast(t('toast.restored'));
         }, 4500);
       } else {
         state.savedIds.add(id);
         persistBookmarks();
         renderAllViews();
         triggerHaptic('success');
-        showToast('보관함에 저장되었습니다.');
+        showToast(t('toast.saved'));
       }
       return;
     }
@@ -1799,13 +1809,13 @@ function bindUIEvents() {
       persistBookmarks();
       renderAllViews();
       triggerHaptic('delete');
-      showSnackbar('보관함에서 제거되었습니다.', '실행 취소', () => {
+      showSnackbar(t('toast.removed'), t('toast.undo'), () => {
         state.savedIds.add(id);
         updateArticleBookmarkButtonState();
         persistBookmarks();
         renderAllViews();
         triggerHaptic('success');
-        showToast('보관함에 다시 복원되었습니다.');
+        showToast(t('toast.restored'));
       }, 4500);
     } else {
       state.savedIds.add(id);
@@ -1813,7 +1823,7 @@ function bindUIEvents() {
       persistBookmarks();
       renderAllViews();
       triggerHaptic('success');
-      showToast('보관함에 저장되었습니다.');
+      showToast(t('toast.saved'));
     }
   });
 
@@ -1822,10 +1832,10 @@ function bindUIEvents() {
     if (state.savedIds.size === 0) return;
     const count = state.savedIds.size;
     showConfirmModal({
-      title: '보관함 전체 비우기',
-      message: `보관함에 저장된 콘텐츠 ${count}개를 모두 삭제하시겠습니까?`,
-      confirmText: '전체 삭제',
-      cancelText: '취소',
+      title: t('confirm.clearSavedTitle'),
+      message: t('confirm.clearSavedDesc', { count }),
+      confirmText: t('confirm.clearSavedConfirm'),
+      cancelText: t('confirm.cancel'),
       isDanger: true,
       onConfirm: () => {
         const previous = new Set(state.savedIds);
@@ -1833,12 +1843,12 @@ function bindUIEvents() {
         persistBookmarks();
         renderAllViews();
         triggerHaptic('delete');
-        showSnackbar(`${count}개의 콘텐츠가 모두 삭제되었습니다.`, '실행 취소', () => {
+        showSnackbar(t('toast.allClearedCount', { count }), t('toast.undo'), () => {
           state.savedIds = new Set(previous);
           persistBookmarks();
           renderAllViews();
           triggerHaptic('success');
-          showToast('보관함 콘텐츠가 모두 복원되었습니다.');
+          showToast(t('toast.allRestored'));
         }, 5000);
       }
     });
@@ -1848,19 +1858,13 @@ function bindUIEvents() {
   document.getElementById('btnStatsTooltip')?.addEventListener('click', (e) => {
     e.stopPropagation();
     triggerHaptic('light');
-    showTooltip(
-      e.currentTarget,
-      '맘고리즘은 전체 가중치 합산 대비 각 분야의 비율을 최대 잔여수(Largest Remainder) 방식으로 정밀 계산하여 피드 12장의 구성을 투명하게 맞춥니다.'
-    );
+    showTooltip(e.currentTarget, t('tooltip.stats'));
   });
 
   document.getElementById('btnMixerTooltip')?.addEventListener('click', (e) => {
     e.stopPropagation();
     triggerHaptic('light');
-    showTooltip(
-      e.currentTarget,
-      '슬라이더를 1% 단위로 조절하면 다른 분야와의 상대 비율이 실시간 계산됩니다. 0%로 맞춘 분야는 피드에서 100% 원천 배제됩니다.'
-    );
+    showTooltip(e.currentTarget, t('tooltip.mixer'));
   });
 
   document.addEventListener('click', (e) => {
@@ -1880,7 +1884,8 @@ function bindUIEvents() {
   });
 
   document.getElementById('btnCoachmarkNext')?.addEventListener('click', () => {
-    if (currentCoachmarkStep < COACHMARK_STEPS.length - 1) {
+    const steps = getCoachmarkSteps();
+    if (currentCoachmarkStep < steps.length - 1) {
       currentCoachmarkStep += 1;
       triggerHaptic('light');
       showCoachmarkStep(currentCoachmarkStep);
@@ -1908,14 +1913,14 @@ function bindUIEvents() {
       const type = document.getElementById('newCardType')?.value || 'video';
       const title = document.getElementById('newCardTitle')?.value?.trim();
       const summary = document.getElementById('newCardSummary')?.value?.trim();
-      const source = document.getElementById('newCardSource')?.value?.trim() || '맘고리즘 큐레이션';
-      const duration = document.getElementById('newCardDuration')?.value?.trim() || (type === 'video' ? '10:00' : '4분 읽기');
+      const source = document.getElementById('newCardSource')?.value?.trim() || (getLanguage() === 'en' ? 'My-gorithm Curation' : '맘고리즘 큐레이션');
+      const duration = document.getElementById('newCardDuration')?.value?.trim() || (type === 'video' ? '10:00' : (getLanguage() === 'en' ? '4 min read' : '4분 읽기'));
       const url = document.getElementById('newCardUrl')?.value?.trim() || '';
       const imageUrl = document.getElementById('newCardImage')?.value?.trim() || '';
 
       if (!title || !summary) {
         triggerHaptic('light');
-        showToast('카드 제목과 핵심 요약을 입력해주세요.');
+        showToast(t('toast.titleRequired'));
         return;
       }
 
@@ -1928,7 +1933,7 @@ function bindUIEvents() {
         duration,
         url,
         imageUrl,
-        date: '방금 추가됨',
+        date: getLanguage() === 'en' ? 'Just added' : '방금 추가됨',
         isNew: true
       });
 
@@ -1951,7 +1956,7 @@ function bindUIEvents() {
       renderAllViews();
       switchTab('viewFeed');
       triggerHaptic('success');
-      showToast(`새로운 ${CATEGORY_META[category].name} 카드가 피드에 추가되었습니다.`);
+      showToast(t('toast.cardAdded', { category: CATEGORY_META[category].name }));
     });
   }
 
@@ -1959,17 +1964,17 @@ function bindUIEvents() {
     if (state.customCards.length === 0) return;
     const count = state.customCards.length;
     showConfirmModal({
-      title: '직접 추가한 카드 초기화',
-      message: `사용자가 직접 추가한 콘텐츠 카드 ${count}장을 모두 삭제하고 기본 데이터셋으로 되돌리시겠습니까?`,
-      confirmText: '초기화',
-      cancelText: '취소',
+      title: t('confirm.resetCardsTitle'),
+      message: t('confirm.resetCardsDesc', { count }),
+      confirmText: t('confirm.resetCardsConfirm'),
+      cancelText: t('confirm.cancel'),
       isDanger: true,
       onConfirm: () => {
         state.customCards = [];
         persistCustomCards();
         renderAllViews();
         triggerHaptic('delete');
-        showToast('직접 추가한 카드가 모두 초기화되었습니다.');
+        showToast(t('toast.cardsReset'));
       }
     });
   });
@@ -1995,7 +2000,7 @@ function extractYouTubeVideoId(url) {
   return match ? match[1] : '6uc4QM79mZ8';
 }
 
-function openVideoModal(item) {
+function openVideoModal(rawItem) {
   const backdrop = document.getElementById('videoSheetBackdrop');
   const iframe = document.getElementById('youtubeIframe');
   const badgeName = document.getElementById('sheetCategoryName');
@@ -2006,14 +2011,15 @@ function openVideoModal(item) {
   const duration = document.getElementById('sheetDuration');
   const summary = document.getElementById('sheetSummary');
 
-  if (!backdrop || !iframe) return;
+  if (!backdrop || !iframe || !rawItem) return;
 
-  const meta = CATEGORY_META[item.category];
+  const item = getLocalizedCard(rawItem, getLanguage());
+  const meta = CATEGORY_META[item.category] || CATEGORY_META.study;
   const ytId = item.youtubeId || extractYouTubeVideoId(item.url);
 
   iframe.src = `https://www.youtube.com/embed/${ytId}?autoplay=1&playsinline=1&rel=0`;
 
-  if (badgeName) badgeName.textContent = `${meta.name} · 영상`;
+  if (badgeName) badgeName.textContent = `${meta.name} · ${t('cards.video')}`;
   if (indicator) indicator.style.backgroundColor = meta.color;
   if (extLink) extLink.href = item.url;
   if (title) title.textContent = item.title;
@@ -2039,12 +2045,13 @@ function closeVideoModal() {
 // ==========================================================================
 let currentReadingArticle = null;
 
-function openArticleModal(item) {
+function openArticleModal(rawItem) {
   const backdrop = document.getElementById('articleSheetBackdrop');
-  if (!backdrop || !item) return;
+  if (!backdrop || !rawItem) return;
 
+  const item = getLocalizedCard(rawItem, getLanguage());
   currentReadingArticle = item;
-  tracker.trackReaderOpen(item);
+  tracker.trackReaderOpen(rawItem);
   const meta = CATEGORY_META[item.category] || CATEGORY_META.study;
 
   // 1. 카테고리 뱃지 & 읽기 시간
@@ -2056,7 +2063,7 @@ function openArticleModal(item) {
   if (indicator) indicator.style.backgroundColor = meta.color;
   let dur = item.duration || (lang === 'en' ? '5 min read' : '5분 읽기');
   if (lang === 'en' && typeof dur === 'string') {
-    dur = dur.replace('분 읽기', ' min read');
+    dur = dur.replace('분 읽기', ' min read').replace('분 분량', ' min');
   }
   if (readTime) readTime.textContent = dur;
 
@@ -2155,8 +2162,8 @@ function updateArticleBookmarkButtonState() {
   if (!btn || !currentReadingArticle) return;
   const isSaved = state.savedIds.has(currentReadingArticle.id);
   btn.classList.toggle('saved', isSaved);
-  btn.title = isSaved ? '보관함에서 제거' : '보관함 저장';
-  btn.setAttribute('aria-label', isSaved ? '보관함에서 제거' : '보관함 저장');
+  btn.title = isSaved ? t('cards.bookmarkRemove') : t('cards.bookmarkSave');
+  btn.setAttribute('aria-label', isSaved ? t('cards.bookmarkRemove') : t('cards.bookmarkSave'));
 }
 
 // 토스트 메시지
@@ -2186,7 +2193,7 @@ function showSnackbar(msg, actionText, onAction, duration = 4000) {
   if (snackbarTimer) clearTimeout(snackbarTimer);
 
   msgEl.textContent = msg;
-  btnEl.textContent = actionText || '실행 취소';
+  btnEl.textContent = actionText || t('toast.undo');
 
   // 카운트다운 프로그레스 바 CSS 애니메이션 리셋
   progressEl.classList.remove('animate');
@@ -2212,7 +2219,7 @@ function showSnackbar(msg, actionText, onAction, duration = 4000) {
 // ==========================================================================
 // 상용앱 피드백 컴포넌트: 확인 모달 다이얼로그 (Confirm Modal Dialog)
 // ==========================================================================
-function showConfirmModal({ title, message, confirmText = '확인', cancelText = '취소', isDanger = true, onConfirm, onCancel }) {
+function showConfirmModal({ title, message, confirmText = t('confirm.ok'), cancelText = t('confirm.cancel'), isDanger = true, onConfirm, onCancel }) {
   const backdrop = document.getElementById('confirmModalBackdrop');
   const titleEl = document.getElementById('confirmModalTitle');
   const descEl = document.getElementById('confirmModalDesc');
@@ -2319,22 +2326,24 @@ function hideTooltip() {
 // ==========================================================================
 // 상용앱 피드백 컴포넌트: 코치마크 스포트라이트 가이드 (Coachmark Onboarding)
 // ==========================================================================
-const COACHMARK_STEPS = [
-  {
-    targetId: 'dockPeekBar',
-    badge: 'TIP 1 / 2',
-    title: '하단 미니 독으로 언제든 조절하세요',
-    desc: '피드를 읽다가 언제든 하단 바를 살짝 위로 올리면 4가지 관심도의 추천 비율을 실시간으로 믹싱할 수 있습니다.',
-    nextText: '다음'
-  },
-  {
-    targetId: 'presetContainer',
-    badge: 'TIP 2 / 2',
-    title: '원터치 프리셋 & 셔플',
-    desc: '상황에 맞는 프리셋 버튼을 눌러 분위기를 바꾸거나, 새로고침(셔플)으로 새로운 조합을 즉시 탐색해보세요.',
-    nextText: '시작하기'
-  }
-];
+function getCoachmarkSteps() {
+  return [
+    {
+      targetId: 'dockPeekBar',
+      badge: t('coachmark.badge1'),
+      title: t('coachmark.title1'),
+      desc: t('coachmark.desc1'),
+      nextText: t('coachmark.next')
+    },
+    {
+      targetId: 'presetContainer',
+      badge: t('coachmark.badge2'),
+      title: t('coachmark.title2'),
+      desc: t('coachmark.desc2'),
+      nextText: t('coachmark.start')
+    }
+  ];
+}
 
 let currentCoachmarkStep = 0;
 
@@ -2351,10 +2360,12 @@ function showCoachmarkStep(stepIndex) {
   const title = document.getElementById('coachmarkTitle');
   const desc = document.getElementById('coachmarkDesc');
   const btnNext = document.getElementById('btnCoachmarkNext');
+  const btnSkip = document.getElementById('btnCoachmarkSkip');
 
   if (!overlay || !spotlight || !card || !badge || !title || !desc || !btnNext) return;
 
-  const step = COACHMARK_STEPS[stepIndex];
+  const steps = getCoachmarkSteps();
+  const step = steps[stepIndex];
   if (!step) {
     dismissCoachmark();
     return;
@@ -2370,6 +2381,7 @@ function showCoachmarkStep(stepIndex) {
   title.textContent = step.title;
   desc.textContent = step.desc;
   btnNext.textContent = step.nextText;
+  if (btnSkip) btnSkip.textContent = t('coachmark.skip');
 
   overlay.classList.remove('hidden');
 
@@ -2426,7 +2438,7 @@ if ('serviceWorker' in navigator) {
         if (installingWorker) {
           installingWorker.addEventListener('statechange', () => {
             if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              showSnackbar('새로운 기능과 디자인이 업데이트되었습니다.', '새로고침', () => {
+              showSnackbar(t('toast.appUpdated'), t('toast.reload'), () => {
                 window.location.reload();
               }, 7000);
             }
@@ -2451,7 +2463,7 @@ window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
   hideInstallUI();
   triggerHaptic('success');
-  showToast('맘고리즘 앱이 성공적으로 설치되었습니다!');
+  showToast(t('toast.appInstalled'));
 });
 
 // 설치 UI 노출 관리
@@ -2494,7 +2506,7 @@ function handleInstallApp() {
     showIosInstallModal();
   } else {
     // 이미 설치되었거나 기타 브라우저인 경우 가이드 토스트
-    showToast('브라우저 설정 메뉴(⋮)에서 [홈 화면에 추가] 또는 [앱 설치]를 선택하세요.');
+    showToast(t('toast.iosGuide'));
   }
 }
 
@@ -2552,10 +2564,10 @@ function initPwaFeatures() {
 
   // 네트워크 상태 실시간 모니터링
   window.addEventListener('online', () => {
-    showToast('네트워크가 정상적으로 다시 연결되었습니다.');
+    showToast(t('toast.online'));
   });
   window.addEventListener('offline', () => {
-    showToast('네트워크 연결이 끊겼습니다. 오프라인 모드로 실행됩니다.');
+    showToast(t('toast.offline'));
   });
 }
 
