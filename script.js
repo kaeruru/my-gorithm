@@ -1057,8 +1057,8 @@ function updateAllChannelPills(container, allocation) {
     const pill = card.querySelector('.channel-status-pill');
     if (pill) {
       pill.innerHTML = val === 0
-        ? '0% (제외)'
-        : `<b>피드 ${alloc.displayPct}%</b>`;
+        ? '<span class="is-zero">0%</span>'
+        : `<span class="pct-num">${alloc.displayPct}</span><span class="pct-unit">%</span>`;
     }
     const ticks = card.querySelectorAll('.tick-label');
     ticks.forEach((tick) => {
@@ -1103,8 +1103,8 @@ function renderDockMixer(allocation) {
               <span class="channel-color-bar" style="background-color: ${meta.color}"></span>
               <div class="channel-name">${meta.name}</div>
             </div>
-            <span class="channel-status-pill" style="border-left: 3px solid ${meta.color}">
-              ${currentVal === 0 ? '0% (제외)' : `<b>피드 ${alloc.displayPct}%</b>`}
+            <span class="channel-status-pill" style="color: ${meta.color}">
+              ${currentVal === 0 ? '<span class="is-zero">0%</span>' : `<span class="pct-num">${alloc.displayPct}</span><span class="pct-unit">%</span>`}
             </span>
           </div>
 
@@ -1334,8 +1334,8 @@ function renderOnboardingView() {
               <span class="channel-color-bar" style="background-color: ${meta.color}"></span>
               <span class="channel-name" style="font-size:0.86rem; font-weight:700;">${meta.name}</span>
             </div>
-            <span class="channel-status-pill" style="border-left: 3px solid ${meta.color}; font-size:0.74rem; font-weight:700; padding:2px 8px;">
-              ${currentVal === 0 ? '0% (제외)' : `<b>피드 ${alloc.displayPct}%</b>`}
+            <span class="channel-status-pill" style="color: ${meta.color}">
+              ${currentVal === 0 ? '<span class="is-zero">0%</span>' : `<span class="pct-num">${alloc.displayPct}</span><span class="pct-unit">%</span>`}
             </span>
           </div>
 
