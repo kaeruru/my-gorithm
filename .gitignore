@@ -20,3 +20,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+
+# Admin Drafts
+drafts/*.json
+drafts/*.csv

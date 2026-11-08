@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>맘고리즘 관리자 스튜디오</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --surface: #FFFFFF;
+      --surface-border: #E2E8F0;
+      --text-main: #0F172A;
+      --text-sub: #475569;
+      --text-muted: #94A3B8;
+      --color-study: #4F46E5;
+      --color-tech: #0284C7;
+      --color-culture: #BE185D;
+      --color-hobby: #059669;
+      --primary: #0F172A;
+      --primary-hover: #1E293B;
+      --radius: 14px;
+      --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
+    }
+
+    /* 상단 헤더 */
+    header {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--surface-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      display: grid;
+      grid-template-columns: repeat(2, 10px);
+      grid-template-rows: repeat(2, 10px);
+      gap: 3px;
+    }
+    .brand-logo span { border-radius: 2.5px; }
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 850;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-admin {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      background: #EEF2F6;
+      color: #334155;
+      border-radius: 6px;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #059669;
+      background: #ECFDF5;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid #A7F3D0;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.15); }
+    }
+
+    /* 본문 레이아웃 */
+    main {
+      max-width: 1100px;
+      margin: 32px auto 0;
+      padding: 0 24px;
+    }
+
+    /* 액션 툴바 */
+    .toolbar-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .toolbar-left h2 {
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .toolbar-left p {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* 버튼 스타일 */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 750;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #FFF;
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+    .btn-magic {
+      background: linear-gradient(135deg, #4F46E5, #0284C7);
+      color: #FFF;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+    }
+    .btn-magic:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+    .btn-subtle {
+      background: #F1F5F9;
+      color: var(--text-sub);
+      border: 1px solid var(--surface-border);
+    }
+    .btn-subtle:hover {
+      background: #E2E8F0;
+      color: var(--text-main);
+    }
+    .btn-success {
+      background: #059669;
+      color: #FFF;
+    }
+    .btn-success:hover {
+      background: #047857;
+    }
+    .btn-danger {
+      background: #FEE2E2;
+      color: #B91C1C;
+    }
+    .btn-danger:hover {
+      background: #FCA5A5;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* 진행 상태 바 */
+    .progress-wrap {
+      display: none;
+      background: #EFF6FF;
+      border: 1px solid #BFDBFE;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      align-items: center;
+      gap: 16px;
+    }
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid #BFDBFE;
+      border-top-color: #2563EB;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .progress-text {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1D4ED8;
+    }
+
+    /* 초안 피드 카드 그리드 */
+    .staging-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .staging-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .count-badge {
+      font-size: 0.76rem;
+      background: #E2E8F0;
+      color: #334155;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 800;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+      gap: 20px;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+
+    .draft-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+    .draft-card:hover {
+      border-color: #CBD5E1;
+    }
+
+    .card-top {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #F1F5F9;
+    }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cat-tag {
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #FFF;
+    }
+    .meta-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .link-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #F0FDF4;
+      color: #166534;
+      border: 1px solid #BBF7D0;
+      text-decoration: none;
+    }
+
+    .card-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card-title-row {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .card-thumb {
+      width: 88px;
+      height: 66px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #E2E8F0;
+      flex-shrink: 0;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+
+    .recom-box {
+      background: #FFFBEB;
+      border-left: 3px solid #F59E0B;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      color: #92400E;
+    }
+    .recom-label {
+      font-weight: 800;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #B45309;
+      margin-bottom: 2px;
+    }
+
+    .key-points-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: #F8FAFC;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+    }
+    .key-points-list li {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      color: #334155;
+    }
+    .key-points-list li::before {
+      content: "•";
+      color: var(--color-study);
+      font-weight: bold;
+    }
+
+    /* 1500자 전문 아코디언 */
+    .sections-toggle {
+      background: none;
+      border: none;
+      color: #2563EB;
+      font-size: 0.84rem;
+      font-weight: 750;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 0;
+      margin-top: 4px;
+    }
+    .sections-content {
+      display: none;
+      border-top: 1px dashed #E2E8F0;
+      padding-top: 14px;
+      margin-top: 8px;
+      font-size: 0.86rem;
+      color: #334155;
+      line-height: 1.7;
+    }
+    .sections-content.open { display: block; }
+    .sec-block { margin-bottom: 14px; }
+    .sec-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .card-footer {
+      padding: 14px 20px;
+      background: #FAFAFA;
+      border-top: 1px solid #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    /* 빈 상태 */
+    .empty-state {
+      background: var(--surface);
+      border: 2px dashed #CBD5E1;
+      border-radius: var(--radius);
+      padding: 60px 24px;
+      text-align: center;
+    }
+    .empty-state h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .empty-state p {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* 모달 */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-box {
+      background: #FFF;
+      border-radius: 18px;
+      max-width: 500px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .modal-box h3 {
+      font-size: 1.25rem;
+      font-weight: 850;
+      margin-bottom: 12px;
+    }
+    .modal-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      padding: 8px 0;
+      color: var(--text-sub);
+    }
+    .modal-step.done { color: #059669; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand-wrap">
+        <div class="brand-logo">
+          <span style="background:var(--color-study);"></span>
+          <span style="background:var(--color-tech);"></span>
+          <span style="background:var(--color-culture);"></span>
+          <span style="background:var(--color-hobby);"></span>
+        </div>
+        <div class="brand-title">
+          맘고리즘 관리자 스튜디오
+          <span class="badge-admin">Admin Studio</span>
+        </div>
+      </div>
+      <div class="status-pill" id="statusPill">
+        <span class="status-dot"></span>
+        <span id="statusText">Gemini 3.8 / 2.5 연결됨</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 액션 툴바 -->
+    <div class="toolbar-card">
+      <div class="toolbar-left">
+        <h2>AI 심층 콘텐츠 생성 및 배포 파이프라인</h2>
+        <p>1,500자 이상의 묵직한 전문 칼럼을 일괄 생성하고, 검토 후 원클릭으로 실서버에 즉시 배포합니다.</p>
+      </div>
+      <div class="toolbar-actions">
+        <button class="btn btn-magic" id="btnBatchGenerate" onclick="generateBatch()">
+          <span>⚡ 4대 분야 일괄 생성 (배치)</span>
+        </button>
+        <button class="btn btn-subtle" onclick="openCustomModal()">
+          <span>+ 맞춤 주제 단건 생성</span>
+        </button>
+        <button class="btn btn-subtle" onclick="exportCsv()">
+          <span>📥 CSV 엑셀 내보내기</span>
+        </button>
+        <button class="btn btn-primary" id="btnBatchApprove" onclick="approveSelected()" disabled>
+          <span>🚀 선택한 기사 일괄 배포</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 진행 상황 표시줄 -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="spinner"></div>
+      <div class="progress-text" id="progressText">Gemini 모델이 심층 리서치 및 아티클 집필 중...</div>
+    </div>
+
+    <!-- 대기열 목록 -->
+    <div class="staging-header">
+      <div class="staging-title">
+        <span>발행 검토 대기열 (Drafts)</span>
+        <span class="count-badge" id="draftCount">0편</span>
+      </div>
+      <label style="font-size:0.84rem; display:flex; align-items:center; gap:6px; cursor:pointer;">
+        <input type="checkbox" id="checkAll" onchange="toggleCheckAll(this.checked)">
+        <span>전체 선택</span>
+      </label>
+    </div>
+
+    <div class="cards-grid" id="cardsGrid">
+      <!-- 자바스크립트로 렌더링 -->
+    </div>
+
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <h3>대기 중인 아티클 초안이 없습니다</h3>
+      <p>상단의 [⚡ 4대 분야 일괄 생성] 버튼을 누르면 공부·기술·문화·취미의 최신 트렌드 칼럼 4편이 자동으로 집필됩니다.</p>
+      <button class="btn btn-magic" onclick="generateBatch()">지금 4편 일괄 생성하기</button>
+    </div>
+  </main>
+
+  <!-- 배포 모달 다이얼로그 -->
+  <div class="modal-backdrop" id="deployModal">
+    <div class="modal-box">
+      <h3 id="modalTitle">실서버 자동 배포 진행 중</h3>
+      <div class="modal-step done" id="step1">✔ 1단계: data.js 데이터베이스 삽입 완료</div>
+      <div class="modal-step" id="step2">⏳ 2단계: Vite 프로덕션 빌드 실행 중...</div>
+      <div class="modal-step" id="step3">⏳ 3단계: Firebase Hosting 실서버 배포 중...</div>
+      <div style="margin-top:20px; text-align:right;">
+        <button class="btn btn-primary" id="modalCloseBtn" style="display:none;" onclick="closeModal()">확인 및 사이트 열기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let drafts = [];
+
+    async function loadDrafts() {
+      try {
+        const res = await fetch('/api/drafts');
+        const data = await res.json();
+        drafts = data.drafts || [];
+        renderDrafts();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    const CAT_COLORS = {
+      study: '#4F46E5',
+      tech: '#0284C7',
+      culture: '#BE185D',
+      hobby: '#059669'
+    };
+    const CAT_NAMES = {
+      study: '공부',
+      tech: '기술',
+      culture: '문화',
+      hobby: '취미'
+    };
+
+    function renderDrafts() {
+      const grid = document.getElementById('cardsGrid');
+      const empty = document.getElementById('emptyState');
+      const countEl = document.getElementById('draftCount');
+      countEl.textContent = `${drafts.length}편`;
+
+      if (drafts.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        updateBatchBtn();
+        return;
+      }
+
+      empty.style.display = 'none';
+      grid.innerHTML = drafts.map((item, idx) => {
+        const color = CAT_COLORS[item.category] || '#4F46E5';
+        const catName = CAT_NAMES[item.category] || item.category;
+
+        return `
+          <div class="draft-card" data-id="${item.id}">
+            <div class="card-top">
+              <div class="card-meta">
+                <input type="checkbox" class="card-checkbox" value="${item.id}" onchange="updateBatchBtn()">
+                <span class="cat-tag" style="background:${color};">${catName}</span>
+                <span class="meta-sub">${item.source} · ${item.duration}</span>
+              </div>
+              <a href="${item.url}" target="_blank" class="link-badge">🟢 원문 링크 검증됨 ↗</a>
+            </div>
+
+            <div class="card-body">
+              <div class="card-title-row">
+                <img src="${item.imageUrl}" alt="${item.title}" class="card-thumb" onerror="this.src='/favicon.svg'">
+                <div class="card-title">${item.title}</div>
+              </div>
+
+              <div class="recom-box">
+                <div class="recom-label">맘고리즘 추천 이유</div>
+                <div>${item.recommendationReason}</div>
+              </div>
+
+              <ul class="key-points-list">
+                ${(item.keyPoints || []).map(kp => `<li>${kp}</li>`).join('')}
+              </ul>
+
+              <!-- 1,500자 전문 아코디언 -->
+              <div>
+                <button class="sections-toggle" onclick="toggleSections('${item.id}')">
+                  <span>📖 1,500자 심층 본문 전체보기 (${(item.sections || []).length}개 섹션)</span>
+                  <span id="arrow-${item.id}">▼</span>
+                </button>
+                <div class="sections-content" id="sec-${item.id}">
+                  ${(item.sections || []).map(sec => `
+                    <div class="sec-block">
+                      <div class="sec-title">${sec.heading}</div>
+                      <p>${sec.body}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button class="btn btn-danger btn-sm" onclick="deleteDraft('${item.id}')">🗑️ 폐기</button>
+              <button class="btn btn-success" onclick="approveSingle('${item.id}')">
+                <span>🚀 승인 & 즉시 배포</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      updateBatchBtn();
+    }
+
+    function toggleSections(id) {
+      const content = document.getElementById(`sec-${id}`);
+      const arrow = document.getElementById(`arrow-${id}`);
+      if (content) {
+        content.classList.toggle('open');
+        arrow.textContent = content.classList.contains('open') ? '▲' : '▼';
+      }
+    }
+
+    function toggleCheckAll(checked) {
+      document.querySelectorAll('.card-checkbox').forEach(cb => cb.checked = checked);
+      updateBatchBtn();
+    }
+
+    function updateBatchBtn() {
+      const checkedCount = document.querySelectorAll('.card-checkbox:checked').length;
+      const btn = document.getElementById('btnBatchApprove');
+      btn.disabled = checkedCount === 0;
+      btn.innerHTML = `<span>🚀 선택한 ${checkedCount}개 일괄 배포</span>`;
+    }
+
+    async function generateBatch() {
+      const progressWrap = document.getElementById('progressWrap');
+      const progressText = document.getElementById('progressText');
+      const btn = document.getElementById('btnBatchGenerate');
+
+      progressWrap.style.display = 'flex';
+      btn.disabled = true;
+
+      try {
+        progressText.textContent = 'Google Gemini AI가 4개 분야(공부/기술/문화/취미)의 실시간 최신 트렌드를 심층 집필 중입니다... (약 15~30초 소요)';
+        const res = await fetch('/api/generate-batch', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          await loadDrafts();
+        } else {
+          alert('생성 실패: ' + (data.error || '오류 발생'));
+        }
+      } catch (err) {
+        alert('네트워크 오류: ' + err.message);
+      } finally {
+        progressWrap.style.display = 'none';
+        btn.disabled = false;
+      }
+    }
+
+    async function approveSingle(id) {
+      if (!confirm('이 아티클을 data.js에 추가하고 실서버(Firebase)에 즉시 배포하시겠습니까?')) return;
+      await executeApprove([id]);
+    }
+
+    async function approveSelected() {
+      const checked = [...document.querySelectorAll('.card-checkbox:checked')].map(cb => cb.value);
+      if (checked.length === 0) return;
+      if (!confirm(`선택한 ${checked.length}개의 아티클을 data.js에 추가하고 실서버에 즉시 배포하시겠습니까?`)) return;
+      await executeApprove(checked);
+    }
+
+    async function executeApprove(ids) {
+      const modal = document.getElementById('deployModal');
+      const step1 = document.getElementById('step1');
+      const step2 = document.getElementById('step2');
+      const step3 = document.getElementById('step3');
+      const closeBtn = document.getElementById('modalCloseBtn');
+
+      modal.style.display = 'flex';
+      step1.className = 'modal-step done';
+      step1.textContent = `✔ 1단계: ${ids.length}개 아티클 data.js 추가 완료`;
+      step2.className = 'modal-step';
+      step2.textContent = '⏳ 2단계: Vite 프로덕션 빌드 실행 중...';
+      step3.className = 'modal-step';
+      step3.textContent = '⏳ 3단계: Firebase Hosting 실서버 배포 대기 중...';
+      closeBtn.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ articleIds: ids })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          step2.className = 'modal-step done';
+          step2.textContent = '✔ 2단계: Vite 프로덕션 빌드 성공';
+          step3.className = 'modal-step done';
+          step3.textContent = '✔ 3단계: Firebase 실서버(my-gorithm.web.app) 배포 완료!';
+          document.getElementById('modalTitle').textContent = '🎉 배포 성공!';
+          closeBtn.style.display = 'inline-flex';
+          await loadDrafts();
+        } else {
+          alert('배포 중 오류: ' + (data.error || '실패'));
+          modal.style.display = 'none';
+        }
+      } catch (err) {
+        alert('오류: ' + err.message);
+        modal.style.display = 'none';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('deployModal').style.display = 'none';
+      window.open('https://my-gorithm.web.app', '_blank');
+    }
+
+    async function deleteDraft(id) {
+      if (!confirm('이 초안을 폐기하시겠습니까?')) return;
+      await fetch('/api/delete-draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      await loadDrafts();
+    }
+
+    function exportCsv() {
+      window.location.href = '/api/export-csv';
+    }
+
+    function openCustomModal() {
+      const topic = prompt('원하는 맞춤 아티클 주제를 구체적으로 입력하세요:');
+      if (!topic) return;
+      const cat = prompt('분야를 입력하세요 (study / tech / culture / hobby):', 'tech');
+      if (!cat) return;
+
+      const progressWrap = document.getElementById('progressWrap');
+      const progressText = document.getElementById('progressText');
+      progressWrap.style.display = 'flex';
+      progressText.textContent = `"${topic}"에 대한 1,500자 심층 아티클을 집필 중입니다...`;
+
+      fetch('/api/generate-custom', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic, category: cat })
+      }).then(r => r.json()).then(data => {
+        progressWrap.style.display = 'none';
+        if (data.success) loadDrafts();
+        else alert('생성 실패: ' + data.error);
+      }).catch(err => {
+        progressWrap.style.display = 'none';
+        alert('오류: ' + err.message);
+      });
+    }
+
+    loadDrafts();
+  </script>
+</body>
+</html>
