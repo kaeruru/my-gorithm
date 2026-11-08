@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 맘고리즘 사용자 텔레메트리 프로필 및 지표 데이터
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+    match /users/{userId}/{document=**} {
+      allow read, write: if true;
+    }
+
+    // 커스텀 큐레이션 카드 및 공유
+    match /customCards/{cardId} {
+      allow read, write: if true;
+    }
+
+    // 기본 매칭
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

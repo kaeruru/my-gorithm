@@ -129,6 +129,12 @@ class TelemetryTracker {
   }
 
   initSession() {
+    // 고유 익명 UID 보장 (로컬 폴백)
+    if (!localStorage.getItem(STORAGE_KEYS.USER_ID)) {
+      const generatedUid = 'user_' + Math.random().toString(36).substring(2, 10) + '_' + Date.now().toString(36);
+      localStorage.setItem(STORAGE_KEYS.USER_ID, generatedUid);
+    }
+
     // 방문 횟수 증가
     let visits = parseInt(localStorage.getItem(STORAGE_KEYS.VISITS) || '0', 10);
     visits += 1;
