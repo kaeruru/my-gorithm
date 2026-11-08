@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" fill="none">
+  <!-- 맘고리즘 공식 심볼 로고 (다크 배경) -->
+  <rect width="192" height="192" fill="#0C0F15"/>
+  <rect x="28" y="24" width="65" height="66" rx="14" fill="#4C43D8"/>
+  <rect x="100" y="24" width="64" height="66" rx="14" fill="#157EBD"/>
+  <rect x="28" y="100" width="65" height="65" rx="14" fill="#B51A5A"/>
+  <rect x="100" y="100" width="64" height="65" rx="14" fill="#099167"/>
+</svg>
