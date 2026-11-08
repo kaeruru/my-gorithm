@@ -8,6 +8,7 @@ import {
   saveUserSettingsToCloud,
   loadUserSettingsFromCloud
 } from './firebase.js';
+import { tracker } from './tracker.js';
 
 const STORAGE_KEYS = {
   WEIGHTS: 'mamgorithm_weights_v2',
@@ -38,7 +39,12 @@ const state = {
 
 // 현재 활성 콘텐츠 풀 (사용자 추가 카드 + 기본 카드 풀)
 function getActiveContentPool() {
-  return [...state.customCards, ...CONTENT_DATA];
+  const pool = [...state.customCards, ...CONTENT_DATA];
+  if (typeof window !== 'undefined') {
+    window.__mamgorithm_pool = pool;
+    window.__mamgorithm_state = state;
+  }
+  return pool;
 }
 
 // ==========================================================================
@@ -531,8 +537,11 @@ function loadSavedPreferences() {
   }
 }
 
+let previousWeightsForTelemetry = { ...state.weights };
 function persistWeights() {
   try {
+    tracker.trackMixerChange(previousWeightsForTelemetry, state.weights);
+    previousWeightsForTelemetry = { ...state.weights };
     localStorage.setItem(STORAGE_KEYS.WEIGHTS, JSON.stringify(state.weights));
     if (isFirebaseConfigured() && currentUser?.uid) {
       saveUserSettingsToCloud(currentUser.uid, state.weights);
@@ -543,6 +552,7 @@ function persistWeights() {
 function persistBookmarks() {
   try {
     localStorage.setItem(STORAGE_KEYS.SAVED_IDS, JSON.stringify([...state.savedIds]));
+    tracker.scheduleSync();
   } catch (err) {}
 }
 
@@ -935,6 +945,7 @@ function renderFeedCards(allocation) {
 
   const cards = buildFeedList(allocation);
   container.innerHTML = cards.map(createCardMarkup).join('');
+  setTimeout(() => tracker.observeFeedCards(), 60);
 }
 
 // ==========================================================================
@@ -1686,6 +1697,11 @@ function bindUIEvents() {
       const id = card.dataset.id;
       const activePool = getActiveContentPool();
       const item = activePool.find((c) => c.id === id);
+      const isFromBookmark = !!card.closest('#savedCardsList');
+
+      if (item) {
+        tracker.trackCardClick(item, isFromBookmark);
+      }
 
       if (type === 'video' && item) {
         triggerHaptic('medium');
@@ -2002,6 +2018,7 @@ function openArticleModal(item) {
   if (!backdrop || !item) return;
 
   currentReadingArticle = item;
+  tracker.trackReaderOpen(item);
   const meta = CATEGORY_META[item.category] || CATEGORY_META.study;
 
   // 1. 카테고리 뱃지 & 읽기 시간
@@ -2097,6 +2114,7 @@ function openArticleModal(item) {
 function closeArticleModal() {
   const backdrop = document.getElementById('articleSheetBackdrop');
   if (backdrop) backdrop.classList.add('hidden');
+  tracker.trackReaderClose();
   currentReadingArticle = null;
   document.body.style.overflow = '';
 }
