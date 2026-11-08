@@ -7,7 +7,10 @@ import {
   isFirebaseConfigured,
   currentUser,
   saveUserSettingsToCloud,
-  loadUserSettingsFromCloud
+  loadUserSettingsFromCloud,
+  loginWithGoogle,
+  logoutUser,
+  onAuthStatusChange
 } from './firebase.js';
 import { tracker } from './tracker.js';
 import {
@@ -471,9 +474,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // 수동 다시보기 모달 리스너 준비
   setupIntroVideoModal();
 
-  // 인트로 종료 후 온보딩 / 코치마크 진행 핸들러
+  // 인트로 종료 후 온보딩 / 로그인 / 코치마크 진행 핸들러
   const afterIntroProceed = () => {
     const hasOnboarded = localStorage.getItem(STORAGE_KEYS.ONBOARDED);
+    const hasDismissedAuth = sessionStorage.getItem('mamgorithm_auth_dismissed') === 'true';
+    const isUserLoggedIn = currentUser && !currentUser.isAnonymous;
+
+    // 첫 방문자 중 미로그인 상태이고 아직 건너뛰기를 누르지 않았다면 모던 로그인 모달 먼저 제시
+    if (!hasOnboarded && !isUserLoggedIn && !hasDismissedAuth) {
+      openAuthModal({
+        isFirstVisit: true,
+        onDismiss: () => {
+          openOnboarding();
+        }
+      });
+      return;
+    }
+
     if (!hasOnboarded) {
       openOnboarding();
     } else {
@@ -795,6 +812,7 @@ function renderAllViews(options = {}) {
   renderSavedView();
   updateSavedBadge();
   updateCustomCardCountUI();
+  updateHeaderAuthUI(currentUser);
 }
 
 // 스켈레톤 쉬머 마크업 생성기 (오늘의집/토스 스타일)
@@ -1392,6 +1410,154 @@ function renderOnboardingView() {
   }
 }
 
+// ==========================================================================
+// 글로벌 계정 & 모던 구글 로그인 제어 모듈
+// ==========================================================================
+let authModalDismissCallback = null;
+
+function openAuthModal(options = {}) {
+  const overlay = document.getElementById('authOverlay');
+  if (!overlay) return;
+
+  authModalDismissCallback = options.onDismiss || null;
+
+  updateAuthModalState();
+
+  overlay.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  triggerHaptic('light');
+}
+
+function closeAuthModal() {
+  const overlay = document.getElementById('authOverlay');
+  if (overlay) overlay.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+function dismissAuthModal(skipped = true) {
+  closeAuthModal();
+  if (skipped) {
+    sessionStorage.setItem('mamgorithm_auth_dismissed', 'true');
+    triggerHaptic('light');
+  }
+  if (typeof authModalDismissCallback === 'function') {
+    const cb = authModalDismissCallback;
+    authModalDismissCallback = null;
+    cb();
+  }
+}
+
+function updateAuthModalState() {
+  const loggedOutView = document.getElementById('authLoggedOutView');
+  const loggedInView = document.getElementById('authLoggedInView');
+  const userPhoto = document.getElementById('authUserPhoto');
+  const userName = document.getElementById('authUserName');
+  const userEmail = document.getElementById('authUserEmail');
+
+  const isLoggedIn = currentUser && !currentUser.isAnonymous;
+
+  if (isLoggedIn) {
+    if (loggedOutView) loggedOutView.classList.add('hidden');
+    if (loggedInView) loggedInView.classList.remove('hidden');
+    if (userPhoto) {
+      userPhoto.src = currentUser.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80';
+    }
+    if (userName) {
+      userName.textContent = currentUser.displayName || t('auth.account');
+    }
+    if (userEmail) {
+      userEmail.textContent = currentUser.email || '';
+    }
+  } else {
+    if (loggedOutView) loggedOutView.classList.remove('hidden');
+    if (loggedInView) loggedInView.classList.add('hidden');
+  }
+}
+
+function updateHeaderAuthUI(user) {
+  const btnHeader = document.getElementById('btnHeaderAuth');
+  const avatarWrap = document.getElementById('headerAuthAvatar');
+  const label = document.getElementById('headerAuthLabel');
+  const isLoggedIn = user && !user.isAnonymous;
+
+  if (!btnHeader) return;
+
+  btnHeader.classList.toggle('logged-in', isLoggedIn);
+
+  if (isLoggedIn) {
+    if (avatarWrap) {
+      if (user.photoURL) {
+        avatarWrap.innerHTML = `<img src="${user.photoURL}" alt="${user.displayName || 'User'}" class="auth-avatar-img" />`;
+      } else {
+        const initial = (user.displayName || user.email || 'U').charAt(0).toUpperCase();
+        avatarWrap.innerHTML = `<span style="font-weight:700; font-size:11px;">${initial}</span>`;
+      }
+    }
+    if (label) {
+      const shortName = user.displayName ? user.displayName.split(' ')[0] : t('auth.account');
+      label.textContent = shortName;
+    }
+  } else {
+    if (avatarWrap) {
+      avatarWrap.innerHTML = `
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      `;
+    }
+    if (label) {
+      label.textContent = t('auth.signIn');
+    }
+  }
+
+  // 내 알고리즘 탭 상단 배너 동기화
+  updateStatsAuthBanner(user);
+}
+
+function updateStatsAuthBanner(user) {
+  const card = document.getElementById('authStatsCard');
+  const title = document.getElementById('authStatsTitle');
+  const desc = document.getElementById('authStatsDesc');
+  const btnAction = document.getElementById('btnAuthStatsAction');
+  const iconWrap = document.getElementById('authStatsIconWrap');
+  if (!card) return;
+
+  const isLoggedIn = user && !user.isAnonymous;
+  card.classList.toggle('connected', isLoggedIn);
+
+  if (isLoggedIn) {
+    if (iconWrap) {
+      iconWrap.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      `;
+    }
+    if (title) title.textContent = user.displayName || user.email;
+    if (desc) desc.textContent = `${user.email} · ${t('auth.syncActive')}`;
+    if (btnAction) {
+      btnAction.textContent = t('auth.account');
+      btnAction.classList.add('secondary');
+    }
+  } else {
+    if (iconWrap) {
+      iconWrap.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      `;
+    }
+    if (title) title.textContent = t('auth.statsBannerTitle');
+    if (desc) desc.textContent = t('auth.statsBannerDesc');
+    if (btnAction) {
+      btnAction.textContent = t('auth.btnSyncLogin');
+      btnAction.classList.remove('secondary');
+    }
+  }
+}
+
 function openOnboarding() {
   const overlay = document.getElementById('onboardingOverlay');
   if (!overlay) return;
@@ -1457,6 +1623,83 @@ function bindUIEvents() {
     }
     showToast(t('toast.langSwitched'));
     tracker.syncToFirestore();
+  });
+
+  // 0-1) 헤더 로그인 / 계정 버튼 클릭
+  document.getElementById('btnHeaderAuth')?.addEventListener('click', () => {
+    openAuthModal();
+  });
+
+  // 0-2) 로그인 모달 건너뛰기 & 닫기 이벤트
+  document.getElementById('btnAuthSkip')?.addEventListener('click', () => {
+    dismissAuthModal(true);
+  });
+  document.getElementById('btnGuestContinue')?.addEventListener('click', () => {
+    dismissAuthModal(true);
+  });
+  document.getElementById('authBackdrop')?.addEventListener('click', () => {
+    dismissAuthModal(true);
+  });
+
+  // 0-3) 구글 원클릭 팝업 로그인 실행
+  document.getElementById('btnGoogleLogin')?.addEventListener('click', async () => {
+    const btn = document.getElementById('btnGoogleLogin');
+    if (!btn) return;
+    try {
+      triggerHaptic('medium');
+      btn.style.opacity = '0.6';
+      btn.style.pointerEvents = 'none';
+
+      const user = await loginWithGoogle();
+      if (user) {
+        triggerHaptic('success');
+        showToast(t('auth.loginSuccess', { name: user.displayName || user.email }));
+        dismissAuthModal(false);
+        tracker.syncToFirestore();
+      }
+    } catch (err) {
+      triggerHaptic('error');
+      showToast(t('auth.loginFailed'));
+    } finally {
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+    }
+  });
+
+  // 0-4) 로그아웃 버튼 실행
+  document.getElementById('btnAuthLogout')?.addEventListener('click', async () => {
+    try {
+      triggerHaptic('light');
+      await logoutUser();
+      showToast(t('auth.logoutSuccess'));
+      closeAuthModal();
+      tracker.syncToFirestore();
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  // 0-5) 내 알고리즘 탭의 계정 연동 버튼
+  document.getElementById('btnAuthStatsAction')?.addEventListener('click', () => {
+    openAuthModal();
+  });
+
+  // 0-6) Firebase Auth 상태 변화 구독
+  onAuthStatusChange((user) => {
+    updateHeaderAuthUI(user);
+    updateAuthModalState();
+    if (user && !user.isAnonymous) {
+      loadUserSettingsFromCloud(user.uid).then((cloudWeights) => {
+        if (cloudWeights) {
+          state.weights = { ...state.weights, ...cloudWeights };
+          persistWeights();
+          renderAllViews();
+        } else {
+          saveUserSettingsToCloud(user.uid, state.weights);
+        }
+      });
+      tracker.syncToFirestore();
+    }
   });
 
   // 1) 하단 3개 탭 바 클릭

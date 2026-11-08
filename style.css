@@ -3975,3 +3975,481 @@ body.dark-mode .btn-install-cta {
 .btn-ios-done:active {
   opacity: 0.85;
 }
+
+/* ==========================================================================
+   글로벌 계정 연동 및 모던 구글 로그인 컴포넌트
+   ========================================================================== */
+
+/* 1. 헤더 로그인 / 프로필 버튼 */
+.btn-auth-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  height: 32px;
+  border-radius: 9999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.btn-auth-entry:hover {
+  background: var(--bg-subtle);
+  border-color: var(--text-subtle);
+  transform: translateY(-1px);
+}
+
+.btn-auth-entry.logged-in {
+  padding: 3px 10px 3px 4px;
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.auth-avatar-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+}
+
+.auth-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.auth-btn-label {
+  font-size: 12.5px;
+  letter-spacing: -0.2px;
+}
+
+/* 2. 로그인 모달 오버레이 */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+
+.auth-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.auth-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.auth-card {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  background: var(--bg-card);
+  border-radius: 24px;
+  padding: 24px 24px 22px;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  animation: authCardPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.auth-card::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes authCardPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.auth-card-top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.btn-auth-skip {
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.btn-auth-skip:hover {
+  background: var(--bg-subtle);
+  color: var(--text-main);
+}
+
+.auth-brand-section {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.auth-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.4px;
+  margin: 0 0 6px;
+}
+
+.auth-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* 구글 로그인 버튼 */
+.btn-google-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 50px;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1E293B;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.btn-google-login:hover {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.btn-google-login:active {
+  transform: translateY(0);
+}
+
+/* 구분선 */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 16px 0;
+  color: var(--text-subtle);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.auth-divider span {
+  padding: 0 12px;
+}
+
+/* 건너뛰기 / 둘러보기 버튼 */
+.btn-guest-continue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 44px;
+  background: var(--bg-subtle);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.btn-guest-continue:hover {
+  background: var(--bg-active);
+  color: var(--text-main);
+}
+
+/* 로그인된 상태 프로필 뷰 */
+.auth-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--bg-subtle);
+  border-radius: 16px;
+  margin-bottom: 12px;
+}
+
+.auth-profile-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.auth-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.auth-profile-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.auth-profile-email {
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.auth-profile-sync-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #059669;
+  margin-bottom: 14px;
+}
+
+.btn-auth-logout {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: #EF4444;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.btn-auth-logout:hover {
+  background: rgba(239, 68, 68, 0.06);
+  border-color: #EF4444;
+}
+
+/* 혜택 목록 */
+.auth-benefits-list {
+  margin-top: 22px;
+  padding: 16px;
+  background: var(--bg-subtle);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.benefit-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.benefit-icon-box.icon-sync {
+  background: rgba(99, 102, 241, 0.12);
+  color: #4F46E5;
+}
+
+.benefit-icon-box.icon-bookmark {
+  background: rgba(14, 165, 233, 0.12);
+  color: #0284C7;
+}
+
+.benefit-icon-box.icon-shield {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.benefit-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.benefit-text strong {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.benefit-text span {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.auth-terms-notice {
+  margin: 18px 0 0;
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--text-subtle);
+  line-height: 1.45;
+}
+
+/* 3. 내 알고리즘 탭 상단 계정 연동 상태 배너 */
+.auth-stats-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06), rgba(14, 165, 233, 0.06));
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.auth-stats-card.connected {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.06), rgba(14, 165, 233, 0.06));
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.auth-stats-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.auth-stats-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  color: #4F46E5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+.auth-stats-card.connected .auth-stats-icon-wrap {
+  color: #10B981;
+}
+
+.auth-stats-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 3px;
+}
+
+.auth-stats-desc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.btn-auth-stats-action {
+  padding: 8px 14px;
+  background: var(--primary);
+  color: var(--primary-text);
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.16s ease;
+}
+
+.btn-auth-stats-action:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.btn-auth-stats-action.secondary {
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+/* 다크 모드 스타일 */
+body.dark-mode .btn-google-login {
+  background: #1E293B;
+  border-color: #334155;
+  color: #F8FAFC;
+}
+
+body.dark-mode .btn-google-login:hover {
+  background: #334155;
+  border-color: #475569;
+}
+
+body.dark-mode .auth-card {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}

@@ -401,6 +401,8 @@ class TelemetryTracker {
       personalInfo: {
         userId: uid,
         email: email,
+        displayName: auth?.currentUser?.displayName || null,
+        photoURL: auth?.currentUser?.photoURL || null,
         age: localStorage.getItem('mamgorithm_user_age') || null,
         gender: localStorage.getItem('mamgorithm_user_gender') || null,
         signupSource: signupSource,
