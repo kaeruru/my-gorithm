@@ -2931,11 +2931,6 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
 
 .btn-clear-saved:hover {
   background-color: rgba(239, 68, 68, 0.15);
-  transform: translateY(-1px);
-}
-
-.btn-clear-saved:active {
-  transform: translateY(0);
 }
 
 .btn-clear-saved.hidden {
@@ -3977,63 +3972,6 @@ body.dark-mode .btn-install-cta {
 }
 
 /* ==========================================================================
-   글로벌 계정 연동 및 모던 구글 로그인 컴포넌트
-   ========================================================================== */
-
-/* 1. 헤더 로그인 / 프로필 버튼 */
-.btn-auth-entry {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 11px;
-  height: 32px;
-  border-radius: 9999px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-}
-
-.btn-auth-entry:hover {
-  background: var(--bg-subtle);
-  border-color: var(--text-subtle);
-  transform: translateY(-1px);
-}
-
-.btn-auth-entry.logged-in {
-  padding: 3px 10px 3px 4px;
-  border-color: rgba(16, 185, 129, 0.4);
-  background: rgba(16, 185, 129, 0.06);
-}
-
-.auth-avatar-wrap {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: var(--bg-subtle);
-  color: var(--text-muted);
-}
-
-.auth-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.auth-btn-label {
-  font-size: 12.5px;
-  letter-spacing: -0.2px;
-}
-
-/* ==========================================================================
    글로벌 계정 연동 및 모던 미니멀 구글 로그인 모달
    ========================================================================== */
 
@@ -4051,14 +3989,13 @@ body.dark-mode .btn-install-cta {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .btn-auth-entry:hover {
   background: var(--bg-subtle);
   border-color: var(--text-subtle);
-  transform: translateY(-1px);
 }
 
 .btn-auth-entry.logged-in {
@@ -4154,7 +4091,7 @@ body.dark-mode .btn-install-cta {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .btn-auth-close-x:hover {
@@ -4198,7 +4135,7 @@ body.dark-mode .btn-install-cta {
   gap: 16px;
 }
 
-/* 구글 로그인 버튼 (단정하고 깔끔한 현대적 버튼) */
+/* 구글 로그인 버튼 (색상만 은은하게 전환되는 미니멀 버튼) */
 .btn-google-login {
   display: flex;
   align-items: center;
@@ -4213,22 +4150,16 @@ body.dark-mode .btn-install-cta {
   font-weight: 600;
   color: #1E293B;
   cursor: pointer;
-  transition: all 0.16s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .btn-google-login:hover {
   background: #F8FAFC;
   border-color: #94A3B8;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
-  transform: translateY(-1px);
 }
 
-.btn-google-login:active {
-  transform: translateY(0);
-}
-
-/* 건너뛰기 텍스트 링크 (레퍼런스 이미지의 하단 텍스트 링크 스타일) */
+/* 건너뛰기 텍스트 링크 */
 .btn-auth-skip-link {
   background: transparent;
   border: none;
@@ -4238,7 +4169,7 @@ body.dark-mode .btn-install-cta {
   cursor: pointer;
   padding: 6px 12px;
   border-radius: 8px;
-  transition: all 0.15s ease;
+  transition: color 0.15s ease;
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-color: var(--border-color);
@@ -4282,7 +4213,7 @@ body.dark-mode .btn-install-cta {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.16s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-auth-logout:hover {
@@ -4290,28 +4221,31 @@ body.dark-mode .btn-install-cta {
   border-color: #EF4444;
 }
 
-/* 3. 내 알고리즘 탭 상단 계정 연동 상태 배너 */
+/* 3. 내 알고리즘 탭 상단 계정 연동 상태 배너 (다른 stats-card와 크기/여백 100% 동일) */
 .auth-stats-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  padding: 14px 16px;
+  margin: 14px 18px 0;
+  padding: 16px;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
-  margin-bottom: 16px;
+  border-radius: 10px;
+  box-sizing: border-box;
 }
 
 .auth-stats-card.connected {
-  border-color: rgba(16, 185, 129, 0.3);
-  background: rgba(16, 185, 129, 0.03);
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.04);
 }
 
 .auth-stats-left {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+  flex: 1;
 }
 
 .auth-stats-icon-wrap {
@@ -4331,31 +4265,42 @@ body.dark-mode .btn-install-cta {
   color: #10B981;
 }
 
+.auth-stats-text {
+  min-width: 0;
+  overflow: hidden;
+}
+
 .auth-stats-title {
   font-size: 13.5px;
   font-weight: 700;
   color: var(--text-main);
   margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .auth-stats-desc {
   font-size: 12px;
   color: var(--text-muted);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn-auth-stats-action {
   padding: 7px 12px;
   background: var(--primary);
   color: var(--primary-text);
-  border: none;
+  border: 1px solid transparent;
   border-radius: 8px;
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-auth-stats-action:hover {
@@ -4366,6 +4311,11 @@ body.dark-mode .btn-install-cta {
   background: var(--bg-card);
   color: var(--text-main);
   border: 1px solid var(--border-color);
+}
+
+.btn-auth-stats-action.secondary:hover {
+  background: var(--bg-subtle);
+  border-color: var(--text-subtle);
 }
 
 /* 전역 hidden 헬퍼 */
@@ -4387,8 +4337,4 @@ body.dark-mode .btn-google-login:hover {
 
 body.dark-mode .auth-card {
   box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-body.dark-mode .auth-card {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }

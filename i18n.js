@@ -32,7 +32,8 @@ export const TRANSLATIONS = {
       loginFailed: '로그인에 실패했습니다. 다시 시도해주세요.',
       statsBannerTitle: 'Google 계정 연동',
       statsBannerDesc: '로그인하면 다른 기기에서도 튜닝 비율이 유지됩니다.',
-      btnSyncLogin: '로그인'
+      btnSyncLogin: '로그인',
+      syncActive: '클라우드 연동됨'
     },
     splash: {
       title: '맘고리즘',
@@ -271,7 +272,8 @@ export const TRANSLATIONS = {
       loginFailed: 'Login failed. Please try again.',
       statsBannerTitle: 'Connect Google Account',
       statsBannerDesc: 'Sign in to keep your tuning ratio across all devices.',
-      btnSyncLogin: 'Sign In'
+      btnSyncLogin: 'Sign In',
+      syncActive: 'Cloud synced'
     },
     splash: {
       title: 'My-gorithm',
