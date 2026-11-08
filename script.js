@@ -999,14 +999,20 @@ function updateDockGauges(allocation) {
 
   const topGauge = document.getElementById('dockTopGauge');
   if (topGauge) {
-    if (allocation.totalWeight === 0) {
-      topGauge.innerHTML = `<div class="gauge-segment" style="width:100%; background:var(--border-color)"></div>`;
-    } else {
+    if (!topGauge.querySelector('.gauge-segment') || topGauge.children.length !== 4) {
       topGauge.innerHTML = categories.map((cat) => {
         const meta = CATEGORY_META[cat];
-        const pct = allocation.categories[cat].exactPct;
-        return `<div class="gauge-segment" style="width:${pct}%; background-color:${meta.color}"></div>`;
+        const pct = allocation.totalWeight === 0 ? 0 : allocation.categories[cat].exactPct;
+        return `<div class="gauge-segment" data-cat="${cat}" style="width:${pct}%; background-color:${meta.color}"></div>`;
       }).join('');
+    } else {
+      categories.forEach((cat) => {
+        const seg = topGauge.querySelector(`.gauge-segment[data-cat="${cat}"]`);
+        if (seg) {
+          const pct = allocation.totalWeight === 0 ? 0 : allocation.categories[cat].exactPct;
+          seg.style.width = `${pct}%`;
+        }
+      });
     }
   }
 
@@ -1031,70 +1037,102 @@ function updateDockGauges(allocation) {
   }
 
   const stackedBar = document.getElementById('dockStackedBar');
-  const legendRow = document.getElementById('dockLegendRow');
   if (stackedBar) {
-    if (allocation.totalWeight === 0) {
-      stackedBar.innerHTML = `<div class="gauge-segment" style="width:100%; background:var(--border-color)"></div>`;
-    } else {
+    if (!stackedBar.querySelector('.gauge-segment') || stackedBar.children.length !== 4) {
       stackedBar.innerHTML = categories.map((cat) => {
         const meta = CATEGORY_META[cat];
-        const pct = allocation.categories[cat].exactPct;
-        return `<div class="gauge-segment" style="width:${pct}%; background-color:${meta.color}"></div>`;
+        const pct = allocation.totalWeight === 0 ? 0 : allocation.categories[cat].exactPct;
+        return `<div class="gauge-segment" data-cat="${cat}" style="width:${pct}%; background-color:${meta.color}"></div>`;
       }).join('');
+    } else {
+      categories.forEach((cat) => {
+        const seg = stackedBar.querySelector(`.gauge-segment[data-cat="${cat}"]`);
+        if (seg) {
+          const pct = allocation.totalWeight === 0 ? 0 : allocation.categories[cat].exactPct;
+          seg.style.width = `${pct}%`;
+        }
+      });
     }
   }
 
+  const legendRow = document.getElementById('dockLegendRow');
   if (legendRow) {
-    legendRow.innerHTML = categories.map((cat) => {
-      const meta = CATEGORY_META[cat];
-      const alloc = allocation.categories[cat];
-      return `
-        <div class="gauge-legend-pill">
-          <div class="legend-name-group">
-            <span class="legend-dot" style="background-color: ${meta.color}"></span>
-            <span class="legend-theme-name">${meta.name}</span>
-            <span class="legend-theme-sep">|</span>
-            <span class="legend-theme-desc">${meta.description}</span>
+    if (!legendRow.querySelector('.gauge-legend-pill') || legendRow.children.length !== 4) {
+      legendRow.innerHTML = categories.map((cat) => {
+        const meta = CATEGORY_META[cat];
+        const alloc = allocation.categories[cat];
+        return `
+          <div class="gauge-legend-pill" data-cat="${cat}">
+            <div class="legend-name-group">
+              <span class="legend-dot" style="background-color: ${meta.color}"></span>
+              <span class="legend-theme-name">${meta.name}</span>
+              <span class="legend-theme-sep">|</span>
+              <span class="legend-theme-desc">${meta.description}</span>
+            </div>
+            <span class="legend-pct-text">${alloc.displayPct}%</span>
           </div>
-          <span class="legend-pct-text">${alloc.displayPct}%</span>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
+    } else {
+      categories.forEach((cat) => {
+        const pill = legendRow.querySelector(`.gauge-legend-pill[data-cat="${cat}"]`);
+        const pctEl = pill?.querySelector('.legend-pct-text');
+        if (pctEl) {
+          pctEl.textContent = `${allocation.categories[cat].displayPct}%`;
+        }
+      });
+    }
   }
 }
 
-// 온보딩 게이지 갱신 헬퍼
+// 온보딩 게이지 갱신 헬퍼 (기존 DOM 요소를 재활용하여 부드러운 전환 보장)
 function updateOnboardingGauges(allocation) {
   const categories = ['study', 'tech', 'culture', 'hobby'];
   const stackedBar = document.getElementById('onboardingStackedBar');
   const legendRow = document.getElementById('onboardingLegendRow');
   if (stackedBar) {
-    if (allocation.totalWeight === 0) {
-      stackedBar.innerHTML = `<div class="gauge-segment" style="width:100%; background:var(--border-color)"></div>`;
-    } else {
+    if (!stackedBar.querySelector('.gauge-segment') || stackedBar.children.length !== 4) {
       stackedBar.innerHTML = categories.map((cat) => {
         const meta = CATEGORY_META[cat];
-        const pct = allocation.categories[cat].exactPct;
-        return `<div class="gauge-segment" style="width:${pct}%; background-color:${meta.color}"></div>`;
+        const pct = allocation.totalWeight === 0 ? 0 : allocation.categories[cat].exactPct;
+        return `<div class="gauge-segment" data-cat="${cat}" style="width:${pct}%; background-color:${meta.color}"></div>`;
       }).join('');
+    } else {
+      categories.forEach((cat) => {
+        const seg = stackedBar.querySelector(`.gauge-segment[data-cat="${cat}"]`);
+        if (seg) {
+          const pct = allocation.totalWeight === 0 ? 0 : allocation.categories[cat].exactPct;
+          seg.style.width = `${pct}%`;
+        }
+      });
     }
   }
   if (legendRow) {
-    legendRow.innerHTML = categories.map((cat) => {
-      const meta = CATEGORY_META[cat];
-      const alloc = allocation.categories[cat];
-      return `
-        <div class="gauge-legend-pill">
-          <div class="legend-name-group">
-            <span class="legend-dot" style="background-color: ${meta.color}"></span>
-            <span class="legend-theme-name">${meta.name}</span>
-            <span class="legend-theme-sep">|</span>
-            <span class="legend-theme-desc">${meta.description}</span>
+    if (!legendRow.querySelector('.gauge-legend-pill') || legendRow.children.length !== 4) {
+      legendRow.innerHTML = categories.map((cat) => {
+        const meta = CATEGORY_META[cat];
+        const alloc = allocation.categories[cat];
+        return `
+          <div class="gauge-legend-pill" data-cat="${cat}">
+            <div class="legend-name-group">
+              <span class="legend-dot" style="background-color: ${meta.color}"></span>
+              <span class="legend-theme-name">${meta.name}</span>
+              <span class="legend-theme-sep">|</span>
+              <span class="legend-theme-desc">${meta.description}</span>
+            </div>
+            <span class="legend-pct-text">${alloc.displayPct}%</span>
           </div>
-          <span class="legend-pct-text">${alloc.displayPct}%</span>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
+    } else {
+      categories.forEach((cat) => {
+        const pill = legendRow.querySelector(`.gauge-legend-pill[data-cat="${cat}"]`);
+        const pctEl = pill?.querySelector('.legend-pct-text');
+        if (pctEl) {
+          pctEl.textContent = `${allocation.categories[cat].displayPct}%`;
+        }
+      });
+    }
   }
 }
 
@@ -1314,9 +1352,128 @@ function updateSavedBadge() {
 }
 
 // ==========================================================================
-// 온보딩 (시작 화면) 렌더링 및 모달 제어
+// 온보딩 (시작 화면) 렌더링, 부드러운 스르륵 전환 애니메이션 및 모달 제어
 // ==========================================================================
-function renderOnboardingView() {
+let onboardingTransitionRafId = null;
+
+function updateOnboardingPresetChips() {
+  const presetContainer = document.getElementById('onboardingPresetRow');
+  if (!presetContainer) return;
+  const categories = ['study', 'tech', 'culture', 'hobby'];
+  presetContainer.querySelectorAll('.preset-chip-btn').forEach((btn) => {
+    const preset = PRESET_MODES.find((p) => p.id === btn.dataset.presetId);
+    const isActive = preset && categories.every((cat) => state.weights[cat] === preset.weights[cat]);
+    btn.classList.toggle('active', !!isActive);
+  });
+}
+
+function animateOnboardingWeights(targetWeights, targetPresetId) {
+  const categories = ['study', 'tech', 'culture', 'hobby'];
+  const startWeights = { ...state.weights };
+
+  if (onboardingTransitionRafId) {
+    cancelAnimationFrame(onboardingTransitionRafId);
+    onboardingTransitionRafId = null;
+  }
+
+  // 프리셋 칩 즉각 활성화 피드백
+  const presetContainer = document.getElementById('onboardingPresetRow');
+  if (presetContainer) {
+    presetContainer.querySelectorAll('.preset-chip-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.presetId === targetPresetId);
+    });
+  }
+
+  const alreadyEqual = categories.every((c) => Math.round(startWeights[c]) === targetWeights[c]);
+  if (alreadyEqual) return;
+
+  const duration = 440; // 부드럽고 유려한 스르륵 전환 시간 (ms)
+  const startTime = performance.now();
+
+  // 토스/애플 감성의 감속 이징 곡선 (easeOutCubic)
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+  const stackedBar = document.getElementById('onboardingStackedBar');
+  const legendRow = document.getElementById('onboardingLegendRow');
+  const slidersList = document.getElementById('onboardingSlidersList');
+
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(1, elapsed / duration);
+    const eased = easeOutCubic(progress);
+
+    categories.forEach((cat) => {
+      const s = startWeights[cat];
+      const target = targetWeights[cat];
+      state.weights[cat] = Math.round(s + (target - s) * eased);
+    });
+
+    if (progress >= 1) {
+      categories.forEach((cat) => {
+        state.weights[cat] = targetWeights[cat];
+      });
+    }
+
+    const allocation = calculateAllocation();
+
+    // 1. 실시간 게이지 바 너비 부드러운 스르륵 전환
+    if (stackedBar) {
+      categories.forEach((cat) => {
+        const seg = stackedBar.querySelector(`.gauge-segment[data-cat="${cat}"]`);
+        if (seg) {
+          const pct = allocation.totalWeight === 0 ? 0 : allocation.categories[cat].exactPct;
+          seg.style.width = `${pct}%`;
+        }
+      });
+    }
+
+    // 2. 범례 퍼센트 수치 실시간 롤링 카운팅
+    if (legendRow) {
+      categories.forEach((cat) => {
+        const pill = legendRow.querySelector(`.gauge-legend-pill[data-cat="${cat}"]`);
+        const pctEl = pill?.querySelector('.legend-pct-text');
+        if (pctEl) {
+          pctEl.textContent = `${allocation.categories[cat].displayPct}%`;
+        }
+      });
+    }
+
+    // 3. 4개 슬라이더 손잡이 위치 & 배경 채우기 & 카드 뱃지 실시간 동기화
+    if (slidersList) {
+      categories.forEach((cat) => {
+        const card = slidersList.querySelector(`[data-channel="${cat}"]`);
+        if (!card) return;
+        const input = card.querySelector('.onboarding-range-input');
+        const pill = card.querySelector('.channel-status-pill');
+        const meta = CATEGORY_META[cat];
+        const w = state.weights[cat];
+        const alloc = allocation.categories[cat];
+
+        if (input) {
+          input.value = w;
+          input.style.background = `linear-gradient(to right, ${meta.color} ${w}%, var(--bg-subtle) ${w}%)`;
+        }
+        if (pill) {
+          pill.innerHTML = w === 0
+            ? '<span class="is-zero">0%</span>'
+            : `<span class="pct-num">${alloc.displayPct}</span><span class="pct-unit">%</span>`;
+        }
+      });
+    }
+
+    if (progress < 1) {
+      onboardingTransitionRafId = requestAnimationFrame(step);
+    } else {
+      onboardingTransitionRafId = null;
+      updateOnboardingPresetChips();
+      triggerHaptic('light');
+    }
+  }
+
+  onboardingTransitionRafId = requestAnimationFrame(step);
+}
+
+function renderOnboardingView(options = {}) {
   const overlay = document.getElementById('onboardingOverlay');
   if (!overlay || overlay.classList.contains('hidden')) return;
 
@@ -1325,88 +1482,88 @@ function renderOnboardingView() {
   const stackedBar = document.getElementById('onboardingStackedBar');
   const legendRow = document.getElementById('onboardingLegendRow');
   const slidersList = document.getElementById('onboardingSlidersList');
-
   const categories = ['study', 'tech', 'culture', 'hobby'];
 
+  // 1) 프리셋 버튼 렌더링 / 활성화 갱신
   if (presetContainer) {
-    presetContainer.innerHTML = PRESET_MODES.slice(0, 3).map((preset) => {
-      const isActive = categories.every((cat) => state.weights[cat] === preset.weights[cat]);
-      return `
-        <button
-          type="button"
-          class="preset-chip-btn ${isActive ? 'active' : ''}"
-          data-preset-id="${preset.id}"
-        >
-          ${preset.name}
-        </button>
-      `;
-    }).join('');
-  }
-
-  if (stackedBar) {
-    if (allocation.totalWeight === 0) {
-      stackedBar.innerHTML = `<div class="gauge-segment" style="width:100%; background:var(--border-color)"></div>`;
-    } else {
-      stackedBar.innerHTML = categories.map((cat) => {
-        const meta = CATEGORY_META[cat];
-        const pct = allocation.categories[cat].exactPct;
-        return `<div class="gauge-segment" style="width:${pct}%; background-color:${meta.color}"></div>`;
+    if (!presetContainer.querySelector('.preset-chip-btn') || options.forceRebuild) {
+      presetContainer.innerHTML = PRESET_MODES.slice(0, 3).map((preset) => {
+        const isActive = categories.every((cat) => state.weights[cat] === preset.weights[cat]);
+        return `
+          <button
+            type="button"
+            class="preset-chip-btn ${isActive ? 'active' : ''}"
+            data-preset-id="${preset.id}"
+          >
+            ${preset.name}
+          </button>
+        `;
       }).join('');
+    } else {
+      updateOnboardingPresetChips();
     }
   }
 
-  if (legendRow) {
-    legendRow.innerHTML = categories.map((cat) => {
-      const meta = CATEGORY_META[cat];
-      const alloc = allocation.categories[cat];
-      return `
-        <div class="gauge-legend-pill">
-          <div class="legend-name-group">
-            <span class="legend-dot" style="background-color: ${meta.color}"></span>
-            <span class="legend-theme-name">${meta.name}</span>
-            <span class="legend-theme-sep">|</span>
-            <span class="legend-theme-desc">${meta.description}</span>
-          </div>
-          <span class="legend-pct-text">${alloc.displayPct}%</span>
-        </div>
-      `;
-    }).join('');
-  }
+  // 2) 실시간 추천 비율 게이지 바 & 범례
+  updateOnboardingGauges(allocation);
 
+  // 3) 슬라이더 리스트 렌더링 / 값 동기화
   if (slidersList) {
-    slidersList.innerHTML = categories.map((cat) => {
-      const meta = CATEGORY_META[cat];
-      const currentVal = state.weights[cat];
-      const alloc = allocation.categories[cat];
+    if (!slidersList.querySelector('.onboarding-channel-card') || options.forceRebuild) {
+      slidersList.innerHTML = categories.map((cat) => {
+        const meta = CATEGORY_META[cat];
+        const currentVal = state.weights[cat];
+        const alloc = allocation.categories[cat];
 
-      return `
-        <div class="onboarding-channel-card" data-channel="${cat}">
-          <div class="channel-top-line" style="margin-bottom:6px;">
-            <div class="channel-title-group">
-              <span class="channel-color-bar" style="background-color: ${meta.color}"></span>
-              <span class="channel-name" style="font-size:0.86rem; font-weight:700;">${meta.name}</span>
+        return `
+          <div class="onboarding-channel-card" data-channel="${cat}">
+            <div class="channel-top-line" style="margin-bottom:6px;">
+              <div class="channel-title-group">
+                <span class="channel-color-bar" style="background-color: ${meta.color}"></span>
+                <span class="channel-name" style="font-size:0.86rem; font-weight:700;">${meta.name}</span>
+              </div>
+              <span class="channel-status-pill" style="color: ${meta.color}">
+                ${currentVal === 0 ? '<span class="is-zero">0%</span>' : `<span class="pct-num">${alloc.displayPct}</span><span class="pct-unit">%</span>`}
+              </span>
             </div>
-            <span class="channel-status-pill" style="color: ${meta.color}">
-              ${currentVal === 0 ? '<span class="is-zero">0%</span>' : `<span class="pct-num">${alloc.displayPct}</span><span class="pct-unit">%</span>`}
-            </span>
-          </div>
 
-          <div class="slider-wrap">
-            <input
-              type="range"
-              min="0"
-              max="100"
-              step="1"
-              value="${currentVal}"
-              class="channel-range-input onboarding-range-input"
-              data-cat="${cat}"
-              style="--thumb-color: ${meta.color}; background: linear-gradient(to right, ${meta.color} ${currentVal}%, var(--bg-subtle) ${currentVal}%);"
-              aria-label="${meta.name} ${t('onboarding.gaugeTitle')}"
-            />
+            <div class="slider-wrap">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value="${currentVal}"
+                class="channel-range-input onboarding-range-input"
+                data-cat="${cat}"
+                style="--thumb-color: ${meta.color}; background: linear-gradient(to right, ${meta.color} ${currentVal}%, var(--bg-subtle) ${currentVal}%);"
+                aria-label="${meta.name} ${t('onboarding.gaugeTitle')}"
+              />
+            </div>
           </div>
-        </div>
-      `;
-    }).join('');
+        `;
+      }).join('');
+    } else {
+      categories.forEach((cat) => {
+        const card = slidersList.querySelector(`[data-channel="${cat}"]`);
+        if (!card) return;
+        const input = card.querySelector('.onboarding-range-input');
+        const pill = card.querySelector('.channel-status-pill');
+        const meta = CATEGORY_META[cat];
+        const currentVal = state.weights[cat];
+        const alloc = allocation.categories[cat];
+
+        if (input) {
+          input.value = currentVal;
+          input.style.background = `linear-gradient(to right, ${meta.color} ${currentVal}%, var(--bg-subtle) ${currentVal}%)`;
+        }
+        if (pill) {
+          pill.innerHTML = currentVal === 0
+            ? '<span class="is-zero">0%</span>'
+            : `<span class="pct-num">${alloc.displayPct}</span><span class="pct-unit">%</span>`;
+        }
+      });
+    }
   }
 }
 
@@ -1563,10 +1720,14 @@ function openOnboarding() {
   if (!overlay) return;
   overlay.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
-  renderOnboardingView();
+  renderOnboardingView({ forceRebuild: true });
 }
 
 function closeOnboarding() {
+  if (onboardingTransitionRafId) {
+    cancelAnimationFrame(onboardingTransitionRafId);
+    onboardingTransitionRafId = null;
+  }
   const overlay = document.getElementById('onboardingOverlay');
   if (overlay) overlay.classList.add('hidden');
   document.body.style.overflow = '';
@@ -1825,12 +1986,19 @@ function bindUIEvents() {
     });
   }
 
-  // 6) 온보딩 화면 슬라이더 및 프리셋 이벤트 (1% 단위 rAF 최적화)
+  // 6) 온보딩 화면 슬라이더 및 프리셋 이벤트 (1% 단위 rAF 최적화 & 부드러운 스르륵 애니메이션)
   const onboardingSliders = document.getElementById('onboardingSlidersList');
   if (onboardingSliders) {
     onboardingSliders.addEventListener('input', (e) => {
       const input = e.target.closest('.onboarding-range-input');
       if (!input) return;
+
+      // 사용자가 직접 슬라이더를 잡으면 재생 중인 프리셋 전환 애니메이션 즉시 취소
+      if (onboardingTransitionRafId) {
+        cancelAnimationFrame(onboardingTransitionRafId);
+        onboardingTransitionRafId = null;
+      }
+
       const cat = input.dataset.cat;
       const val = parseInt(input.value, 10);
       if (cat && !Number.isNaN(val)) {
@@ -1845,6 +2013,7 @@ function bindUIEvents() {
           const allocation = calculateAllocation();
           updateOnboardingGauges(allocation);
           updateAllChannelPills(onboardingSliders, allocation);
+          updateOnboardingPresetChips();
           onboardingGaugeRafId = null;
         });
       }
@@ -1856,9 +2025,9 @@ function bindUIEvents() {
       const cat = tick.dataset.cat;
       const val = parseInt(tick.dataset.val, 10);
       if (cat && !Number.isNaN(val)) {
-        state.weights[cat] = Math.max(0, Math.min(100, val));
         triggerHaptic('light');
-        renderOnboardingView();
+        const targetWeights = { ...state.weights, [cat]: Math.max(0, Math.min(100, val)) };
+        animateOnboardingWeights(targetWeights);
       }
     });
   }
@@ -1868,9 +2037,8 @@ function bindUIEvents() {
     if (!chip) return;
     const preset = PRESET_MODES.find((p) => p.id === chip.dataset.presetId);
     if (preset) {
-      state.weights = { ...preset.weights };
       triggerHaptic('medium');
-      renderOnboardingView();
+      animateOnboardingWeights(preset.weights, preset.id);
     }
   });
 

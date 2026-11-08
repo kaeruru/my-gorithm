@@ -2774,6 +2774,11 @@ html.is-returning-user #introSplashOverlay:not(.force-show) {
   margin-bottom: 10px;
 }
 
+#onboardingStackedBar .gauge-segment {
+  transition: none !important;
+  will-change: width;
+}
+
 .onboarding-gauge-header {
   display: flex;
   align-items: center;
