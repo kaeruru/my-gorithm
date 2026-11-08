@@ -9,6 +9,15 @@ import {
   loadUserSettingsFromCloud
 } from './firebase.js';
 import { tracker } from './tracker.js';
+import {
+  initLanguage,
+  getLanguage,
+  setLanguage,
+  toggleLanguage,
+  t,
+  translateDOM,
+  onLanguageChange
+} from './i18n.js';
 
 const STORAGE_KEYS = {
   WEIGHTS: 'mamgorithm_weights_v2',
@@ -450,6 +459,8 @@ function setupIntroVideoModal() {
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
+  initLanguage();
+  translateDOM();
   loadSavedPreferences();
   checkRecipeFromUrl(); // URL 공유 레시피 파라미터 감지 (?s=50&t=50&c=50&h=50)
   bindUIEvents();
@@ -854,7 +865,12 @@ function createCardMarkup(item) {
   const meta = CATEGORY_META[item.category] || CATEGORY_META.study;
   const isSaved = state.savedIds.has(item.id);
   const isVideo = item.type === 'video';
-  const typeText = isVideo ? '영상' : '기사';
+  const typeText = isVideo ? t('cards.video') : t('cards.article');
+  const lang = getLanguage();
+  let durationText = item.duration || (isVideo ? '10:00' : (lang === 'en' ? '5 min read' : '5분 읽기'));
+  if (lang === 'en' && typeof durationText === 'string') {
+    durationText = durationText.replace('분 읽기', ' min read');
+  }
 
   return `
     <article
@@ -881,14 +897,14 @@ function createCardMarkup(item) {
             <span class="card-tag-indicator" style="background-color: ${meta.color}"></span>
             <span><strong>${meta.name}</strong> · ${typeText}</span>
           </div>
-          ${item.isNew ? '<span class="card-badge-new">NEW</span>' : ''}
-          <span class="card-duration-overlay">${item.duration}</span>
+          ${item.isNew ? `<span class="card-badge-new">${t('cards.badgeNew')}</span>` : ''}
+          <span class="card-duration-overlay">${durationText}</span>
           <button
             type="button"
             class="card-bookmark-btn ${isSaved ? 'saved' : ''}"
             data-bookmark-id="${item.id}"
-            title="${isSaved ? '보관함에서 제거' : '보관함에 저장'}"
-            aria-label="북마크"
+            title="${isSaved ? t('cards.bookmarkRemove') : t('cards.bookmarkSave')}"
+            aria-label="${t('cards.bookmarkSave')}"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
@@ -908,7 +924,7 @@ function createCardMarkup(item) {
         style="--footer-solid-bg: ${meta.solidBg}; --footer-solid-text: ${meta.solidText}; --footer-solid-border: ${meta.solidBorder}; --footer-dark-bg: ${meta.darkSolidBg}; --footer-dark-border: ${meta.darkSolidBorder}; --footer-glow: ${meta.glowShadow};"
       >
         <div class="card-footer-source">
-          <span class="card-footer-source-label">출처</span>
+          <span class="card-footer-source-label">${t('cards.sourceLabel')}</span>
           <strong class="card-footer-source-name">${item.source}</strong>
           <span class="card-footer-sep">·</span>
           <span class="card-footer-date">${item.date}</span>
@@ -925,9 +941,9 @@ function renderFeedCards(allocation) {
   if (allocation.totalWeight === 0) {
     container.innerHTML = `
       <div class="empty-feed-placeholder">
-        <div class="empty-feed-title">관심 분야가 모두 꺼져 있습니다</div>
-        <p class="empty-feed-desc">맘고리즘은 사용자가 원하는 분야만 추천합니다.<br/>하단 미니 독을 터치해 관심 분야를 1% 이상으로 올려보세요.</p>
-        <button type="button" class="btn-primary-reset" id="btnRestoreBalance">균형 모드로 켜기</button>
+        <div class="empty-feed-title">${t('feed.emptyTitle')}</div>
+        <p class="empty-feed-desc">${t('feed.emptyDesc')}</p>
+        <button type="button" class="btn-primary-reset" id="btnRestoreBalance">${t('feed.restoreBalance')}</button>
       </div>
     `;
     const btn = document.getElementById('btnRestoreBalance');
@@ -937,7 +953,7 @@ function renderFeedCards(allocation) {
         persistWeights();
         renderAllViews();
         triggerHaptic('medium');
-        showToast('균형 모드가 적용되었습니다.');
+        showToast(t('toast.balancedApplied'));
       });
     }
     return;
@@ -972,7 +988,7 @@ function updateDockGauges(allocation) {
   const ratioPills = document.getElementById('dockRatioPills');
   if (ratioPills) {
     if (allocation.totalWeight === 0) {
-      ratioPills.innerHTML = `<span style="font-size:0.74rem; color:var(--text-muted); font-weight:600;">모든 분야 제외됨 (터치하여 설정)</span>`;
+      ratioPills.innerHTML = `<span style="font-size:0.74rem; color:var(--text-muted); font-weight:600;">${t('dock.allExcluded')}</span>`;
     } else {
       ratioPills.innerHTML = categories
         .filter((cat) => state.weights[cat] > 0)
@@ -1129,14 +1145,14 @@ function renderDockMixer(allocation) {
               class="channel-range-input dock-range-input"
               data-cat="${cat}"
               style="--thumb-color: ${meta.color}; background: linear-gradient(to right, ${meta.color} ${currentVal}%, var(--bg-subtle) ${currentVal}%);"
-              aria-label="${meta.name} 관심도 슬라이더"
+              aria-label="${meta.name} ${t('dock.title')}"
             />
             <div class="slider-ticks-row">
-              <span class="tick-label ${currentVal === 0 ? 'active' : ''}" data-cat="${cat}" data-val="0">제외</span>
-              <span class="tick-label ${currentVal === 25 ? 'active' : ''}" data-cat="${cat}" data-val="25">낮음</span>
-              <span class="tick-label ${currentVal === 50 ? 'active' : ''}" data-cat="${cat}" data-val="50">보통</span>
-              <span class="tick-label ${currentVal === 75 ? 'active' : ''}" data-cat="${cat}" data-val="75">높음</span>
-              <span class="tick-label ${currentVal === 100 ? 'active' : ''}" data-cat="${cat}" data-val="100">최대</span>
+              <span class="tick-label ${currentVal === 0 ? 'active' : ''}" data-cat="${cat}" data-val="0">${t('sliders.ticks.0')}</span>
+              <span class="tick-label ${currentVal === 25 ? 'active' : ''}" data-cat="${cat}" data-val="25">${t('sliders.ticks.25')}</span>
+              <span class="tick-label ${currentVal === 50 ? 'active' : ''}" data-cat="${cat}" data-val="50">${t('sliders.ticks.50')}</span>
+              <span class="tick-label ${currentVal === 75 ? 'active' : ''}" data-cat="${cat}" data-val="75">${t('sliders.ticks.75')}</span>
+              <span class="tick-label ${currentVal === 100 ? 'active' : ''}" data-cat="${cat}" data-val="100">${t('sliders.ticks.100')}</span>
             </div>
           </div>
         </div>
@@ -1204,7 +1220,7 @@ function renderStatsView(allocation) {
           </td>
           <td>${alloc.weight}% (${levelDesc.label})</td>
           <td><strong>${alloc.displayPct}%</strong></td>
-          <td>${alloc.cardCount}장</td>
+          <td>${alloc.cardCount}${t('stats.cardsUnit')}</td>
         </tr>
       `;
     })
@@ -1214,10 +1230,10 @@ function renderStatsView(allocation) {
     <table class="stats-table">
       <thead>
         <tr>
-          <th>분야</th>
-          <th>설정 가중치</th>
-          <th>추천 비율</th>
-          <th>피드 카드 수</th>
+          <th>${t('stats.thCategory')}</th>
+          <th>${t('stats.thWeight')}</th>
+          <th>${t('stats.thRatio')}</th>
+          <th>${t('stats.thCards')}</th>
         </tr>
       </thead>
       <tbody>
@@ -1232,7 +1248,7 @@ function updateCustomCardCountUI() {
   const btnReset = document.getElementById('btnResetCustomCards');
   const count = state.customCards.length;
   if (pill) {
-    pill.textContent = `추가된 카드 ${count}장`;
+    pill.textContent = t('stats.customCardPill', { count });
   }
   if (btnReset) {
     btnReset.classList.toggle('hidden', count === 0);
@@ -1254,8 +1270,8 @@ function renderSavedView() {
   if (savedItems.length === 0) {
     container.innerHTML = `
       <div class="empty-feed-placeholder">
-        <div class="empty-feed-title">보관한 콘텐츠가 없습니다</div>
-        <p class="empty-feed-desc">피드 카드의 북마크 버튼을 누르면<br/>나중에 다시 읽고 싶은 콘텐츠가 이곳에 저장됩니다.</p>
+        <div class="empty-feed-title">${t('saved.emptyTitle')}</div>
+        <p class="empty-feed-desc">${t('saved.emptyDesc')}</p>
       </div>
     `;
     return;
@@ -1423,6 +1439,16 @@ let dockFeedDebounceTimer = null;
 let onboardingGaugeRafId = null;
 
 function bindUIEvents() {
+  // 0) 글로벌 언어 전환 토글 버튼 (KO <-> EN)
+  document.getElementById('btnLanguageToggle')?.addEventListener('click', () => {
+    toggleLanguage();
+    triggerHaptic('light');
+    translateDOM();
+    renderAllViews();
+    showToast(t('toast.langSwitched'));
+    tracker.syncToFirestore();
+  });
+
   // 1) 하단 3개 탭 바 클릭
   document.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -2025,9 +2051,14 @@ function openArticleModal(item) {
   const badgeName = document.getElementById('articleCategoryName');
   const indicator = document.getElementById('articleIndicator');
   const readTime = document.getElementById('articleReadTime');
-  if (badgeName) badgeName.textContent = `${meta.name} · 기사`;
+  const lang = getLanguage();
+  if (badgeName) badgeName.textContent = `${meta.name} · ${t('cards.article')}`;
   if (indicator) indicator.style.backgroundColor = meta.color;
-  if (readTime) readTime.textContent = item.duration || '5분 읽기';
+  let dur = item.duration || (lang === 'en' ? '5 min read' : '5분 읽기');
+  if (lang === 'en' && typeof dur === 'string') {
+    dur = dur.replace('분 읽기', ' min read');
+  }
+  if (readTime) readTime.textContent = dur;
 
   // 2. 북마크 버튼 상태
   updateArticleBookmarkButtonState();
@@ -2062,7 +2093,7 @@ function openArticleModal(item) {
     if (item.recommendationReason) {
       html += `
         <li class="article-recom-box">
-          <div class="article-recom-badge">맘고리즘 추천 이유</div>
+          <div class="article-recom-badge">${t('reader.recomReason')}</div>
           <div class="article-recom-text">${item.recommendationReason}</div>
         </li>
       `;
@@ -2099,8 +2130,8 @@ function openArticleModal(item) {
 
   const algoTitle = document.getElementById('articleAlgoTitle');
   const algoDesc = document.getElementById('articleAlgoDesc');
-  if (algoTitle) algoTitle.textContent = `${meta.name} 알고리즘 피드백`;
-  if (algoDesc) algoDesc.textContent = `이 기사가 유익하셨다면 알고리즘 믹서에서 ${meta.name} 비율을 높여보세요.`;
+  if (algoTitle) algoTitle.textContent = t('reader.feedbackTitle', { category: meta.name });
+  if (algoDesc) algoDesc.textContent = t('reader.feedbackDesc', { category: meta.name });
 
   // 스크롤 맨 위로 리셋
   const bodyEl = document.getElementById('articleReaderBody');

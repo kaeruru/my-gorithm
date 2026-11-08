@@ -267,6 +267,58 @@ body.dark-mode .brand-logo-mark {
   transform: scale(0.95);
 }
 
+.btn-lang-toggle {
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.btn-lang-toggle:hover {
+  background-color: var(--bg-subtle);
+  border-color: var(--text-muted);
+}
+
+.btn-lang-toggle:active {
+  transform: scale(0.95);
+}
+
+.btn-lang-toggle .lang-globe-icon {
+  color: var(--text-muted);
+  transition: transform 0.25s ease;
+}
+
+.btn-lang-toggle:hover .lang-globe-icon {
+  transform: rotate(25deg);
+  color: var(--primary);
+}
+
+.btn-lang-toggle .lang-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 5px;
+  border-radius: 5px;
+  background-color: var(--bg-subtle);
+  color: var(--text-main);
+  font-weight: 800;
+  font-size: 0.70rem;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border-color);
+}
+
 /* ==========================================================================
    메인 탭 뷰 전환 컨테이너
    ========================================================================== */

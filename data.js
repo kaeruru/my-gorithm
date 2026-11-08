@@ -1,12 +1,13 @@
 // 맘고리즘 (내맘대로 알고리즘) - 카테고리별 추천 콘텐츠 데이터셋
 // 카테고리: study(공부), tech(기술), culture(문화), hobby(취미)
 // 타입: video(영상), article(기사/글)
+import { t } from './i18n.js';
 
 export const CATEGORY_META = {
   study: {
     id: 'study',
-    name: '공부',
-    shortTag: '학습 · 교양',
+    get name() { return t('categories.study.name'); },
+    get shortTag() { return t('categories.study.shortTag'); },
     color: '#4338CA',
     tagBg: '#E0E7FF',
     tagText: '#312E81',
@@ -17,13 +18,13 @@ export const CATEGORY_META = {
     darkSolidBg: '#3730A3',
     darkSolidBorder: '#4F46E5',
     glowShadow: 'rgba(67, 56, 202, 0.28)',
-    description: '학습법, 인문·교양 지식',
+    get description() { return t('categories.study.desc'); },
     iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>'
   },
   tech: {
     id: 'tech',
-    name: '기술',
-    shortTag: 'IT · 트렌드',
+    get name() { return t('categories.tech.name'); },
+    get shortTag() { return t('categories.tech.shortTag'); },
     color: '#0284C7',
     tagBg: '#E0F2FE',
     tagText: '#075985',
@@ -34,13 +35,13 @@ export const CATEGORY_META = {
     darkSolidBg: '#0369A1',
     darkSolidBorder: '#0284C7',
     glowShadow: 'rgba(2, 132, 199, 0.28)',
-    description: 'AI, 개발, IT 트렌드',
+    get description() { return t('categories.tech.desc'); },
     iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>'
   },
   culture: {
     id: 'culture',
-    name: '문화',
-    shortTag: '예술 · 라이프',
+    get name() { return t('categories.culture.name'); },
+    get shortTag() { return t('categories.culture.shortTag'); },
     color: '#BE185D',
     tagBg: '#FFE4E6',
     tagText: '#881337',
@@ -51,13 +52,13 @@ export const CATEGORY_META = {
     darkSolidBg: '#9F1239',
     darkSolidBorder: '#BE185D',
     glowShadow: 'rgba(190, 24, 93, 0.28)',
-    description: '문화, 예술 트렌드',
+    get description() { return t('categories.culture.desc'); },
     iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>'
   },
   hobby: {
     id: 'hobby',
-    name: '취미',
-    shortTag: '액티비티 · 일상',
+    get name() { return t('categories.hobby.name'); },
+    get shortTag() { return t('categories.hobby.shortTag'); },
     color: '#059669',
     tagBg: '#D1FAE5',
     tagText: '#064E3B',
@@ -68,7 +69,7 @@ export const CATEGORY_META = {
     darkSolidBg: '#047857',
     darkSolidBorder: '#059669',
     glowShadow: 'rgba(5, 150, 105, 0.28)',
-    description: '운동, 가드닝, 쿠킹',
+    get description() { return t('categories.hobby.desc'); },
     iconSvg: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>'
   }
 };
@@ -126,19 +127,19 @@ export function normalizeContentCard(raw) {
 }
 
 export const LEVEL_LABELS = {
-  0: { label: '제외', desc: '피드에서 숨김' },
-  25: { label: '조금', desc: '가끔 1~2개 추천' },
-  50: { label: '보통', desc: '균형 있게 추천' },
-  75: { label: '선호', desc: '자주 추천' },
-  100: { label: '집중', desc: '피드 최우선 배치' }
+  0: { get label() { return t('sliders.levels.0.label'); }, get desc() { return t('sliders.levels.0.desc'); } },
+  25: { get label() { return t('sliders.levels.25.label'); }, get desc() { return t('sliders.levels.25.desc'); } },
+  50: { get label() { return t('sliders.levels.50.label'); }, get desc() { return t('sliders.levels.50.desc'); } },
+  75: { get label() { return t('sliders.levels.75.label'); }, get desc() { return t('sliders.levels.75.desc'); } },
+  100: { get label() { return t('sliders.levels.100.label'); }, get desc() { return t('sliders.levels.100.desc'); } }
 };
 
 export function getLevelDescription(val) {
-  if (val <= 0) return { label: '제외', desc: '피드에서 숨김' };
-  if (val <= 25) return { label: '조금', desc: '가끔 1~2개 추천' };
-  if (val <= 60) return { label: '보통', desc: '균형 있게 추천' };
-  if (val <= 85) return { label: '선호', desc: '자주 추천' };
-  return { label: '집중', desc: '피드 최우선 배치' };
+  if (val <= 0) return LEVEL_LABELS[0];
+  if (val <= 25) return LEVEL_LABELS[25];
+  if (val <= 60) return LEVEL_LABELS[50];
+  if (val <= 85) return LEVEL_LABELS[75];
+  return LEVEL_LABELS[100];
 }
 
 export const CONTENT_DATA = [
@@ -2239,26 +2240,26 @@ export const CONTENT_DATA = [
 export const PRESET_MODES = [
   {
     id: 'balanced',
-    name: '균형 모드',
-    desc: '모든 분야를 골고루',
+    get name() { return t('presets.balanced.name'); },
+    get desc() { return t('presets.balanced.desc'); },
     weights: { study: 50, tech: 50, culture: 50, hobby: 50 }
   },
   {
     id: 'growth',
-    name: '커리어·성장',
-    desc: '공부와 기술 집중',
+    get name() { return t('presets.growth.name'); },
+    get desc() { return t('presets.growth.desc'); },
     weights: { study: 80, tech: 80, culture: 20, hobby: 0 }
   },
   {
     id: 'healing',
-    name: '휴식·힐링',
-    desc: '문화와 취미 위주',
+    get name() { return t('presets.healing.name'); },
+    get desc() { return t('presets.healing.desc'); },
     weights: { study: 0, tech: 20, culture: 80, hobby: 80 }
   },
   {
     id: 'studyOnly',
-    name: '학습 집중',
-    desc: '오직 공부 콘텐츠만',
+    get name() { return t('presets.studyOnly.name'); },
+    get desc() { return t('presets.studyOnly.desc'); },
     weights: { study: 100, tech: 0, culture: 0, hobby: 0 }
   }
 ];

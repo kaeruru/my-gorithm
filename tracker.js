@@ -34,11 +34,14 @@ export function detectEnvironment() {
   const isDark = document.documentElement.dataset.systemTheme === 'dark' ||
     (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
+  const appLang = localStorage.getItem('mamgorithm_lang_v1') || (navigator.language && navigator.language.startsWith('ko') ? 'ko' : 'en');
+  const langDisplay = appLang === 'ko' ? `한국어 (${navigator.language || 'ko-KR'})` : `English (${navigator.language || 'en-US'})`;
+
   return {
     deviceType,
     browser,
     colorTheme: isDark ? '다크 모드' : '라이트 모드',
-    language: navigator.language || 'ko-KR'
+    language: langDisplay
   };
 }
 

@@ -92,20 +92,28 @@
             </svg>
           </span>
           <div class="brand-text">
-            <h1 class="brand-title">맘고리즘</h1>
-            <span class="brand-badge">My-gorithm</span>
+            <h1 class="brand-title" data-i18n="brand.title">맘고리즘</h1>
+            <span class="brand-badge" data-i18n="brand.badge">My-gorithm</span>
           </div>
         </div>
 
         <div class="header-actions">
-          <button type="button" class="btn-icon btn-install-app hidden" id="btnInstallApp" title="맘고리즘 앱 설치" aria-label="앱 설치">
+          <button type="button" class="btn-lang-toggle" id="btnLanguageToggle" title="언어 변경 (KO / EN)" aria-label="언어 변경">
+            <svg class="lang-globe-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span class="lang-badge" id="currentLangLabel">KO</span>
+          </button>
+          <button type="button" class="btn-icon btn-install-app hidden" id="btnInstallApp" title="맘고리즘 앱 설치" aria-label="앱 설치" data-i18n-title="header.installApp" data-i18n-aria="header.installApp">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="7 10 12 15 17 10"></polyline>
               <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
           </button>
-          <button type="button" class="btn-icon" id="btnQuickTune" title="알고리즘 비율 조절" aria-label="알고리즘 조절">
+          <button type="button" class="btn-icon" id="btnQuickTune" title="알고리즘 비율 조절" aria-label="알고리즘 조절" data-i18n-title="header.quickTune" data-i18n-aria="header.quickTune">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -134,12 +142,12 @@
               </svg>
             </div>
             <div class="install-banner-text">
-              <span class="install-banner-main">맘고리즘 앱으로 더 쾌적하게</span>
-              <span class="install-banner-sub">홈 화면에 추가해 1초 만에 실행하세요</span>
+              <span class="install-banner-main" data-i18n="banner.main">맘고리즘 앱으로 더 쾌적하게</span>
+              <span class="install-banner-sub" data-i18n="banner.sub">홈 화면에 추가해 1초 만에 실행하세요</span>
             </div>
           </div>
           <div class="install-banner-actions">
-            <button type="button" class="btn-install-cta" id="btnBannerInstall">앱 설치</button>
+            <button type="button" class="btn-install-cta" id="btnBannerInstall" data-i18n="banner.install">앱 설치</button>
             <button type="button" class="btn-install-close" id="btnBannerDismiss" aria-label="닫기">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -159,19 +167,19 @@
         <!-- 피드 서브 툴바 (유형 필터 & 새로고침) -->
         <div class="feed-sub-toolbar">
           <div class="type-filter-group" role="tablist" aria-label="콘텐츠 유형">
-            <button type="button" class="type-pill active" data-type="all">전체</button>
-            <button type="button" class="type-pill" data-type="video">영상</button>
-            <button type="button" class="type-pill" data-type="article">기사</button>
+            <button type="button" class="type-pill active" data-type="all" data-i18n="feed.all">전체</button>
+            <button type="button" class="type-pill" data-type="video" data-i18n="feed.video">영상</button>
+            <button type="button" class="type-pill" data-type="article" data-i18n="feed.article">기사</button>
           </div>
 
           <div class="feed-toolbar-actions">
-            <button type="button" class="btn-subtle-shuffle" id="btnShuffle" title="다른 추천 조합 보기">
+            <button type="button" class="btn-subtle-shuffle" id="btnShuffle" title="다른 추천 조합 보기" data-i18n-title="feed.refresh">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="23 4 23 10 17 10"></polyline>
                 <polyline points="1 20 1 14 7 14"></polyline>
                 <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
               </svg>
-              <span>새로고침</span>
+              <span data-i18n="feed.refresh">새로고침</span>
             </button>
           </div>
         </div>
@@ -227,14 +235,14 @@
            ============================================================ -->
       <section class="tab-view" id="viewStats">
         <div class="view-header">
-          <h2 class="view-title">내 알고리즘 분석</h2>
-          <p class="view-subtitle">맘고리즘의 추천 공식과 현재 설정된 가중치를 투명하게 공개합니다.</p>
+          <h2 class="view-title" data-i18n="stats.title">내 알고리즘 분석</h2>
+          <p class="view-subtitle" data-i18n="stats.subtitle">맘고리즘의 추천 공식과 현재 설정된 가중치를 투명하게 공개합니다.</p>
         </div>
 
         <!-- 레시피 공유 카드 -->
         <div class="stats-card">
-          <h3 class="stats-card-title">내 알고리즘 레시피 공유</h3>
-          <p class="stats-text">
+          <h3 class="stats-card-title" data-i18n="stats.shareTitle">내 알고리즘 레시피 공유</h3>
+          <p class="stats-text" data-i18n="stats.shareDesc">
             내가 튜닝한 관심도 비율을 친구에게 링크로 전달해보세요. 친구가 링크를 열면 내 설정이 그대로 반영됩니다.
           </p>
           <button type="button" class="btn-primary-apply" id="btnShareRecipeInStats" style="margin-top:4px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">
@@ -245,13 +253,13 @@
               <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
               <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
             </svg>
-            <span>현재 레시피 링크 복사 및 공유</span>
+            <span data-i18n="stats.shareBtn">현재 레시피 링크 복사 및 공유</span>
           </button>
         </div>
 
         <div class="stats-card">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-            <h3 class="stats-card-title" style="margin-bottom:0;">추천 계산 메커니즘</h3>
+            <h3 class="stats-card-title" style="margin-bottom:0;" data-i18n="stats.calcTitle">추천 계산 메커니즘</h3>
             <button type="button" class="btn-tooltip-trigger" id="btnStatsTooltip" aria-label="계산 공식 상세 안내" title="계산 공식 상세 안내">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -260,41 +268,41 @@
               </svg>
             </button>
           </div>
-          <p class="stats-text">
+          <p class="stats-text" data-i18n="stats.calcDesc">
             맘고리즘은 사용자의 머무는 시간이나 광고 수익에 기반한 <strong>중독형 블랙박스 알고리즘을 사용하지 않습니다.</strong>
           </p>
           <div class="formula-box">
-            <code>추천 비율(%) = (카테고리 설정값 ÷ 전체 가중치 합) × 100</code>
+            <code data-i18n="stats.formula">추천 비율(%) = (카테고리 설정값 ÷ 전체 가중치 합) × 100</code>
           </div>
-          <p class="stats-text subtle">
+          <p class="stats-text subtle" data-i18n="stats.formulaSub">
             설정값이 0%인 분야는 추천 피드에서 100% 원천 배제되며, 1% 이상으로 지정한 분야만 비율에 맞추어 균등하게 교차 배치됩니다.
           </p>
         </div>
 
         <div class="stats-card">
-          <h3 class="stats-card-title">현재 가중치 배분표</h3>
+          <h3 class="stats-card-title" data-i18n="stats.tableTitle">현재 가중치 배분표</h3>
           <div class="stats-table-wrap" id="statsTableContainer">
             <!-- JS 렌더링 -->
           </div>
         </div>
 
         <div class="stats-card">
-          <h3 class="stats-card-title">시작 화면 및 안내 다시 보기</h3>
-          <p class="stats-text">
+          <h3 class="stats-card-title" data-i18n="stats.replayTitle">시작 화면 및 안내 다시 보기</h3>
+          <p class="stats-text" data-i18n="stats.replayDesc">
             처음 접속했을 때의 인터랙티브 알고리즘 튜닝과 미니 독 사용 가이드를 홈 화면으로 자동 이동하여 다시 체험할 수 있습니다.
           </p>
           <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;">
             <button type="button" class="btn-subtle-action" id="btnReplayIntroLight">
-              <span>라이트 인트로 재생</span>
+              <span data-i18n="stats.btnLightIntro">라이트 인트로 재생</span>
             </button>
             <button type="button" class="btn-subtle-action" id="btnReplayIntroDark">
-              <span>다크 인트로 재생</span>
+              <span data-i18n="stats.btnDarkIntro">다크 인트로 재생</span>
             </button>
             <button type="button" class="btn-subtle-action" id="btnReopenOnboarding">
-              <span>시작 화면(온보딩) 열기</span>
+              <span data-i18n="stats.btnOnboarding">시작 화면(온보딩) 열기</span>
             </button>
             <button type="button" class="btn-subtle-action" id="btnReplayCoachmark">
-              <span>미니 독 튜닝 안내(코치마크)</span>
+              <span data-i18n="stats.btnCoachmark">미니 독 튜닝 안내(코치마크)</span>
             </button>
           </div>
         </div>
@@ -302,16 +310,16 @@
         <!-- 새 콘텐츠 카드 추가 기능 -->
         <div class="stats-card">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-            <h3 class="stats-card-title" style="margin-bottom:0;">새 콘텐츠 카드 추가</h3>
+            <h3 class="stats-card-title" style="margin-bottom:0;" data-i18n="stats.addCardTitle">새 콘텐츠 카드 추가</h3>
             <span class="custom-card-count-pill" id="customCardCountPill">기본 풀</span>
           </div>
-          <p class="stats-text">
+          <p class="stats-text" data-i18n="stats.addCardDesc">
             원하는 유튜브 영상이나 아티클 정보를 입력하여 추천 풀에 즉시 새로운 카드를 추가할 수 있습니다.
           </p>
           <form class="add-card-form" id="addCardForm">
             <div class="add-card-row">
               <div class="add-card-field">
-                <label for="newCardCategory">카테고리 분야</label>
+                <label for="newCardCategory" data-i18n="stats.labelCategory">카테고리 분야</label>
                 <select id="newCardCategory" required>
                   <option value="study">공부 (학습 · 교양)</option>
                   <option value="tech">기술 (IT · 트렌드)</option>
@@ -320,7 +328,7 @@
                 </select>
               </div>
               <div class="add-card-field">
-                <label for="newCardType">콘텐츠 유형</label>
+                <label for="newCardType" data-i18n="stats.labelType">콘텐츠 유형</label>
                 <select id="newCardType" required>
                   <option value="video">영상 (YouTube)</option>
                   <option value="article">기사 (아티클/글)</option>
@@ -328,28 +336,28 @@
               </div>
             </div>
             <div class="add-card-field">
-              <label for="newCardTitle">카드 제목</label>
-              <input type="text" id="newCardTitle" placeholder="예: 2026 반드시 알아야 할 디자인 시스템 트렌드" required />
+              <label for="newCardTitle" data-i18n="stats.labelTitle">카드 제목</label>
+              <input type="text" id="newCardTitle" placeholder="예: 2026 반드시 알아야 할 디자인 시스템 트렌드" data-i18n-placeholder="stats.placeholderTitle" required />
             </div>
             <div class="add-card-field">
-              <label for="newCardSummary">요약 설명 (2줄 내외)</label>
-              <input type="text" id="newCardSummary" placeholder="핵심 내용을 간결하게 입력하세요" required />
+              <label for="newCardSummary" data-i18n="stats.labelSummary">요약 설명 (2줄 내외)</label>
+              <input type="text" id="newCardSummary" placeholder="핵심 내용을 간결하게 입력하세요" data-i18n-placeholder="stats.placeholderSummary" required />
             </div>
             <div class="add-card-row">
               <div class="add-card-field">
-                <label for="newCardSource">출처 / 채널명</label>
-                <input type="text" id="newCardSource" placeholder="예: YouTube · 디자인 채널" />
+                <label for="newCardSource" data-i18n="stats.labelSource">출처 / 채널명</label>
+                <input type="text" id="newCardSource" placeholder="예: YouTube · 디자인 채널" data-i18n-placeholder="stats.placeholderSource" />
               </div>
               <div class="add-card-field">
-                <label for="newCardUrl">연결 URL (유튜브 또는 원문 링크)</label>
+                <label for="newCardUrl" data-i18n="stats.labelUrl">연결 URL (유튜브 또는 원문 링크)</label>
                 <input type="url" id="newCardUrl" placeholder="https://www.youtube.com/watch?v=..." />
               </div>
             </div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
-              <button type="submit" class="btn-primary-apply" style="flex:1; min-width:160px;">
+              <button type="submit" class="btn-primary-apply" style="flex:1; min-width:160px;" data-i18n="stats.btnAddCard">
                 새 카드 피드에 추가하기
               </button>
-              <button type="button" class="btn-subtle-action hidden" id="btnResetCustomCards">
+              <button type="button" class="btn-subtle-action hidden" id="btnResetCustomCards" data-i18n="stats.btnResetCards">
                 추가한 카드 초기화
               </button>
             </div>
@@ -363,10 +371,10 @@
       <section class="tab-view" id="viewSaved">
         <div class="view-header" style="display:flex; align-items:flex-start; justify-content:space-between;">
           <div>
-            <h2 class="view-title">보관함</h2>
-            <p class="view-subtitle">북마크한 기사와 영상을 나중에 다시 찾아볼 수 있습니다.</p>
+            <h2 class="view-title" data-i18n="saved.title">보관함</h2>
+            <p class="view-subtitle" data-i18n="saved.subtitle">북마크한 기사와 영상을 나중에 다시 찾아볼 수 있습니다.</p>
           </div>
-          <button type="button" class="btn-clear-saved hidden" id="btnClearSaved" title="보관함 전체 비우기">
+          <button type="button" class="btn-clear-saved hidden" id="btnClearSaved" title="보관함 전체 비우기" data-i18n="saved.clearAll">
             전체 비우기
           </button>
         </div>
@@ -398,7 +406,7 @@
         </div>
 
         <div class="dock-peek-right">
-          <span class="dock-tune-badge">튜닝</span>
+          <span class="dock-tune-badge" data-i18n="dock.tune">튜닝</span>
         </div>
       </div>
     </div>
@@ -418,18 +426,18 @@
         <div class="dock-expanded-content" id="dockExpandedContent">
           <div class="dock-expanded-header">
             <div>
-              <h3 class="dock-expanded-title">알고리즘 믹서</h3>
-              <p class="dock-expanded-desc">슬라이더를 조절하면 피드에 즉시 반영됩니다.</p>
+              <h3 class="dock-expanded-title" data-i18n="dock.title">알고리즘 믹서</h3>
+              <p class="dock-expanded-desc" data-i18n="dock.desc">슬라이더를 조절하면 피드에 즉시 반영됩니다.</p>
             </div>
             <div class="dock-header-actions">
-              <button type="button" class="btn-subtle-icon btn-tooltip-trigger" id="btnMixerTooltip" title="믹서 사용 팁" aria-label="믹서 사용 팁">
+              <button type="button" class="btn-subtle-icon btn-tooltip-trigger" id="btnMixerTooltip" title="믹서 사용 팁" aria-label="믹서 사용 팁" data-i18n-title="dock.tooltip" data-i18n-aria="dock.tooltip">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="12" y1="16" x2="12" y2="12"></line>
                   <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
               </button>
-              <button type="button" class="btn-subtle-icon" id="btnShareRecipeInDock" title="현재 알고리즘 레시피 공유">
+              <button type="button" class="btn-subtle-icon" id="btnShareRecipeInDock" title="현재 알고리즘 레시피 공유" data-i18n-title="dock.shareRecipe">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="18" cy="5" r="3"></circle>
                   <circle cx="6" cy="12" r="3"></circle>
@@ -438,13 +446,13 @@
                   <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                 </svg>
               </button>
-              <button type="button" class="btn-subtle-icon" id="btnResetMixerInDock" title="균형 리셋">
+              <button type="button" class="btn-subtle-icon" id="btnResetMixerInDock" title="균형 리셋" data-i18n-title="dock.reset">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="1 4 1 10 7 10"></polyline>
                   <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
                 </svg>
               </button>
-              <button type="button" class="btn-subtle-icon" id="btnCollapseDock" aria-label="믹서 닫기">
+              <button type="button" class="btn-subtle-icon" id="btnCollapseDock" aria-label="믹서 닫기" data-i18n-aria="dock.close">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
@@ -470,11 +478,11 @@
               <line x1="12" y1="8" x2="12" y2="12"></line>
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
-            <span>모든 분야가 0%입니다. 최소 1개 이상의 관심도를 올려주세요.</span>
+            <span data-i18n="dock.allZeroAlert">모든 분야가 0%입니다. 최소 1개 이상의 관심도를 올려주세요.</span>
           </div>
 
           <div class="dock-expanded-footer">
-            <button type="button" class="btn-primary-apply" id="btnApplyDockMixer">
+            <button type="button" class="btn-primary-apply" id="btnApplyDockMixer" data-i18n="dock.apply">
               피드 확인하기
             </button>
           </div>
@@ -491,7 +499,7 @@
             <polyline points="9 22 9 12 15 12 15 22"></polyline>
           </svg>
         </span>
-        <span class="tab-label">피드</span>
+        <span class="tab-label" data-i18n="tabs.feed">피드</span>
       </button>
 
       <button type="button" class="tab-btn" data-tab="viewStats">
@@ -504,7 +512,7 @@
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
         </span>
-        <span class="tab-label">내 알고리즘</span>
+        <span class="tab-label" data-i18n="tabs.stats">내 알고리즘</span>
       </button>
 
       <button type="button" class="tab-btn" data-tab="viewSaved">
@@ -513,7 +521,7 @@
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
           </svg>
         </span>
-        <span class="tab-label">보관함</span>
+        <span class="tab-label" data-i18n="tabs.saved">보관함</span>
         <span class="saved-count-badge hidden" id="savedCountBadge">0</span>
       </button>
     </nav>
@@ -524,16 +532,16 @@
     <div class="onboarding-overlay hidden" id="onboardingOverlay" role="dialog" aria-modal="true" aria-label="맘고리즘 시작하기">
       <div class="onboarding-modal">
         <div class="onboarding-header">
-          <h2 class="onboarding-title">
+          <h2 class="onboarding-title" data-i18n="onboarding.title">
             내 취향대로 맞추는 피드
           </h2>
-          <p class="onboarding-desc">
+          <p class="onboarding-desc" data-i18n="onboarding.desc">
             관심 있는 분야의 슬라이더를 손끝으로 가볍게 튜닝해보세요.
           </p>
         </div>
 
         <div class="onboarding-preset-group">
-          <span class="onboarding-section-title">빠른 프리셋</span>
+          <span class="onboarding-section-title" data-i18n="onboarding.presetsTitle">빠른 프리셋</span>
           <div class="onboarding-presets-row" id="onboardingPresetRow">
             <!-- JS 렌더링 -->
           </div>
@@ -541,14 +549,14 @@
 
         <div class="onboarding-gauge-wrap">
           <div class="onboarding-gauge-header">
-            <span>실시간 추천 비율</span>
+            <span data-i18n="onboarding.gaugeTitle">실시간 추천 비율</span>
             <span class="onboarding-haptic-hint">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
-              <span>햅틱 피드백</span>
+              <span data-i18n="onboarding.haptic">햅틱 피드백</span>
             </span>
           </div>
           <div class="gauge-stacked-bar" id="onboardingStackedBar"></div>
@@ -561,7 +569,7 @@
 
         <div class="onboarding-footer">
           <button type="button" class="btn-onboarding-start" id="btnOnboardingStart">
-            <span>이 설정으로 내 피드 열기</span>
+            <span data-i18n="onboarding.start">이 설정으로 내 피드 열기</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
@@ -585,7 +593,7 @@
           </div>
           <div class="sheet-actions">
             <a href="#" target="_blank" rel="noopener noreferrer" class="sheet-ext-link" id="sheetExternalLink" title="YouTube 원본에서 열기">
-              <span>YouTube 원본</span>
+              <span data-i18n="video.youtubeOriginal">YouTube 원본</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M7 17l9.2-9.2M17 17V8H8"/>
               </svg>
@@ -624,11 +632,11 @@
 
           <div class="sheet-algo-box">
             <div class="sheet-algo-text">
-              <strong>추천 알고리즘 피드백</strong>
-              <span>이 영상이 마음에 드셨다면 해당 분야의 관심도를 높여보세요.</span>
+              <strong data-i18n="video.feedbackTitle">추천 알고리즘 피드백</strong>
+              <span data-i18n="video.feedbackDesc">이 영상이 마음에 드셨다면 해당 분야의 관심도를 높여보세요.</span>
             </div>
             <button type="button" class="btn-sheet-tune" id="btnSheetTune">
-              <span>비율 조절</span>
+              <span data-i18n="video.tuneBtn">비율 조절</span>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
@@ -659,7 +667,7 @@
 
           <div class="article-reader-actions">
             <!-- 리더 모드 내 북마크 저장 토글 버튼 -->
-            <button type="button" class="btn-subtle-icon" id="btnArticleBookmark" title="보관함 저장" aria-label="보관함 저장">
+            <button type="button" class="btn-subtle-icon" id="btnArticleBookmark" title="보관함 저장" aria-label="보관함 저장" data-i18n-title="cards.bookmarkSave" data-i18n-aria="cards.bookmarkSave">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
               </svg>
@@ -667,7 +675,7 @@
 
             <!-- 원문 사이트 바로가기 버튼 -->
             <a href="#" target="_blank" rel="noopener noreferrer" class="sheet-ext-link" id="articleExternalLink" title="원문 사이트 새 창에서 열기">
-              <span>원문 방문</span>
+              <span data-i18n="reader.visitOriginal">원문 방문</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M7 17l9.2-9.2M17 17V8H8"/>
               </svg>
@@ -707,7 +715,7 @@
                 <line x1="12" y1="16" x2="12" y2="12"></line>
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
               </svg>
-              <span>3줄 핵심 요약</span>
+              <span data-i18n="reader.keyPointsTitle">3줄 핵심 요약</span>
             </div>
             <ul class="summary-points-list" id="articleKeyPoints">
               <!-- JS 렌더링 -->
@@ -727,7 +735,7 @@
                 <span id="articleAlgoDesc">이 기사가 유익하셨다면 알고리즘 믹서에서 비율을 높여보세요.</span>
               </div>
               <button type="button" class="btn-sheet-tune" id="btnArticleSheetTune">
-                <span>비율 조절</span>
+                <span data-i18n="video.tuneBtn">비율 조절</span>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
@@ -736,18 +744,18 @@
 
             <div class="article-footer-buttons">
               <a href="#" target="_blank" rel="noopener noreferrer" class="btn-secondary-link" id="btnArticleFooterOriginal">
-                <span>원문 사이트 방문하기</span>
+                <span data-i18n="reader.visitOriginalFull">원문 사이트 방문하기</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                   <polyline points="15 3 21 3 21 9"></polyline>
                   <line x1="10" y1="14" x2="21" y2="3"></line>
                 </svg>
               </a>
-              <button type="button" class="btn-primary-apply" id="btnArticleBackToFeed">
+              <button type="button" class="btn-primary-apply" id="btnArticleBackToFeed" data-i18n="reader.backToFeed">
                 피드로 돌아가기
               </button>
             </div>
-            <p class="article-ext-notice">
+            <p class="article-ext-notice" data-i18n="reader.notice">
               ※ 외부 사이트의 보안 설정이나 모바일 네트워크 환경에 따라 링크 연결이 지연될 경우, 위 인앱 리더의 핵심 요약과 상세 본문에서 전문을 바로 확인하실 수 있습니다.
             </p>
           </div>
